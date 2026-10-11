@@ -1,0 +1,2 @@
+Method,Name,Error,Occurrences,First Seen,Last Seen
+POST,chat,CatchResponseError('HTTP 503'),33,2026-10-11T23:45:18Z,2026-10-11T23:45:19Z

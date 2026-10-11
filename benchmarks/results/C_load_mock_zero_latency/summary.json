@@ -1,0 +1,141 @@
+{
+  "metadata": {
+    "benchmark": "C_load",
+    "experiment_id": "C_load-20261011T234527Z-f8e5a3",
+    "timestamp": "2026-10-11T23:45:27.916646+00:00",
+    "git_sha": "dc4fcb2bc59f26e9ee9d37dca080989e51bf4828",
+    "git_dirty": true,
+    "hardware": {
+      "platform": "macOS-26.5.2-arm64-arm-64bit",
+      "machine": "arm64",
+      "python": "3.12.15",
+      "cpu": "Apple M4",
+      "memory_gb": 16.0,
+      "cpu_count": 10
+    },
+    "software": {
+      "fastapi": "0.141.1",
+      "litellm": "1.102.1",
+      "scikit-learn": "1.9.1",
+      "numpy": "2.5.3",
+      "redis": "8.1.0",
+      "sqlalchemy": "2.1.1",
+      "uvicorn": "0.54.0",
+      "locust": "2.46.6"
+    },
+    "mode": "4 enabled (mock)",
+    "base_url": "http://localhost:8000",
+    "model_field": "routeforge-auto",
+    "duration_s_per_level": 30,
+    "default_strategy": "heuristic",
+    "cache": "bypassed",
+    "workload": "closed-loop, zero think time, random held-out prompts, max_tokens<=128",
+    "deployment": "docker compose backend: 1 uvicorn worker, cpus=2.0, memory=1g",
+    "simulated": true
+  },
+  "simulated": true,
+  "status": "complete",
+  "headline": [
+    {
+      "label": "Peak successful throughput",
+      "value": "83.0 req/s",
+      "detail": "at 10 concurrent users"
+    },
+    {
+      "label": "p95 latency at peak",
+      "value": "240 ms"
+    },
+    {
+      "label": "Error rate at peak",
+      "value": "0.00%"
+    },
+    {
+      "label": "p50 latency at 1 user",
+      "value": "11 ms"
+    }
+  ],
+  "levels": [
+    {
+      "users": 1,
+      "requests": 1894,
+      "failures": 0,
+      "error_rate": 0.0,
+      "rps": 65.009318119386,
+      "success_rps": 65.009318119386,
+      "p50_ms": 11.0,
+      "p95_ms": 31.0,
+      "p99_ms": 62.0,
+      "mean_ms": 15.185439075243307,
+      "max_ms": 808.2465420011431
+    },
+    {
+      "users": 5,
+      "requests": 2177,
+      "failures": 0,
+      "error_rate": 0.0,
+      "rps": 77.36909327081217,
+      "success_rps": 77.36909327081217,
+      "p50_ms": 49.0,
+      "p95_ms": 140.0,
+      "p99_ms": 380.0,
+      "mean_ms": 64.13061865431219,
+      "max_ms": 1033.3574169926578
+    },
+    {
+      "users": 10,
+      "requests": 2304,
+      "failures": 0,
+      "error_rate": 0.0,
+      "rps": 82.9504051899027,
+      "success_rps": 82.9504051899027,
+      "p50_ms": 92.0,
+      "p95_ms": 240.0,
+      "p99_ms": 780.0,
+      "mean_ms": 119.22805297163879,
+      "max_ms": 1773.3260829991195
+    },
+    {
+      "users": 25,
+      "requests": 607,
+      "failures": 0,
+      "error_rate": 0.0,
+      "rps": 24.37237704918425,
+      "success_rps": 24.37237704918425,
+      "p50_ms": 680.0,
+      "p95_ms": 3000.0,
+      "p99_ms": 4000.0,
+      "mean_ms": 1005.9863690243387,
+      "max_ms": 4706.642834004015
+    },
+    {
+      "users": 50,
+      "requests": 1039,
+      "failures": 0,
+      "error_rate": 0.0,
+      "rps": 42.85646976220515,
+      "success_rps": 42.85646976220515,
+      "p50_ms": 770.0,
+      "p95_ms": 2600.0,
+      "p99_ms": 3700.0,
+      "mean_ms": 1143.8801948487041,
+      "max_ms": 3883.298625005409
+    },
+    {
+      "users": 100,
+      "requests": 1922,
+      "failures": 33,
+      "error_rate": 0.01716961498439126,
+      "rps": 65.82815310104657,
+      "success_rps": 64.69790905716803,
+      "p50_ms": 1200.0,
+      "p95_ms": 2900.0,
+      "p99_ms": 5500.0,
+      "mean_ms": 1476.386136647392,
+      "max_ms": 6581.111874998896
+    }
+  ],
+  "limitations": [
+    "Single gateway replica with one uvicorn worker on a laptop (Apple M4) sharing CPU with the load generator.",
+    "In mock mode the providers are simulated: this measures gateway capacity and overhead, not provider throughput."
+  ]
+}

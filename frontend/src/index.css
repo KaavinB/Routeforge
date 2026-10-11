@@ -1,0 +1,56 @@
+@import "tailwindcss";
+
+/* Design tokens. Series colours follow the validated categorical order (fixed, never cycled). */
+@theme {
+  --font-sans: "Inter", ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
+  --font-mono: "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
+
+  --color-surface: #fcfcfb;
+  --color-panel: #ffffff;
+  --color-sunken: #f4f4f2;
+  --color-line: #e4e3df;
+  --color-ink: #0b0b0b;
+  --color-ink-2: #52514e;
+  --color-ink-3: #7c7b76;
+  --color-accent: #2a78d6;
+  --color-accent-soft: #e8f1fc;
+
+  --color-s1: #2a78d6;
+  --color-s2: #eb6834;
+  --color-s3: #1baf7a;
+  --color-s4: #eda100;
+  --color-s5: #e87ba4;
+  --color-s6: #008300;
+  --color-s7: #6250d6;
+  --color-s8: #e34948;
+
+  --color-good: #0f7b3e;
+  --color-good-soft: #e3f4ea;
+  --color-warn: #9a5b00;
+  --color-warn-soft: #fdf1dc;
+  --color-bad: #b42318;
+  --color-bad-soft: #fde8e7;
+}
+
+html,
+body {
+  background: var(--color-surface);
+  color: var(--color-ink);
+  font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
+}
+
+.tabular {
+  font-variant-numeric: tabular-nums;
+}
+
+/* Recharts: keep axis text in the secondary ink, never in series colours. */
+.recharts-cartesian-axis-tick-value {
+  fill: var(--color-ink-2);
+  font-size: 11px;
+}
+.recharts-default-tooltip {
+  border-radius: 8px !important;
+  border-color: var(--color-line) !important;
+  font-size: 12px;
+}

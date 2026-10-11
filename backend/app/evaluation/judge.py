@@ -65,6 +65,10 @@ def acceptable_from_scores(scores: dict[str, Any]) -> bool:
     return int(scores.get("faithfulness", 0)) >= 4 and int(scores.get("coverage", 0)) >= 3
 
 
+class JudgeCacheMissError(LookupError):
+    pass
+
+
 class SummaryJudge:
     def __init__(
         self,
@@ -73,8 +77,12 @@ class SummaryJudge:
         cache_path: Path | None = None,
         ledger: SpendLedger | None = None,
         concurrency: int = 4,
+        cache_only: bool = False,
     ) -> None:
+        """``cache_only``: never call the judge model; raise ``JudgeCacheMiss`` instead
+        (used by CI, which replays recorded outputs whose verdicts are already cached)."""
         self.model = model
+        self.cache_only = cache_only
         self.cache_path = cache_path
         self.ledger = ledger
         self._sem = None if concurrency <= 0 else concurrency
@@ -97,6 +105,8 @@ class SummaryJudge:
         key = self._key(messages)
         if key in self._cache:
             return {**self._cache[key], "cached": True}
+        if self.cache_only:
+            raise JudgeCacheMissError(key)
         in_price, out_price = JUDGE_PRICING.get(self.model, (5.0, 25.0))
         if self.ledger is not None:
             est = (

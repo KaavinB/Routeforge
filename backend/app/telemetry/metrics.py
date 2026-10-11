@@ -167,3 +167,16 @@ STREAM_ABORTS = Counter(
     ["model"],
     registry=REGISTRY,
 )
+EVENT_LOOP_LAG = Histogram(
+    "routeforge_event_loop_lag_seconds",
+    "Scheduling delay of a 100 ms heartbeat task (time the event loop was blocked)",
+    buckets=(0.001, 0.005, 0.01, 0.025, 0.05, 0.1, 0.25, 0.5, 1, 2),
+    registry=REGISTRY,
+)
+GC_PAUSE = Histogram(
+    "routeforge_gc_pause_seconds",
+    "Duration of CPython cyclic garbage-collection passes (they block the event loop)",
+    ["generation"],
+    buckets=(0.0005, 0.001, 0.005, 0.01, 0.025, 0.05, 0.1, 0.25),
+    registry=REGISTRY,
+)

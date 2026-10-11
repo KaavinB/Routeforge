@@ -12,7 +12,7 @@ from enum import StrEnum
 from functools import lru_cache
 from pathlib import Path
 
-from pydantic import Field, SecretStr
+from pydantic import Field, SecretStr, field_validator
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
 REPO_ROOT = Path(__file__).resolve().parents[3]
@@ -108,6 +108,8 @@ class Settings(BaseSettings):
 
     # --- telemetry ------------------------------------------------------------
     log_prompts: bool = False
+    request_log_enabled: bool = True
+    gc_freeze_after_startup: bool = True
     otel_enabled: bool = True
     otel_exporter_endpoint: str | None = None
     langfuse_enabled: bool = True
@@ -122,6 +124,21 @@ class Settings(BaseSettings):
     benchmark_results_dir: Path = REPO_ROOT / "benchmarks" / "results"
     eval_sandbox_backend: str = Field(default="subprocess", pattern="^(subprocess|docker)$")
     judge_model: str = "openai/gpt-4.1"
+
+    @field_validator(
+        "router_artifact_path",
+        "replay_recordings_path",
+        "otel_exporter_endpoint",
+        "default_latency_budget_ms",
+        "bootstrap_admin_key",
+        "bootstrap_client_key",
+        mode="before",
+    )
+    @classmethod
+    def _empty_is_unset(cls, v: object) -> object:
+        # docker compose passes unset variables as empty strings; treat them as "not set"
+        # rather than e.g. Path("") == Path(".").
+        return None if isinstance(v, str) and not v.strip() else v
 
     @property
     def is_prod(self) -> bool:

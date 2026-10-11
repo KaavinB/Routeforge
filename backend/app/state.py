@@ -163,7 +163,9 @@ def build_state(
         bootstrap=bootstrap,
     )
     log_writer = RequestLogWriter(
-        db, queue_size=settings.request_log_queue_size, batch_size=settings.request_log_batch_size
+        db if settings.request_log_enabled else None,
+        queue_size=settings.request_log_queue_size,
+        batch_size=settings.request_log_batch_size,
     )
     langfuse = LangfuseSink(
         enabled=settings.langfuse_enabled, environment=settings.env.value, release=settings.version

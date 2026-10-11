@@ -16,7 +16,9 @@ target_metadata = Base.metadata
 
 
 def database_url() -> str:
-    url = os.environ.get("ROUTEFORGE_MIGRATION_DATABASE_URL") or os.environ.get("ROUTEFORGE_DATABASE_URL")
+    url = os.environ.get("ROUTEFORGE_MIGRATION_DATABASE_URL") or os.environ.get(
+        "ROUTEFORGE_DATABASE_URL"
+    )
     if not url:
         raise RuntimeError("set ROUTEFORGE_MIGRATION_DATABASE_URL to run migrations")
     return url

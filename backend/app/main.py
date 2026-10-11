@@ -21,6 +21,7 @@ from app.core.config import Settings, get_settings
 from app.core.errors import GatewayError
 from app.core.logging import configure_logging, request_id_var
 from app.state import AppState, build_state
+from app.telemetry.loop_monitor import LoopLagMonitor, freeze_startup_heap
 from app.telemetry.tracing import setup_tracing, shutdown_tracing
 
 logger = logging.getLogger("routeforge")
@@ -103,6 +104,11 @@ def create_app(settings: Settings | None = None, state: AppState | None = None) 
         app_state = state or build_state(settings)
         app.state.rf = app_state
         app_state.log_writer.start()
+        loop_monitor = LoopLagMonitor()
+        loop_monitor.start()
+        if settings.gc_freeze_after_startup:
+            frozen = freeze_startup_heap()
+            logger.info("froze startup heap", extra={"frozen_objects": frozen})
         logger.info(
             "routeforge started",
             extra={
@@ -117,6 +123,7 @@ def create_app(settings: Settings | None = None, state: AppState | None = None) 
         try:
             yield
         finally:
+            await loop_monitor.stop()
             await app_state.close()
             shutdown_tracing()
 

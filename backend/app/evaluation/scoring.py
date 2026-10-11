@@ -6,7 +6,7 @@ from __future__ import annotations
 import asyncio
 
 from app.evaluation.datasets import EvalCase
-from app.evaluation.judge import SummaryJudge, acceptable_from_scores
+from app.evaluation.judge import JudgeCacheMissError, SummaryJudge, acceptable_from_scores
 from app.evaluation.sandbox import CodeJob, check_policy, run_jobs
 from app.evaluation.scorers import SYNC_SCORERS, ScoreResult, extract_code, rouge_l
 
@@ -70,7 +70,13 @@ class Scorer:
             ok = rouge["recall"] >= 0.35
             return ScoreResult(rouge["f1"], ok, {"method": "rouge_fallback", "rouge_l": rouge})
         async with self._judge_sem:
-            verdict = await self.judge.judge(ref["article"], ref["highlights"], output)
+            try:
+                verdict = await self.judge.judge(ref["article"], ref["highlights"], output)
+            except JudgeCacheMissError:
+                ok = rouge["recall"] >= 0.35
+                return ScoreResult(
+                    rouge["f1"], ok, {"method": "rouge_fallback_cache_miss", "rouge_l": rouge}
+                )
         ok = acceptable_from_scores(verdict)
         score = (verdict["faithfulness"] + verdict["coverage"]) / 10
         return ScoreResult(score, ok, {"method": "llm_judge", "judge": verdict, "rouge_l": rouge})
