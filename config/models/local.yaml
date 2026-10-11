@@ -1,0 +1,52 @@
+# Mode B — local models served by Ollama on the host (Apple Silicon Metal acceleration).
+# Prices are ILLUSTRATIVE cost units (USD-equivalent per 1M tokens), loosely scaled with parameter
+# count to resemble serverless pricing for similarly sized open models. They are NOT provider prices
+# and local inference has no per-token bill; use them only to study routing trade-offs.
+version: local-2026-10-11
+mode: local
+simulated: false
+pricing:
+  version: "illustrative-2026-10-11"
+  currency: USD
+  sources:
+    ollama: "Illustrative parameter-scaled cost units; not a provider price list (unverified)"
+routing:
+  premium_model: qwen2.5-7b
+  economy_model: llama3.2-1b
+models:
+  - id: llama3.2-1b
+    provider: litellm
+    upstream: ollama_chat/llama3.2:1b
+    family: ollama
+    tier: 0
+    context_window: 32768
+    max_output_tokens: 4096
+    input_cost_per_mtok: 0.03
+    output_cost_per_mtok: 0.05
+    api_base: ${OLLAMA_BASE_URL:-http://localhost:11434}
+    timeout_s: 120
+    max_concurrency: 4
+  - id: qwen2.5-3b
+    provider: litellm
+    upstream: ollama_chat/qwen2.5:3b
+    family: ollama
+    tier: 1
+    context_window: 32768
+    max_output_tokens: 4096
+    input_cost_per_mtok: 0.06
+    output_cost_per_mtok: 0.10
+    api_base: ${OLLAMA_BASE_URL:-http://localhost:11434}
+    timeout_s: 120
+    max_concurrency: 4
+  - id: qwen2.5-7b
+    provider: litellm
+    upstream: ollama_chat/qwen2.5:7b
+    family: ollama
+    tier: 2
+    context_window: 32768
+    max_output_tokens: 4096
+    input_cost_per_mtok: 0.20
+    output_cost_per_mtok: 0.30
+    api_base: ${OLLAMA_BASE_URL:-http://localhost:11434}
+    timeout_s: 180
+    max_concurrency: 2

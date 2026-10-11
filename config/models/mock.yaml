@@ -1,0 +1,47 @@
+# Mode A — deterministic mock providers. Responses, latencies and token counts are SIMULATED.
+# Prices mirror the hosted pool so cost arithmetic can be exercised, but no money is spent and
+# nothing produced in this mode is evidence of real model quality or latency.
+version: mock-2026-10-11
+mode: mock
+simulated: true
+pricing:
+  version: "mirror-of-hosted-2026-10-11"
+  currency: USD
+  sources:
+    mock: "Simulated; prices copied from config/models/hosted.yaml for arithmetic only"
+routing:
+  premium_model: mock-premium
+  economy_model: mock-economy
+models:
+  - id: mock-economy
+    provider: mock
+    family: mock
+    tier: 0
+    context_window: 128000
+    input_cost_per_mtok: 0.10
+    output_cost_per_mtok: 0.40
+    mock: {ttft_ms: 120, tokens_per_s: 150, typical_output_tokens: 40}
+  - id: mock-small
+    provider: mock
+    family: mock
+    tier: 1
+    context_window: 128000
+    input_cost_per_mtok: 0.10
+    output_cost_per_mtok: 0.50
+    mock: {ttft_ms: 180, tokens_per_s: 120, typical_output_tokens: 50}
+  - id: mock-medium
+    provider: mock
+    family: mock
+    tier: 2
+    context_window: 128000
+    input_cost_per_mtok: 0.40
+    output_cost_per_mtok: 1.60
+    mock: {ttft_ms: 250, tokens_per_s: 90, typical_output_tokens: 70}
+  - id: mock-premium
+    provider: mock
+    family: mock
+    tier: 3
+    context_window: 200000
+    input_cost_per_mtok: 2.00
+    output_cost_per_mtok: 10.00
+    mock: {ttft_ms: 400, tokens_per_s: 60, typical_output_tokens: 90}

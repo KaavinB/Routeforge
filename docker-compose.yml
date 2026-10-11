@@ -1,0 +1,124 @@
+# RouteForge local deployment.
+#
+#   python3 infrastructure/scripts/init_env.py      # once: generates secrets into .env
+#   docker compose up --build                       # gateway + dashboard + postgres + redis
+#   docker compose --profile observability up -d    # + prometheus, grafana, jaeger
+#
+# Mode is chosen with ROUTEFORGE_MODE in .env: mock (default, no API keys), local (Ollama on
+# the host), hosted (OPENAI_API_KEY + ANTHROPIC_API_KEY).
+
+x-backend-env: &backend-env
+  ROUTEFORGE_ENV: ${ROUTEFORGE_ENV:-dev}
+  ROUTEFORGE_DATABASE_URL: postgresql+asyncpg://routeforge_app:${ROUTEFORGE_APP_DB_PASSWORD:?run infrastructure/scripts/init_env.py}@postgres:5432/routeforge
+  ROUTEFORGE_REDIS_URL: redis://redis:6379/0
+  ROUTEFORGE_MODEL_CONFIG_PATH: /app/config/models/${ROUTEFORGE_MODE:-mock}.yaml
+  ROUTEFORGE_ROUTER_ARTIFACT_PATH: ${ROUTEFORGE_ROUTER_ARTIFACT_PATH:-}
+  ROUTEFORGE_DEFAULT_STRATEGY: ${ROUTEFORGE_DEFAULT_STRATEGY:-heuristic}
+  ROUTEFORGE_API_KEY_PEPPER: ${ROUTEFORGE_API_KEY_PEPPER:?run infrastructure/scripts/init_env.py}
+  ROUTEFORGE_BOOTSTRAP_ADMIN_KEY: ${ROUTEFORGE_BOOTSTRAP_ADMIN_KEY:-}
+  ROUTEFORGE_BOOTSTRAP_CLIENT_KEY: ${ROUTEFORGE_BOOTSTRAP_CLIENT_KEY:-}
+  ROUTEFORGE_CORS_ORIGINS: '["http://localhost:8080","http://localhost:5173"]'
+  ROUTEFORGE_FAULT_INJECTION_ENABLED: ${ROUTEFORGE_FAULT_INJECTION_ENABLED:-false}
+  ROUTEFORGE_CACHE_ENABLED: ${ROUTEFORGE_CACHE_ENABLED:-true}
+  ROUTEFORGE_MOCK_LATENCY_SCALE: ${ROUTEFORGE_MOCK_LATENCY_SCALE:-1.0}
+  ROUTEFORGE_DEFAULT_RATE_LIMIT_RPM: ${ROUTEFORGE_DEFAULT_RATE_LIMIT_RPM:-600}
+  ROUTEFORGE_OTEL_EXPORTER_ENDPOINT: ${ROUTEFORGE_OTEL_EXPORTER_ENDPOINT:-}
+  ROUTEFORGE_GIT_SHA: ${ROUTEFORGE_GIT_SHA:-}
+  OLLAMA_BASE_URL: http://host.docker.internal:11434
+  OPENAI_API_KEY: ${OPENAI_API_KEY:-}
+  ANTHROPIC_API_KEY: ${ANTHROPIC_API_KEY:-}
+  LANGFUSE_PUBLIC_KEY: ${LANGFUSE_PUBLIC_KEY:-}
+  LANGFUSE_SECRET_KEY: ${LANGFUSE_SECRET_KEY:-}
+  LANGFUSE_BASE_URL: ${LANGFUSE_BASE_URL:-}
+  WEB_CONCURRENCY: ${WEB_CONCURRENCY:-1}
+
+services:
+  postgres:
+    image: postgres:17-alpine
+    environment:
+      POSTGRES_DB: routeforge
+      POSTGRES_USER: routeforge_owner
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?run infrastructure/scripts/init_env.py}
+      ROUTEFORGE_APP_DB_PASSWORD: ${ROUTEFORGE_APP_DB_PASSWORD}
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+      - ./infrastructure/postgres/init:/docker-entrypoint-initdb.d:ro
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U routeforge_owner -d routeforge"]
+      interval: 3s
+      timeout: 3s
+      retries: 20
+    ports: ["127.0.0.1:5432:5432"]
+
+  redis:
+    image: redis:7.4-alpine
+    command: ["redis-server", "--save", "", "--appendonly", "no", "--maxmemory", "256mb", "--maxmemory-policy", "allkeys-lru"]
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 3s
+      timeout: 3s
+      retries: 20
+    ports: ["127.0.0.1:6379:6379"]
+
+  migrate:
+    build: .
+    image: routeforge-backend:latest
+    command: ["alembic", "-c", "backend/alembic.ini", "upgrade", "head"]
+    environment:
+      ROUTEFORGE_MIGRATION_DATABASE_URL: postgresql+asyncpg://routeforge_owner:${POSTGRES_PASSWORD}@postgres:5432/routeforge
+    depends_on:
+      postgres: {condition: service_healthy}
+    restart: "no"
+
+  backend:
+    image: routeforge-backend:latest
+    build: .
+    environment: *backend-env
+    depends_on:
+      migrate: {condition: service_completed_successfully}
+      redis: {condition: service_healthy}
+    ports: ["127.0.0.1:8000:8000"]
+    volumes:
+      - ./benchmarks/results:/app/benchmarks/results:ro
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    deploy:
+      resources:
+        limits: {cpus: "2.0", memory: 1g}
+
+  dashboard:
+    build: ./frontend
+    depends_on: [backend]
+    ports: ["127.0.0.1:8080:80"]
+
+  # ---------------------------------------------------------------- observability
+  prometheus:
+    image: prom/prometheus:v3.5.0
+    profiles: ["observability"]
+    command: ["--config.file=/etc/prometheus/prometheus.yml", "--storage.tsdb.retention.time=7d"]
+    volumes:
+      - ./observability/prometheus/prometheus.yml:/etc/prometheus/prometheus.yml:ro
+      - ./observability/prometheus/alerts.yml:/etc/prometheus/alerts.yml:ro
+    ports: ["127.0.0.1:9090:9090"]
+
+  grafana:
+    image: grafana/grafana:12.1.1
+    profiles: ["observability"]
+    environment:
+      GF_SECURITY_ADMIN_PASSWORD: ${GRAFANA_ADMIN_PASSWORD:-admin}
+      GF_AUTH_ANONYMOUS_ENABLED: "false"
+    volumes:
+      - ./observability/grafana/provisioning:/etc/grafana/provisioning:ro
+      - ./observability/grafana/dashboards:/var/lib/grafana/dashboards:ro
+    ports: ["127.0.0.1:3000:3000"]
+    depends_on: [prometheus]
+
+  jaeger:
+    image: jaegertracing/jaeger:2.9.0
+    profiles: ["observability"]
+    ports:
+      - "127.0.0.1:16686:16686"  # UI
+      - "127.0.0.1:4318:4318"    # OTLP/HTTP
+
+volumes:
+  pgdata:

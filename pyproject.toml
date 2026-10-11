@@ -1,0 +1,116 @@
+[project]
+name = "routeforge"
+version = "0.1.0"
+description = "Quality-aware LLM gateway with adaptive routing, continuous evaluation, and production observability"
+readme = "README.md"
+requires-python = ">=3.12,<3.14"
+license = { text = "MIT" }
+# Versions pinned with a 14-day release cooldown (newest stable release published on or
+# before 2026-09-26) to reduce exposure to freshly compromised packages. See docs/DESIGN_DECISIONS.md.
+dependencies = [
+    "fastapi==0.141.1",
+    "uvicorn[standard]==0.54.0",
+    "pydantic==2.13.5",
+    "pydantic-settings==2.15.0",
+    "sqlalchemy[asyncio]==2.1.1",
+    "asyncpg==0.31.0",
+    "alembic==1.20.0",
+    "redis==8.1.0",
+    "httpx==0.28.1",
+    "litellm==1.102.1",
+    "prometheus-client==0.26.0",
+    "opentelemetry-api==1.45.0",
+    "opentelemetry-sdk==1.45.0",
+    "opentelemetry-exporter-otlp-proto-http==1.45.0",
+    "opentelemetry-instrumentation-fastapi==0.66b0",
+    "langfuse==4.15.6",
+    "scikit-learn==1.9.1",
+    "numpy==2.5.3",
+    "pandas==3.0.6",
+    "joblib==1.6.0",
+    "pyyaml==6.0.3",
+    "jsonschema==4.26.0",
+    "orjson==3.12.0",
+]
+
+[dependency-groups]
+dev = [
+    "pytest==9.1.1",
+    "pytest-asyncio==1.4.0",
+    "pytest-cov==7.1.0",
+    "ruff==0.16.9",
+    "mypy==2.3.1",
+    "fakeredis==2.38.0",
+    "aiosqlite==0.22.1",
+    "types-pyyaml==6.0.12.20260906",
+    "types-jsonschema==4.26.0.20260518",
+    "pip-audit==2.10.1",
+    "lupa==2.8",
+    "asgi-lifespan==2.1.0",
+]
+bench = [
+    "locust==2.46.6",
+    "matplotlib==3.11.2",
+]
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.hatch.build.targets.wheel]
+packages = ["backend/app", "router_training", "benchmarks"]
+
+[tool.uv]
+default-groups = ["dev", "bench"]
+
+[tool.ruff]
+line-length = 100
+target-version = "py312"
+extend-exclude = ["backend/migrations/versions"]
+
+[tool.ruff.lint]
+select = ["E", "F", "W", "I", "B", "UP", "SIM", "ASYNC", "S", "RUF", "N", "C4", "PT"]
+ignore = [
+    "S101",   # assert is fine in tests and invariants
+    "S311",   # random is used for jitter/sampling, not crypto
+    "B008",   # FastAPI Depends() in defaults
+    "RUF012",
+]
+
+[tool.ruff.lint.per-file-ignores]
+"backend/tests/**" = ["S", "B", "PT011", "PT018", "E501", "C408", "N806", "E741"]
+# ML code keeps the conventional X / X_tr names; prompt strings and tables are long.
+"benchmarks/**" = ["S603", "S607", "N803", "N806", "E501"]
+"router_training/**" = ["S603", "S607", "N803", "N806", "E501"]
+
+[tool.ruff.lint.isort]
+known-first-party = ["app", "router_training", "benchmarks"]
+
+[tool.mypy]
+python_version = "3.12"
+strict = true
+warn_unreachable = true
+mypy_path = "backend"
+explicit_package_bases = true
+plugins = ["pydantic.mypy"]
+exclude = ["backend/migrations/", "backend/tests/"]
+
+[[tool.mypy.overrides]]
+module = ["threadpoolctl.*", "litellm.*", "sklearn.*", "joblib.*", "pandas.*", "langfuse.*", "locust.*", "matplotlib.*", "fakeredis.*"]
+ignore_missing_imports = true
+
+[tool.pytest.ini_options]
+testpaths = ["backend/tests"]
+pythonpath = ["backend", "."]
+asyncio_mode = "auto"
+asyncio_default_fixture_loop_scope = "function"
+markers = [
+    "integration: requires running PostgreSQL and Redis (docker compose up postgres redis)",
+    "live: makes real (possibly paid) model API calls; opt-in only",
+]
+addopts = "-m 'not integration and not live'"
+filterwarnings = ["ignore::DeprecationWarning:litellm.*"]
+
+[tool.coverage.run]
+source = ["backend/app"]
+omit = ["backend/app/main.py"]

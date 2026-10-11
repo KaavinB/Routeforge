@@ -1,0 +1,32 @@
+{
+  "dataset": "routeforge-bench-v1",
+  "version": "1.0.0",
+  "checked": 720,
+  "by_scorer": {
+    "label": {
+      "checked": 120,
+      "oracle_failures": 0
+    },
+    "code_tests": {
+      "checked": 120,
+      "oracle_failures": 0
+    },
+    "span_f1": {
+      "checked": 120,
+      "oracle_failures": 0
+    },
+    "alias_match": {
+      "checked": 120,
+      "oracle_failures": 0
+    },
+    "json_fields": {
+      "checked": 120,
+      "oracle_failures": 0
+    },
+    "numeric": {
+      "checked": 120,
+      "oracle_failures": 0
+    }
+  },
+  "failures": []
+}

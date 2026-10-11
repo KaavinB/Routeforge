@@ -1,0 +1,7 @@
+apiVersion: 1
+providers:
+  - name: routeforge
+    folder: RouteForge
+    type: file
+    options:
+      path: /var/lib/grafana/dashboards

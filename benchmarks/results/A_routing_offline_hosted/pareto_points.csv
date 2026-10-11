@@ -1,0 +1,21 @@
+label,kind,threshold,acceptable_rate,cost_per_request_usd,latency_p50_ms,quality_violation_rate,dominated_by,dominated,reference_only
+learned τ=0.3,learned_sweep,0.3,0.7763975155279503,4.213105590062112e-05,746.6,0.2236024844720497,"[""gpt-4.1-nano (economy)""]",True,
+learned τ=0.4,learned_sweep,0.4,0.7888198757763976,4.3808074534161495e-05,840.0,0.2111801242236025,[],False,
+learned τ=0.5,learned_sweep,0.5,0.8198757763975155,6.952608695652175e-05,853.0,0.18012422360248448,"[""claude-haiku-5-5""]",True,
+learned τ=0.6,learned_sweep,0.6,0.8260869565217391,7.107080745341615e-05,853.9,0.14084507042253522,"[""claude-haiku-5-5""]",True,
+learned τ=0.7,learned_sweep,0.7,0.8260869565217391,7.185155279503105e-05,861.3,0.12318840579710146,"[""learned \u03c4=0.6"", ""claude-haiku-5-5""]",True,
+learned τ=0.75,learned_sweep,0.75,0.8385093167701864,7.270496894409938e-05,872.1,0.10869565217391304,"[""claude-haiku-5-5""]",True,
+learned τ=0.8,learned_sweep,0.8,0.8695652173913043,9.457204968944099e-05,912.6999999999999,0.06569343065693431,[],False,
+learned τ=0.85,learned_sweep,0.85,0.8695652173913043,0.0001666751552795031,1013.0999999999999,0.06611570247933884,"[""learned \u03c4=0.8""]",True,
+learned τ=0.9,learned_sweep,0.9,0.8571428571428571,0.00022103540372670806,1013.0999999999999,0.052083333333333336,"[""learned \u03c4=0.8"", ""learned \u03c4=0.85"", ""claude-haiku-5-5""]",True,
+learned τ=0.925,learned_sweep,0.925,0.8757763975155279,0.0003583465838509317,1047.3,0.021505376344086023,[],False,
+learned τ=0.95,learned_sweep,0.95,0.8695652173913043,0.0007038590062111802,1120.1000000000001,0.018518518518518517,"[""learned \u03c4=0.8"", ""learned \u03c4=0.85"", ""learned \u03c4=0.925""]",True,
+learned τ=0.97,learned_sweep,0.97,0.8695652173913043,0.0011305987577639753,1121.5,0.0,"[""learned \u03c4=0.8"", ""learned \u03c4=0.85"", ""learned \u03c4=0.925"", ""learned \u03c4=0.95""]",True,
+learned τ=0.99,learned_sweep,0.99,0.8695652173913043,0.0011305987577639753,1121.5,,"[""learned \u03c4=0.8"", ""learned \u03c4=0.85"", ""learned \u03c4=0.925"", ""learned \u03c4=0.95""]",True,
+gpt-4.1-nano (economy),fixed,,0.7763975155279503,4.110496894409938e-05,736.3,,[],False,False
+claude-haiku-5-5,fixed,,0.8571428571428571,6.281739130434783e-05,970.4000000000001,,[],False,False
+gpt-4.1-mini,fixed,,0.8198757763975155,0.00015492919254658384,724.3000000000001,,"[""learned \u03c4=0.5"", ""learned \u03c4=0.6"", ""learned \u03c4=0.7"", ""learned \u03c4=0.75"", ""learned \u03c4=0.8"", ""claude-haiku-5-5""]",True,False
+claude-sonnet-5-5 (premium),fixed,,0.8944099378881988,0.0012818757763975155,1156.8,,[],False,False
+random,random,,0.8260869565217391,0.00038843540372670806,1002.4,,"[""learned \u03c4=0.6"", ""learned \u03c4=0.7"", ""learned \u03c4=0.75"", ""learned \u03c4=0.8"", ""learned \u03c4=0.85"", ""learned \u03c4=0.9"", ""learned \u03c4=0.925"", ""claude-haiku-5-5""]",True,False
+heuristic,heuristic,,0.8260869565217391,0.0004860739130434783,978.9,,"[""learned \u03c4=0.6"", ""learned \u03c4=0.7"", ""learned \u03c4=0.75"", ""learned \u03c4=0.8"", ""learned \u03c4=0.85"", ""learned \u03c4=0.9"", ""learned \u03c4=0.925"", ""claude-haiku-5-5"", ""random""]",True,False
+oracle (upper bound),oracle,,0.9254658385093167,5.5883850931677016e-05,791.6,,[],False,True

@@ -1,0 +1,9 @@
+{
+  "method": "character 5-gram Jaccard between user turns, val/test vs. train within category",
+  "threshold": 0.8,
+  "dropped": [],
+  "max_similarity_by_split": {
+    "val": 0.64,
+    "test": 0.3834
+  }
+}

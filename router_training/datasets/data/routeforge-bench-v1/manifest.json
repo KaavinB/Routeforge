@@ -1,0 +1,80 @@
+{
+  "name": "routeforge-bench-v1",
+  "version": "1.0.0",
+  "created_at": "2026-10-11T22:06:38.862681+00:00",
+  "sha256": "e4536aa2c9aec12a155e45ce9e9d5532ea8f2b7a805cdccf2a4029e2aeccd910",
+  "n_cases": 840,
+  "splits": {
+    "train": 521,
+    "val": 158,
+    "test": 161
+  },
+  "categories": {
+    "classification": 120,
+    "code": 120,
+    "extraction": 120,
+    "factual_qa": 120,
+    "json": 120,
+    "reasoning": 120,
+    "summarization": 120
+  },
+  "sources": [
+    {
+      "key": "gsm8k",
+      "dataset": "openai/gsm8k",
+      "config": "main",
+      "split": "test",
+      "license": "MIT"
+    },
+    {
+      "key": "nq_open",
+      "dataset": "google-research-datasets/nq_open",
+      "config": "nq_open",
+      "split": "validation",
+      "license": "CC BY-SA 3.0"
+    },
+    {
+      "key": "squad",
+      "dataset": "rajpurkar/squad",
+      "config": "plain_text",
+      "split": "validation",
+      "license": "CC BY-SA 4.0"
+    },
+    {
+      "key": "ag_news",
+      "dataset": "fancyzhx/ag_news",
+      "config": "default",
+      "split": "test",
+      "license": "unspecified (research use)"
+    },
+    {
+      "key": "cnn_dm",
+      "dataset": "abisee/cnn_dailymail",
+      "config": "3.0.0",
+      "split": "test",
+      "license": "Apache-2.0"
+    },
+    {
+      "key": "mbpp",
+      "dataset": "google-research-datasets/mbpp",
+      "config": "sanitized",
+      "split": "test",
+      "license": "CC BY 4.0"
+    },
+    {
+      "key": "humaneval",
+      "dataset": "openai/openai_humaneval",
+      "config": "openai_humaneval",
+      "split": "test",
+      "license": "MIT"
+    },
+    {
+      "key": "json_templates",
+      "dataset": "router_training/datasets/json_templates.py",
+      "license": "MIT",
+      "split": "generated"
+    }
+  ],
+  "split_method": "group-wise 60/20/20 within category; near-duplicate filter (5-gram Jaccard >= 0.8)",
+  "notes": "seed=20261011. Public-benchmark answer keys are the datasets' own labels; they were not re-verified by a human for this project. JSON cases are synthetic and correct by construction (answers are generated alongside the text). No case was hand-labelled."
+}
