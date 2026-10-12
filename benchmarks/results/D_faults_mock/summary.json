@@ -3,7 +3,7 @@
     "benchmark": "D_faults",
     "experiment_id": "D_faults-20261012T010655Z-09de91",
     "timestamp": "2026-10-12T01:06:55.818780+00:00",
-    "git_sha": "49892eb03275706ee7bbc2471b961aa5ebbdb39a",
+    "git_sha": "d844ae2aec55dda3ad35c63c53654ebf6a3abd6f",
     "git_dirty": true,
     "hardware": {
       "platform": "macOS-26.5.2-arm64-arm-64bit",

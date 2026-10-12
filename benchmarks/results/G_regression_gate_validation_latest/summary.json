@@ -3,7 +3,7 @@
     "benchmark": "G_regression_gate_validation",
     "experiment_id": "G_regression_gate_validation-20261012T004854Z-872529",
     "timestamp": "2026-10-12T00:48:54.458284+00:00",
-    "git_sha": "d7a8030c527a0ccd6d48ac0a5c4c78018dbedca6",
+    "git_sha": "1ec60636784ec60f30249b64b7fb0aab34a664d4",
     "git_dirty": true,
     "hardware": {
       "platform": "macOS-26.5.2-arm64-arm-64bit",

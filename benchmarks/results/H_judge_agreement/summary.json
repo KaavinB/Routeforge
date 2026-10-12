@@ -3,7 +3,7 @@
     "benchmark": "H_judge_agreement",
     "experiment_id": "H_judge_agreement-20261012T000957Z-1f0cf8",
     "timestamp": "2026-10-12T00:09:57.804296+00:00",
-    "git_sha": "d7a8030c527a0ccd6d48ac0a5c4c78018dbedca6",
+    "git_sha": "1ec60636784ec60f30249b64b7fb0aab34a664d4",
     "git_dirty": true,
     "hardware": {
       "platform": "macOS-26.5.2-arm64-arm-64bit",

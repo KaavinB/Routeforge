@@ -3,7 +3,7 @@
     "benchmark": "A_routing_live",
     "experiment_id": "A_routing_live-20261011T235605Z-fce9b0",
     "timestamp": "2026-10-11T23:56:05.735789+00:00",
-    "git_sha": "dc4fcb2bc59f26e9ee9d37dca080989e51bf4828",
+    "git_sha": "f20541eb72b3995a2cfb9956c0b3524a0e3c894d",
     "git_dirty": true,
     "hardware": {
       "platform": "macOS-26.5.2-arm64-arm-64bit",
