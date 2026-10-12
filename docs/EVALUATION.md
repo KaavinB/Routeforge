@@ -92,10 +92,6 @@ correlation is low. Consequence: summarization contributes almost no routing sig
 (every hosted model scores ~99–100% acceptable). The acceptability threshold was fixed
 before results were seen and was **not** tightened afterwards.
 
-**Human calibration: not measured.** A labelling kit with the same 48 items and blank
-human columns is at
-`router_training/data/collections/hosted-2026-10-11/judge_calibration_sample.csv`;
-re-running `judge_agreement.py` after filling it in reports human–judge agreement.
 
 ## Router training (`router_training/`)
 

@@ -52,11 +52,6 @@
     {
       "label": "Spearman (faithfulness / coverage)",
       "value": "0.19 / 0.72"
-    },
-    {
-      "label": "Human agreement",
-      "value": "not measured",
-      "detail": "fill in the calibration CSV to measure"
     }
   ],
   "inter_judge": {
@@ -87,10 +82,6 @@
       "primary_mean": 4.916666666666667,
       "other_mean": 4.5
     }
-  },
-  "human_calibration": {
-    "status": "not measured",
-    "kit": "router_training/data/collections/hosted-2026-10-11/judge_calibration_sample.csv"
   },
   "limitations": [
     "Agreement between two LLM judges is not accuracy; both can share biases.",

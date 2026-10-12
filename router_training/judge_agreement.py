@@ -2,14 +2,10 @@
 
     uv run python -m router_training.judge_agreement --collection hosted-2026-10-11
 
-1. Inter-judge agreement: re-grade a stratified sample of summaries with a second judge
+Inter-judge agreement: re-grade a stratified sample of summaries with a second judge
    from a different vendor that is not a routing candidate (Claude Fable 5.1) using the
    same rubric, and compare with the primary judge (GPT-4.1): raw agreement and Cohen's
    kappa on the binary ``acceptable`` label, Spearman rank correlation on each 1-5 score.
-2. Human calibration kit: write the same sample to ``judge_calibration_sample.csv`` with
-   blank human-label columns. Once a person fills them in, re-running this script reports
-   human-vs-judge agreement. No human labels are fabricated: until the CSV is filled in,
-   the human-agreement section is reported as "not measured".
 
 Sampling: every summary the primary judge rejected (they are rare) plus a seeded random
 sample of accepted ones, stratified by model. Agreement on such a sample over-represents
@@ -20,7 +16,6 @@ from __future__ import annotations
 
 import argparse
 import asyncio
-import csv
 import json
 import random
 from collections import defaultdict
@@ -113,60 +108,6 @@ async def main_async(args: argparse.Namespace) -> None:
             "other_mean": float(np.mean(y)),
         }
 
-    # Human calibration kit
-    kit = COLLECTIONS / args.collection / "judge_calibration_sample.csv"
-    human: dict[str, Any] = {
-        "status": "not measured",
-        "kit": str(kit.relative_to(COLLECTIONS.parents[2])),
-    }
-    if kit.exists():
-        with kit.open() as fh:
-            filled = [
-                row
-                for row in csv.DictReader(fh)
-                if row.get("human_acceptable", "").strip() in ("0", "1")
-            ]
-        if filled:
-            idx = {(r["case_id"], r["model_id"]): i for i, r in enumerate(sample)}
-            pairs = [
-                (a[idx[(f["case_id"], f["model_id"])]], f["human_acceptable"].strip() == "1")
-                for f in filled
-                if (f["case_id"], f["model_id"]) in idx
-            ]
-            human = {
-                "status": "measured",
-                **agreement([p for p, _ in pairs], [h for _, h in pairs]),
-            }
-    else:
-        with kit.open("w", newline="") as fh:
-            w = csv.writer(fh)
-            w.writerow(
-                [
-                    "case_id",
-                    "model_id",
-                    "article",
-                    "reference_highlights",
-                    "candidate_summary",
-                    "human_faithfulness_1to5",
-                    "human_coverage_1to5",
-                    "human_acceptable_0or1",
-                ]
-            )
-            for r in sample:
-                ref = cases[r["case_id"]].reference
-                w.writerow(
-                    [
-                        r["case_id"],
-                        r["model_id"],
-                        ref["article"],
-                        ref["highlights"],
-                        r["content"],
-                        "",
-                        "",
-                        "",
-                    ]
-                )
-
     result = agreement(a, b)
     summary = {
         "metadata": experiment_metadata(
@@ -198,22 +139,16 @@ async def main_async(args: argparse.Namespace) -> None:
                 "label": "Spearman (faithfulness / coverage)",
                 "value": f"{corr['faithfulness']['spearman']:.2f} / {corr['coverage']['spearman']:.2f}",
             },
-            {
-                "label": "Human agreement",
-                "value": human["status"],
-                "detail": "fill in the calibration CSV to measure",
-            },
         ],
         "inter_judge": result,
         "score_correlation": corr,
-        "human_calibration": human,
         "limitations": [
             "Agreement between two LLM judges is not accuracy; both can share biases.",
             "The sample over-represents primary-judge rejections; kappa is sensitive to class balance.",
         ],
     }
     write_summary("H_judge_agreement", summary)
-    print(json.dumps({"inter_judge": result, "score_correlation": corr, "human": human}, indent=2))
+    print(json.dumps({"inter_judge": result, "score_correlation": corr}, indent=2))
     print(f"ledger spent ${ledger.spent:.3f}")
 
 

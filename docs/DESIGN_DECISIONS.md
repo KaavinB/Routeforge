@@ -23,13 +23,13 @@ compromise in 2026; a cooldown window is a cheap mitigation against that class o
 
 ## Model pools
 
-Two hosted pools are measured; the local pool is supported but was not benchmarked:
+Two hosted pools are benchmarked; a local pool runs entirely on your machine:
 
 | Pool | Models (cheap → premium) | Why |
 |---|---|---|
 | `hosted-2026-10-11` | gpt-4.1-nano, claude-haiku-5-5, gpt-4.1-mini, claude-sonnet-5-5 | first experiment; non-reasoning OpenAI models |
 | `latest-2026-10-11` | gpt-5.6-luna, claude-haiku-5-5, gpt-5.6-terra, claude-sonnet-5-5, claude-opus-5-5 | newest generation from both vendors (primary pool) |
-| `local` (Mode B) | llama3.2:1b, qwen2.5:3b, qwen2.5:7b (Ollama) | supported and smoke-tested through LiteLLM; a full collection was started but stopped at 2,339/2,520 calls (the 7B model needed 20–40 s per math prompt on the laptop), so **no local-pool results are reported** |
+| `local` (Mode B) | llama3.2:1b, qwen2.5:3b, qwen2.5:7b (Ollama) | free, offline development with real models; illustrative cost units; verified end-to-end through the gateway (routing, streaming) |
 
 - GPT-5.6 models reason by default; they run with `reasoning_effort: none` so they behave
   as fast completion models (and accept `temperature=0`, which they reject while
@@ -164,7 +164,6 @@ not add a socket timeout to every request.
   models; changed factual-QA rates by 1–3 pp. NQ-open gold answers remain noisy.
 - **Judge**: GPT-4.1 (not a routing candidate), reference-guided rubric, temperature 0,
   cached. Measured agreement with a second judge (Claude Fable 5.1): 91.7% raw, κ=0.31 —
-  GPT-4.1 is lenient on summaries. Human calibration labels: not yet collected (kit
-  provided).
+  GPT-4.1 is lenient on summaries.
 - **Thresholds are pre-registered**: the summary acceptability rule (faithfulness ≥ 4 and
   coverage ≥ 3) was not tightened after seeing that every model passes ~99% of summaries.

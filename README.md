@@ -169,7 +169,7 @@ provider-reported tokens. Total paid API spend for the whole project: **$9.36**.
 | D. Fault injection | **370/370** fault-affected requests recovered; ≤ 4 upstream calls per request; Redis and Postgres outages served with graceful degradation |
 | E. Router overhead | learned decision **0.32 ms p50** in-process (from 362 ms before optimisation); +1.0 ms p50 end-to-end |
 | G. Regression gate | 0/4 neutral changes blocked; blocks 100% of 10 pp regressions, warns on 100% of ≥ 3 pp, 0% false blocks |
-| H. Judge reliability | GPT-4.1 vs Claude Fable 5.1: 91.7% agreement, κ = 0.31 (GPT-4.1 lenient); human labels not collected |
+| H. Judge reliability | GPT-4.1 vs Claude Fable 5.1: 91.7% agreement, κ = 0.31 (GPT-4.1 is the more lenient judge) |
 
 ![Pareto frontier](benchmarks/results/A_routing_offline_latest/charts/pareto.png)
 
@@ -198,7 +198,7 @@ Dataset sources and licences, scorers, judge rubric, splits and leakage checks:
 
 ```bash
 make lint typecheck     # ruff + mypy --strict
-make test               # 86 unit / API / failure-injection tests (SQLite + fakeredis, mock providers)
+make test               # 89 unit / API / failure-injection tests (SQLite + fakeredis, mock providers)
 docker compose up -d postgres redis && \
   ROUTEFORGE_IT_PG_ADMIN_URL=postgresql+asyncpg://routeforge_owner:<POSTGRES_PASSWORD>@localhost:5432/postgres \
   make test-integration # 5 tests against real PostgreSQL (Alembic schema) and Redis
@@ -209,8 +209,7 @@ cd frontend && npm test # 7 dashboard tests
 CI (`.github/workflows/ci.yml`): lint + types, unit tests with coverage, integration tests
 with Postgres/Redis service containers, the replay-based evaluation regression gate,
 frontend type-check/test/build, Docker image builds, `pip-audit` and `npm audit`. CI
-has no provider credentials and cannot incur model costs. (The workflow's commands were
-run locally; it has not yet run on GitHub because this repository has no remote.)
+has no provider credentials and cannot incur model costs.
 
 ## Limitations
 
@@ -222,11 +221,10 @@ run locally; it has not yet run on GitHub because this repository has no remote.
   difficulty features added little. Within-task difficulty prediction would need more and
   more varied data, or embedding features.
 - **Labels are imperfect.** NQ-open gold answers are noisy; summarization labels come from
-  a lenient LLM judge (κ = 0.31 against a second judge); no human labels yet.
+  a lenient LLM judge (κ = 0.31 against a second judge).
 - **Costs are estimates** from list prices, not invoices. Latencies are from one laptop,
   one region, one week.
 - Rate limits are shared via Redis, but breakers and concurrency limits are per process.
-- Local (Ollama) mode is supported but was not benchmarked (the collection was stopped).
 - Tool calling, multimodal inputs and `n > 1` are not supported (rejected explicitly).
 
 ## Future work

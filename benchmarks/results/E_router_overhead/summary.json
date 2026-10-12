@@ -3,7 +3,7 @@
     "benchmark": "E_router_overhead",
     "experiment_id": "E_router_overhead-20261012T010053Z-319fd6",
     "timestamp": "2026-10-12T01:00:53.237777+00:00",
-    "git_sha": "d844ae2aec55dda3ad35c63c53654ebf6a3abd6f",
+    "git_sha": "09434629c5e576e803e9395718bb3fa9d2ea15d6",
     "git_dirty": true,
     "hardware": {
       "platform": "macOS-26.5.2-arm64-arm-64bit",

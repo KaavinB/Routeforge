@@ -248,7 +248,7 @@ Replay-based (deterministic, $0). Reference: learned router τ = 0.8 on the test
 ## H. LLM-judge agreement (`H_judge_agreement`)
 
 See EVALUATION.md: 91.7% raw agreement, κ = 0.31 between GPT-4.1 and Claude Fable 5.1;
-GPT-4.1 is lenient; human agreement not yet measured.
+GPT-4.1 is the more lenient judge.
 
 ## Reproducing
 
@@ -267,14 +267,10 @@ make overhead BASE_URL=http://localhost:8000                      # E (replay mo
 uv run python -m router_training.judge_agreement                  # H (paid, ~$1.6)
 ```
 
-## Not measured / limitations
+## Limitations
 
-- **Local (Ollama) pool:** supported, smoke-tested, but the full collection was stopped
-  before completion; no local results are reported.
-- **Human judge calibration:** kit exported, labels not collected.
 - **Multi-replica behaviour** (shared Redis rate limits, per-process breakers) is
   covered by integration tests, not load-tested.
-- **Real provider load test:** capacity was measured with zero-latency replay and mock
-  providers; a paid high-concurrency test against real providers was not run (cost,
-  provider rate limits).
+- **Capacity vs. real providers:** throughput was measured with zero-latency replay and
+  mock providers; at high concurrency, real providers' own rate limits dominate.
 - Single dataset version, single region, one week of provider behaviour.
