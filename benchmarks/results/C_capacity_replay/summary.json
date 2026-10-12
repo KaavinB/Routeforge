@@ -1,0 +1,315 @@
+{
+  "metadata": {
+    "benchmark": "C_capacity",
+    "experiment_id": "C_capacity-20261012T010019Z-541591",
+    "timestamp": "2026-10-12T01:00:19.492848+00:00",
+    "git_sha": "49892eb03275706ee7bbc2471b961aa5ebbdb39a",
+    "git_dirty": true,
+    "hardware": {
+      "platform": "macOS-26.5.2-arm64-arm-64bit",
+      "machine": "arm64",
+      "python": "3.12.15",
+      "cpu": "Apple M4",
+      "memory_gb": 16.0,
+      "cpu_count": 10,
+      "load_average_1m_5m_15m": [
+        4.15,
+        7.14,
+        13.86
+      ]
+    },
+    "software": {
+      "fastapi": "0.141.1",
+      "litellm": "1.102.1",
+      "scikit-learn": "1.9.1",
+      "numpy": "2.5.3",
+      "redis": "8.1.0",
+      "sqlalchemy": "2.1.1",
+      "uvicorn": "0.54.0",
+      "locust": "2.46.6"
+    },
+    "mode": "5 enabled (replay)",
+    "base_url": "http://localhost:8000",
+    "load_generator": "hey 0.1.5 (Go), closed loop",
+    "requests_per_level": 4000,
+    "prompt_case": "nq-1196",
+    "router_artifact": "router-latest-2026-10-11",
+    "cache": "bypassed",
+    "deployment": "docker compose backend: 1 uvicorn worker (uvloop), cpus=2.0, memory=1g; request logging on"
+  },
+  "status": "complete",
+  "headline": [
+    {
+      "label": "Peak throughput (routeforge-learned)",
+      "value": "853 req/s",
+      "detail": "at 25 clients, p95 35.2 ms"
+    },
+    {
+      "label": "Peak throughput (claude-haiku-5-5, no routing)",
+      "value": "1334 req/s"
+    },
+    {
+      "label": "Single-client gateway latency (p50)",
+      "value": "1.50 ms learned / 1.00 ms pinned",
+      "detail": "zero provider latency: pure gateway overhead"
+    },
+    {
+      "label": "Errors across all levels",
+      "value": "0"
+    }
+  ],
+  "levels": [
+    {
+      "users": 1,
+      "target": "routeforge-learned",
+      "success_rps": 615.0678,
+      "p50_ms": 1.5,
+      "p95_ms": 2.2,
+      "p99_ms": 3.3,
+      "error_rate": 0.0,
+      "requests": 4000
+    },
+    {
+      "users": 10,
+      "target": "routeforge-learned",
+      "success_rps": 780.1061,
+      "p50_ms": 12.200000000000001,
+      "p95_ms": 18.4,
+      "p99_ms": 24.9,
+      "error_rate": 0.0,
+      "requests": 4000
+    },
+    {
+      "users": 25,
+      "target": "routeforge-learned",
+      "success_rps": 853.4758,
+      "p50_ms": 28.7,
+      "p95_ms": 35.2,
+      "p99_ms": 42.4,
+      "error_rate": 0.0,
+      "requests": 4000
+    },
+    {
+      "users": 50,
+      "target": "routeforge-learned",
+      "success_rps": 786.4829,
+      "p50_ms": 61.199999999999996,
+      "p95_ms": 72.5,
+      "p99_ms": 178.0,
+      "error_rate": 0.0,
+      "requests": 4000
+    },
+    {
+      "users": 100,
+      "target": "routeforge-learned",
+      "success_rps": 718.2958,
+      "p50_ms": 135.8,
+      "p95_ms": 147.10000000000002,
+      "p99_ms": 279.5,
+      "error_rate": 0.0,
+      "requests": 4000
+    }
+  ],
+  "all_levels": [
+    {
+      "target": "claude-haiku-5-5",
+      "concurrency": 1,
+      "rps": 965.1473,
+      "p50_ms": 1.0,
+      "p95_ms": 1.3,
+      "p99_ms": 2.3,
+      "requests": 4000,
+      "error_rate": 0.0,
+      "status_codes": {
+        "200": 4000
+      }
+    },
+    {
+      "target": "claude-haiku-5-5",
+      "concurrency": 10,
+      "rps": 1236.0503,
+      "p50_ms": 7.6,
+      "p95_ms": 11.299999999999999,
+      "p99_ms": 14.7,
+      "requests": 4000,
+      "error_rate": 0.0,
+      "status_codes": {
+        "200": 4000
+      }
+    },
+    {
+      "target": "claude-haiku-5-5",
+      "concurrency": 25,
+      "rps": 1333.6065,
+      "p50_ms": 18.3,
+      "p95_ms": 24.2,
+      "p99_ms": 36.8,
+      "requests": 4000,
+      "error_rate": 0.0,
+      "status_codes": {
+        "200": 4000
+      }
+    },
+    {
+      "target": "claude-haiku-5-5",
+      "concurrency": 50,
+      "rps": 1234.7262,
+      "p50_ms": 39.800000000000004,
+      "p95_ms": 49.3,
+      "p99_ms": 55.5,
+      "requests": 4000,
+      "error_rate": 0.0,
+      "status_codes": {
+        "200": 4000
+      }
+    },
+    {
+      "target": "claude-haiku-5-5",
+      "concurrency": 100,
+      "rps": 1193.1801,
+      "p50_ms": 80.19999999999999,
+      "p95_ms": 99.8,
+      "p99_ms": 178.29999999999998,
+      "requests": 4000,
+      "error_rate": 0.0,
+      "status_codes": {
+        "200": 4000
+      }
+    },
+    {
+      "target": "routeforge-heuristic",
+      "concurrency": 1,
+      "rps": 659.1362,
+      "p50_ms": 1.4,
+      "p95_ms": 1.9,
+      "p99_ms": 3.1,
+      "requests": 4000,
+      "error_rate": 0.0,
+      "status_codes": {
+        "200": 4000
+      }
+    },
+    {
+      "target": "routeforge-heuristic",
+      "concurrency": 10,
+      "rps": 819.6521,
+      "p50_ms": 11.5,
+      "p95_ms": 16.6,
+      "p99_ms": 30.099999999999998,
+      "requests": 4000,
+      "error_rate": 0.0,
+      "status_codes": {
+        "200": 4000
+      }
+    },
+    {
+      "target": "routeforge-heuristic",
+      "concurrency": 25,
+      "rps": 905.4006,
+      "p50_ms": 27.099999999999998,
+      "p95_ms": 32.7,
+      "p99_ms": 43.6,
+      "requests": 4000,
+      "error_rate": 0.0,
+      "status_codes": {
+        "200": 4000
+      }
+    },
+    {
+      "target": "routeforge-heuristic",
+      "concurrency": 50,
+      "rps": 811.4524,
+      "p50_ms": 60.5,
+      "p95_ms": 70.8,
+      "p99_ms": 93.10000000000001,
+      "requests": 4000,
+      "error_rate": 0.0,
+      "status_codes": {
+        "200": 4000
+      }
+    },
+    {
+      "target": "routeforge-heuristic",
+      "concurrency": 100,
+      "rps": 782.0234,
+      "p50_ms": 124.2,
+      "p95_ms": 142.7,
+      "p99_ms": 257.79999999999995,
+      "requests": 4000,
+      "error_rate": 0.0,
+      "status_codes": {
+        "200": 4000
+      }
+    },
+    {
+      "target": "routeforge-learned",
+      "concurrency": 1,
+      "rps": 615.0678,
+      "p50_ms": 1.5,
+      "p95_ms": 2.2,
+      "p99_ms": 3.3,
+      "requests": 4000,
+      "error_rate": 0.0,
+      "status_codes": {
+        "200": 4000
+      }
+    },
+    {
+      "target": "routeforge-learned",
+      "concurrency": 10,
+      "rps": 780.1061,
+      "p50_ms": 12.200000000000001,
+      "p95_ms": 18.4,
+      "p99_ms": 24.9,
+      "requests": 4000,
+      "error_rate": 0.0,
+      "status_codes": {
+        "200": 4000
+      }
+    },
+    {
+      "target": "routeforge-learned",
+      "concurrency": 25,
+      "rps": 853.4758,
+      "p50_ms": 28.7,
+      "p95_ms": 35.2,
+      "p99_ms": 42.4,
+      "requests": 4000,
+      "error_rate": 0.0,
+      "status_codes": {
+        "200": 4000
+      }
+    },
+    {
+      "target": "routeforge-learned",
+      "concurrency": 50,
+      "rps": 786.4829,
+      "p50_ms": 61.199999999999996,
+      "p95_ms": 72.5,
+      "p99_ms": 178.0,
+      "requests": 4000,
+      "error_rate": 0.0,
+      "status_codes": {
+        "200": 4000
+      }
+    },
+    {
+      "target": "routeforge-learned",
+      "concurrency": 100,
+      "rps": 718.2958,
+      "p50_ms": 135.8,
+      "p95_ms": 147.10000000000002,
+      "p99_ms": 279.5,
+      "requests": 4000,
+      "error_rate": 0.0,
+      "status_codes": {
+        "200": 4000
+      }
+    }
+  ],
+  "limitations": [
+    "Single replica, single worker, on a laptop (Apple M4) that also runs the load generator.",
+    "Replay mode: provider latency is zero, so this is the gateway's own capacity, not end-to-end throughput.",
+    "One prompt repeated (cache bypassed); routing cost varies little with prompt length for typical prompts."
+  ]
+}

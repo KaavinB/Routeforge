@@ -129,13 +129,20 @@ routed conservatively (to stronger models).
 
 Per-model quality classifiers, latest pool (`router-latest-2026-10-11/metadata.json`):
 
-| Model | Selected features | Test AUC | Test Brier | Val ECE (margin) |
-|---|---|---|---|---|
-| gpt-5.6-luna | no_task | 0.821 | 0.090 | see metadata |
-| claude-haiku-5-5 | no_task | 0.831 | 0.093 | see metadata |
-| gpt-5.6-terra | full | 0.846 | 0.078 | see metadata |
-| claude-sonnet-5-5 | no_task | 0.821 | 0.077 | see metadata |
-| claude-opus-5-5 | task_only | 0.895 | 0.056 | see metadata |
+| Model | Selected features | Estimator | Test AUC | Test Brier | Test ECE | Safety margin (val ECE) | Train base rate |
+|---|---|---|---|---|---|---|---|
+| gpt-5.6-luna | no_task | logreg C=0.05 | 0.821 | 0.090 | 0.038 | 0.033 | 0.88 |
+| claude-haiku-5-5 | no_task | logreg C=0.05 | 0.831 | 0.093 | 0.023 | 0.033 | 0.86 |
+| gpt-5.6-terra | full | logreg C=0.05 | 0.846 | 0.078 | 0.032 | 0.021 | 0.90 |
+| claude-sonnet-5-5 | no_task | logreg C=0.05 | 0.821 | 0.077 | 0.019 | 0.025 | 0.90 |
+| claude-opus-5-5 | task_only | logreg C=0.5 | 0.895 | 0.056 | 0.012 | 0.022 | 0.93 |
+
+The classifiers are well calibrated (test ECE ≤ 0.04) but only moderately
+discriminative (AUC 0.82–0.90) with high base rates, so most of the routing decision
+rests on calibration plus per-task differences between models. In routing replays the
+**quality-violation rate** — the share of requests where the router claimed the selected
+model cleared τ = 0.8 after margins but the answer was unacceptable — was 6.6% (latest
+pool), well under the 20% that τ = 0.8 permits: the margins make the router conservative.
 
 **What the ablations show.** On this benchmark most of the predictable signal is *which
 task it is*; per-prompt lexical difficulty features add little and sometimes overfit

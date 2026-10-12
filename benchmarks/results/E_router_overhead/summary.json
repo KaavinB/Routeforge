@@ -1,0 +1,140 @@
+{
+  "metadata": {
+    "benchmark": "E_router_overhead",
+    "experiment_id": "E_router_overhead-20261012T010053Z-319fd6",
+    "timestamp": "2026-10-12T01:00:53.237777+00:00",
+    "git_sha": "49892eb03275706ee7bbc2471b961aa5ebbdb39a",
+    "git_dirty": true,
+    "hardware": {
+      "platform": "macOS-26.5.2-arm64-arm-64bit",
+      "machine": "arm64",
+      "python": "3.12.15",
+      "cpu": "Apple M4",
+      "memory_gb": 16.0,
+      "cpu_count": 10,
+      "load_average_1m_5m_15m": [
+        3.8,
+        6.72,
+        13.43
+      ]
+    },
+    "software": {
+      "fastapi": "0.141.1",
+      "litellm": "1.102.1",
+      "scikit-learn": "1.9.1",
+      "numpy": "2.5.3",
+      "redis": "8.1.0",
+      "sqlalchemy": "2.1.1",
+      "uvicorn": "0.54.0",
+      "locust": "2.46.6"
+    },
+    "mode": "in-process + replay",
+    "registry_version": "latest-2026-10-11",
+    "router_artifact": "router-latest-2026-10-11",
+    "n_prompts": 161,
+    "repeats": 5,
+    "threads": "BLAS/OpenMP limited to 1",
+    "optimisation_history": [
+      "v0: CalibratedClassifierCV 5-fold ensembles + HistGradientBoosting with default OpenMP threads + char n-gram TF-IDF: 362 ms per learned decision (measured under load during development)",
+      "v1: OMP_NUM_THREADS=1: 51 ms",
+      "v2: ensemble=False calibration, word-only TF-IDF, NumPy fast path for calibrated logistic models, linear-model tie-break: see results"
+    ]
+  },
+  "status": "complete",
+  "headline": [
+    {
+      "label": "Learned routing decision (p50)",
+      "value": "0.32 ms",
+      "detail": "p95 0.88 ms, in-process"
+    },
+    {
+      "label": "Heuristic decision (p50)",
+      "value": "0.30 ms"
+    },
+    {
+      "label": "Fast-path compiled models",
+      "value": "20",
+      "detail": "calibrated logistic models served by the NumPy fast path"
+    },
+    {
+      "label": "Client-observed added p50 (learned vs pinned)",
+      "value": "+1.04 ms",
+      "detail": "replay mode, HTTP, sequential"
+    }
+  ],
+  "overhead": {
+    "inprocess_features": {
+      "p50_ms": 0.07479199848603457,
+      "p95_ms": 0.47939940413925797,
+      "p99_ms": 0.5147083109477535,
+      "mean_ms": 0.13973365439483837,
+      "n": 805
+    },
+    "inprocess_task_classifier": {
+      "p50_ms": 0.20950000907760113,
+      "p95_ms": 0.3730750060640275,
+      "p99_ms": 0.403826670954004,
+      "mean_ms": 0.23527597382690713,
+      "n": 805
+    },
+    "inprocess_quality_models": {
+      "p50_ms": 0.014582998119294643,
+      "p95_ms": 0.017541798297315836,
+      "p99_ms": 0.024787712609395388,
+      "mean_ms": 0.015241884400848275,
+      "n": 805
+    },
+    "inprocess_decide_learned": {
+      "p50_ms": 0.3210420109098777,
+      "p95_ms": 0.8816997957183048,
+      "p99_ms": 0.9518223156919705,
+      "mean_ms": 0.40971200391852663,
+      "n": 805
+    },
+    "inprocess_decide_heuristic": {
+      "p50_ms": 0.30250000418163836,
+      "p95_ms": 0.8611585915787145,
+      "p99_ms": 0.9059546841308475,
+      "mean_ms": 0.3907455041569293,
+      "n": 805
+    },
+    "inprocess_decide_premium": {
+      "p50_ms": 0.3007500054081902,
+      "p95_ms": 0.858708392479457,
+      "p99_ms": 0.9223423228831963,
+      "mean_ms": 0.3890842258617837,
+      "n": 805
+    },
+    "e2e_claude-haiku-5-5": {
+      "requests": 322,
+      "ok": 322,
+      "p50_ms": 1.5077915013534948,
+      "p95_ms": 2.353558348113438,
+      "p99_ms": 2.8062162517744587,
+      "mean_ms": 1.6223280341274058
+    },
+    "e2e_routeforge-heuristic": {
+      "requests": 322,
+      "ok": 322,
+      "p50_ms": 2.4049374987953342,
+      "p95_ms": 3.328978845092933,
+      "p99_ms": 3.9516208220447915,
+      "mean_ms": 2.4646746614002133,
+      "added_p50_ms_vs_pinned": 0.8971459974418394
+    },
+    "e2e_routeforge-learned": {
+      "requests": 322,
+      "ok": 322,
+      "p50_ms": 2.5472294946666807,
+      "p95_ms": 4.144754450680921,
+      "p99_ms": 5.373047439643416,
+      "mean_ms": 2.7995944373010984,
+      "added_p50_ms_vs_pinned": 1.0394379933131859
+    }
+  },
+  "e2e_note": null,
+  "limitations": [
+    "Laptop measurement; other processes (e.g. local Ollama inference) may share the CPU.",
+    "End-to-end comparison runs in replay mode so provider latency is zero."
+  ]
+}

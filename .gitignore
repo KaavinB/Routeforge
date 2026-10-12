@@ -23,3 +23,4 @@ frontend/dist/
 .DS_Store
 benchmarks/results/_scratch/
 router_training/data/raw_cache/
+router_training/data/collections/local-*/

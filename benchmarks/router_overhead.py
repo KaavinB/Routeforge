@@ -54,8 +54,16 @@ def time_it(fn: Any, repeats: int) -> list[float]:
 
 
 async def e2e(base_url: str, cases: list[Any], explicit: str, repeats: int) -> dict[str, Any]:
-    gw = Gateway(base_url)
-    ready = await gw.ready()
+    admin = Gateway(base_url)
+    ready = await admin.ready()
+    # Dedicated key so the gateway's own per-key rate limit cannot throttle the benchmark.
+    key = await admin.admin(
+        "POST",
+        "/api/admin/keys",
+        {"name": "overhead-benchmark", "rate_limit_rpm": 100000, "max_concurrency": 64},
+    )
+    await admin.close()
+    gw = Gateway(base_url, client_key=key["key"])
     if "replay" not in str(ready.get("components", {}).get("models")):
         await gw.close()
         return {
@@ -80,6 +88,10 @@ async def e2e(base_url: str, cases: list[Any], explicit: str, repeats: int) -> d
                     )
                 )
         ok = [r for r in res if r.ok]
+        if len(ok) != len(res):
+            raise RuntimeError(
+                f"{t}: {len(res) - len(ok)} failed requests; overhead comparison invalid"
+            )
         out[t] = {"requests": len(res), "ok": len(ok), **latency_stats(res)}
     await gw.close()
     base = out[explicit]["p50_ms"]

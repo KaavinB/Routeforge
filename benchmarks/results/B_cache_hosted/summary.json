@@ -1,9 +1,9 @@
 {
   "metadata": {
     "benchmark": "B_cache",
-    "experiment_id": "B_cache-20261012T003404Z-139fdb",
-    "timestamp": "2026-10-12T00:34:04.824652+00:00",
-    "git_sha": "d7a8030c527a0ccd6d48ac0a5c4c78018dbedca6",
+    "experiment_id": "B_cache-20261012T010815Z-757513",
+    "timestamp": "2026-10-12T01:08:15.628685+00:00",
+    "git_sha": "49892eb03275706ee7bbc2471b961aa5ebbdb39a",
     "git_dirty": true,
     "hardware": {
       "platform": "macOS-26.5.2-arm64-arm-64bit",
@@ -11,7 +11,12 @@
       "python": "3.12.15",
       "cpu": "Apple M4",
       "memory_gb": 16.0,
-      "cpu_count": 10
+      "cpu_count": 10,
+      "load_average_1m_5m_15m": [
+        4.93,
+        5.29,
+        9.87
+      ]
     },
     "software": {
       "fastapi": "0.141.1",
@@ -42,16 +47,16 @@
   "headline": [
     {
       "label": "Warm-cache p50 latency",
-      "value": "76.2 ms",
-      "detail": "vs 862 ms uncached"
+      "value": "10.9 ms",
+      "detail": "vs 1067 ms uncached"
     },
     {
       "label": "Latency reduction on hits (p50)",
-      "value": "91.2%"
+      "value": "99.0%"
     },
     {
       "label": "Server-side cache lookup (mean)",
-      "value": "4.50 ms",
+      "value": "1.34 ms",
       "detail": "Redis GET incl. client overhead (Prometheus); the cost a miss adds"
     },
     {
@@ -68,11 +73,11 @@
       "eligible_lookups": 0,
       "hit_rate": null,
       "backend_invocations": 80,
-      "estimated_cost_usd": 0.0029692,
-      "p50_ms": 862.487021004199,
-      "p95_ms": 1111.196077396744,
+      "estimated_cost_usd": 0.0029632,
+      "p50_ms": 1067.4704579942045,
+      "p95_ms": 2119.904770798894,
       "p99_ms": null,
-      "mean_ms": 909.1512078006417
+      "mean_ms": 1159.3378109368132
     },
     "cold": {
       "requests": 80,
@@ -81,11 +86,11 @@
       "eligible_lookups": 80,
       "hit_rate": 0.0,
       "backend_invocations": 80,
-      "estimated_cost_usd": 0.002962,
-      "p50_ms": 913.2707704993663,
-      "p95_ms": 1206.4079878553457,
+      "estimated_cost_usd": 0.0029428,
+      "p50_ms": 835.6868335031322,
+      "p95_ms": 1229.223776450817,
       "p99_ms": null,
-      "mean_ms": 928.5969682367067
+      "mean_ms": 861.9122463505846
     },
     "warm": {
       "requests": 80,
@@ -95,10 +100,10 @@
       "hit_rate": 1.0,
       "backend_invocations": 0,
       "estimated_cost_usd": 0.0,
-      "p50_ms": 76.18060400272952,
-      "p95_ms": 305.6072339481033,
+      "p50_ms": 10.919499989540782,
+      "p95_ms": 25.598996454937147,
       "p99_ms": null,
-      "mean_ms": 100.23940991195559
+      "mean_ms": 12.192815612252161
     },
     "mixed": {
       "requests": 200,
@@ -107,11 +112,11 @@
       "eligible_lookups": 200,
       "hit_rate": 0.24,
       "backend_invocations": 152,
-      "estimated_cost_usd": 0.0085954,
-      "p50_ms": 913.224062496738,
-      "p95_ms": 1556.371941998077,
-      "p99_ms": 1718.2084615764322,
-      "mean_ms": 830.5456385600701,
+      "estimated_cost_usd": 0.0085558,
+      "p50_ms": 962.7651459959452,
+      "p95_ms": 1684.682030944532,
+      "p99_ms": 2086.472788231185,
+      "mean_ms": 859.3108802200004,
       "effective_repeat_rate": 0.26
     }
   },

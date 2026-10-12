@@ -23,13 +23,13 @@ compromise in 2026; a cooldown window is a cheap mitigation against that class o
 
 ## Model pools
 
-Two hosted pools are measured, plus a local one:
+Two hosted pools are measured; the local pool is supported but was not benchmarked:
 
 | Pool | Models (cheap → premium) | Why |
 |---|---|---|
 | `hosted-2026-10-11` | gpt-4.1-nano, claude-haiku-5-5, gpt-4.1-mini, claude-sonnet-5-5 | first experiment; non-reasoning OpenAI models |
 | `latest-2026-10-11` | gpt-5.6-luna, claude-haiku-5-5, gpt-5.6-terra, claude-sonnet-5-5, claude-opus-5-5 | newest generation from both vendors (primary pool) |
-| `local-2026-10-11` | llama3.2:1b, qwen2.5:3b, qwen2.5:7b (Ollama) | free, larger quality spread; illustrative cost units |
+| `local` (Mode B) | llama3.2:1b, qwen2.5:3b, qwen2.5:7b (Ollama) | supported and smoke-tested through LiteLLM; a full collection was started but stopped at 2,339/2,520 calls (the 7B model needed 20–40 s per math prompt on the laptop), so **no local-pool results are reported** |
 
 - GPT-5.6 models reason by default; they run with `reasoning_effort: none` so they behave
   as fast completion models (and accept `temperature=0`, which they reject while
@@ -150,7 +150,7 @@ not add a socket timeout to every request.
 | Learned routing decision 362 ms under load | profiler: HistGradientBoosting `predict_proba` spawning OpenMP thread pools per single-row call; 5-fold calibrated ensembles; char n-gram TF-IDF | single-thread BLAS/OpenMP (`threadpool_limits(1)`, `OMP_NUM_THREADS=1`), `ensemble=False` calibration, word-only TF-IDF, NumPy fast path for calibrated logistic models (verified equal to sklearn on probes), linear-model tie-break → ~9 ms under heavy load; see Benchmark E for quiet-machine numbers |
 | Feature extraction 11 ms on long prompts | per-regex timing: alternation-heavy case-insensitive regexes | lower-case once, keyword sets + `str.count` + literal-prefixed regexes → 4–5× faster |
 | Periodic event-loop stalls | 375k objects tracked by the cyclic GC after importing LiteLLM et al.; a full collection took 97 ms | `gc.freeze()` after startup (full collection → 0 ms); GC-pause and event-loop-lag histograms added |
-| Throughput collapse at 25+ concurrent clients in Docker | see Benchmark C notes | documented; investigation recorded in BENCHMARKS.md |
+| Apparent throughput "collapse" at 25+ concurrent clients | A/B runs whose config never reached the container (Compose only passes listed variables); then CPU contention from local LLM inference; finally a single-process Python/httpx load generator that saturated above ~10 connections | **not a gateway problem**: with `hey` (Go) the same deployment holds ~1,200–1,460 req/s from 10 to 100 clients with 0 errors. Fixes were to the *measurement*: pass every knob through Compose and verify it inside the container, record the machine's load average in benchmark metadata, and use a compiled load generator for capacity tests |
 
 ## Evaluation
 

@@ -1,9 +1,9 @@
 {
   "metadata": {
     "benchmark": "D_faults",
-    "experiment_id": "D_faults-20261011T233825Z-939876",
-    "timestamp": "2026-10-11T23:38:25.742128+00:00",
-    "git_sha": "dc4fcb2bc59f26e9ee9d37dca080989e51bf4828",
+    "experiment_id": "D_faults-20261012T010655Z-09de91",
+    "timestamp": "2026-10-12T01:06:55.818780+00:00",
+    "git_sha": "49892eb03275706ee7bbc2471b961aa5ebbdb39a",
     "git_dirty": true,
     "hardware": {
       "platform": "macOS-26.5.2-arm64-arm-64bit",
@@ -11,7 +11,12 @@
       "python": "3.12.15",
       "cpu": "Apple M4",
       "memory_gb": 16.0,
-      "cpu_count": 10
+      "cpu_count": 10,
+      "load_average_1m_5m_15m": [
+        6.18,
+        5.52,
+        10.4
+      ]
     },
     "software": {
       "fastapi": "0.141.1",
@@ -38,12 +43,12 @@
     {
       "label": "Recovery rate (all injected provider faults)",
       "value": "100.0%",
-      "detail": "318/318 affected requests"
+      "detail": "370/370 affected requests"
     },
     {
       "label": "Fallback recovery rate",
       "value": "100.0%",
-      "detail": "303/303 requests needing another model"
+      "detail": "353/353 requests needing another model"
     },
     {
       "label": "Max upstream calls / request",
@@ -56,10 +61,10 @@
     }
   ],
   "totals": {
-    "eligible": 318,
-    "recovered": 318,
-    "needing_fallback": 303,
-    "recovered_by_fallback": 303
+    "eligible": 370,
+    "recovered": 370,
+    "needing_fallback": 353,
+    "recovered_by_fallback": 353
   },
   "scenarios": [
     {
@@ -76,8 +81,8 @@
       "upstream_calls_per_request": 1.0,
       "max_upstream_calls": 1,
       "detection_requests": null,
-      "p50_ms": 1493.7920204974944,
-      "p95_ms": 1691.0485500047796,
+      "p50_ms": 1485.1627294920036,
+      "p95_ms": 1496.1587205558317,
       "recovery_overhead_p50_ms": null,
       "recovery_overhead_p95_ms": null,
       "errors": []
@@ -88,18 +93,18 @@
       "kind": "provider_fault",
       "requests": 60,
       "success_rate": 1.0,
-      "eligible_for_recovery": 8,
-      "recovered_by_retry": 6,
-      "recovered_by_fallback": 2,
+      "eligible_for_recovery": 20,
+      "recovered_by_retry": 16,
+      "recovered_by_fallback": 4,
       "recovery_rate": 1.0,
       "fallback_recovery_rate": 1.0,
-      "upstream_calls_per_request": 1.1666666666666667,
+      "upstream_calls_per_request": 1.4,
       "max_upstream_calls": 3,
       "detection_requests": null,
-      "p50_ms": 1827.7272080013063,
-      "p95_ms": 3420.151576807983,
-      "recovery_overhead_p50_ms": 279.18158299473816,
-      "recovery_overhead_p95_ms": 912.2189266459485,
+      "p50_ms": 1481.1554999978398,
+      "p95_ms": 1678.3906902041053,
+      "recovery_overhead_p50_ms": 130.70599899583613,
+      "recovery_overhead_p95_ms": 248.13662670094345,
       "errors": []
     },
     {
@@ -108,18 +113,18 @@
       "kind": "provider_fault",
       "requests": 60,
       "success_rate": 1.0,
-      "eligible_for_recovery": 57,
+      "eligible_for_recovery": 52,
       "recovered_by_retry": 1,
-      "recovered_by_fallback": 56,
+      "recovered_by_fallback": 51,
       "recovery_rate": 1.0,
       "fallback_recovery_rate": 1.0,
-      "upstream_calls_per_request": 1.0833333333333333,
+      "upstream_calls_per_request": 1.1,
       "max_upstream_calls": 3,
-      "detection_requests": 6,
-      "p50_ms": 986.8986459987354,
-      "p95_ms": 1538.4071981985471,
-      "recovery_overhead_p50_ms": 22.534125001357097,
-      "recovery_overhead_p95_ms": 221.61691618957775,
+      "detection_requests": 12,
+      "p50_ms": 972.8299159978633,
+      "p95_ms": 1484.001972607075,
+      "recovery_overhead_p50_ms": 7.783603997268074,
+      "recovery_overhead_p95_ms": 210.77594100815983,
       "errors": []
     },
     {
@@ -128,18 +133,18 @@
       "kind": "provider_fault",
       "requests": 60,
       "success_rate": 1.0,
-      "eligible_for_recovery": 13,
-      "recovered_by_retry": 8,
-      "recovered_by_fallback": 5,
+      "eligible_for_recovery": 58,
+      "recovered_by_retry": 0,
+      "recovered_by_fallback": 58,
       "recovery_rate": 1.0,
       "fallback_recovery_rate": 1.0,
-      "upstream_calls_per_request": 1.3,
+      "upstream_calls_per_request": 1.0833333333333333,
       "max_upstream_calls": 3,
-      "detection_requests": null,
-      "p50_ms": 1484.0526039988617,
-      "p95_ms": 1681.8211246900319,
-      "recovery_overhead_p50_ms": 140.62383199188844,
-      "recovery_overhead_p95_ms": 248.1570334005027,
+      "detection_requests": 6,
+      "p50_ms": 973.0753540061414,
+      "p95_ms": 1121.9479743609554,
+      "recovery_overhead_p50_ms": 7.813270495262259,
+      "recovery_overhead_p95_ms": 43.94817409233831,
       "errors": []
     },
     {
@@ -156,10 +161,10 @@
       "upstream_calls_per_request": 1.0833333333333333,
       "max_upstream_calls": 2,
       "detection_requests": 3,
-      "p50_ms": 976.0544585005846,
-      "p95_ms": 1083.5254579928005,
-      "recovery_overhead_p50_ms": 12.531228993111654,
-      "recovery_overhead_p95_ms": 122.31167674268586,
+      "p50_ms": 971.3847919992986,
+      "p95_ms": 1065.3968003069167,
+      "recovery_overhead_p50_ms": 6.717478498103446,
+      "recovery_overhead_p95_ms": 101.45874545710276,
       "errors": []
     },
     {
@@ -176,10 +181,10 @@
       "upstream_calls_per_request": 1.0833333333333333,
       "max_upstream_calls": 2,
       "detection_requests": 3,
-      "p50_ms": 980.6754169912892,
-      "p95_ms": 1192.1836672961945,
-      "recovery_overhead_p50_ms": 17.77291599387354,
-      "recovery_overhead_p95_ms": 228.67914404632756,
+      "p50_ms": 974.2587499931687,
+      "p95_ms": 1082.9760381471715,
+      "recovery_overhead_p50_ms": 7.759041002373124,
+      "recovery_overhead_p95_ms": 120.00214994704943,
       "errors": []
     },
     {
@@ -196,10 +201,10 @@
       "upstream_calls_per_request": 1.1,
       "max_upstream_calls": 2,
       "detection_requests": 6,
-      "p50_ms": 1025.4876454928308,
-      "p95_ms": 4147.169466345076,
-      "recovery_overhead_p50_ms": 56.96343649276514,
-      "recovery_overhead_p95_ms": 3152.316557991014,
+      "p50_ms": 973.5283129994059,
+      "p95_ms": 4020.546355951956,
+      "recovery_overhead_p50_ms": 7.191270999101107,
+      "recovery_overhead_p95_ms": 3053.9923803015427,
       "errors": []
     },
     {
@@ -215,11 +220,11 @@
       "fallback_recovery_rate": 1.0,
       "upstream_calls_per_request": 1.1666666666666667,
       "max_upstream_calls": 4,
-      "detection_requests": 2,
-      "p50_ms": 704.467437499261,
-      "p95_ms": 870.9852704996591,
-      "recovery_overhead_p50_ms": 54.86602049779776,
-      "recovery_overhead_p95_ms": 255.85884869864225,
+      "detection_requests": 5,
+      "p50_ms": 605.2746874993318,
+      "p95_ms": 747.6400145467777,
+      "recovery_overhead_p50_ms": 6.869103495773743,
+      "recovery_overhead_p95_ms": 148.4354231968153,
       "errors": []
     },
     {
@@ -228,8 +233,8 @@
       "kind": "dependency_outage",
       "requests": 60,
       "success_rate": 1.0,
-      "p50_ms": 503.53472949791467,
-      "p95_ms": 1578.3441559637135,
+      "p50_ms": 410.4153334919829,
+      "p95_ms": 422.92421105812537,
       "errors": [],
       "outcome": "graceful degradation"
     },
@@ -239,8 +244,8 @@
       "kind": "dependency_outage",
       "requests": 60,
       "success_rate": 1.0,
-      "p50_ms": 423.7071460011066,
-      "p95_ms": 848.0483851111784,
+      "p50_ms": 403.84995900967624,
+      "p95_ms": 416.1015496494656,
       "errors": [],
       "outcome": "graceful degradation"
     },
