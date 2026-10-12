@@ -105,7 +105,9 @@ def adapt_params(
             param=sorted(dropped)[0],
         )
     requested = adapted.get("max_tokens") or cap
-    adapted["max_tokens"] = int(min(requested, spec.max_output_tokens, cap))
+    requested = max(requested, spec.min_max_tokens)
+    ceiling = max(cap, spec.min_max_tokens)
+    adapted["max_tokens"] = int(min(requested, spec.max_output_tokens, ceiling))
     return adapted, sorted(dropped)
 
 

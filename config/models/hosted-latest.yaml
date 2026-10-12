@@ -1,0 +1,87 @@
+# Mode C (latest generation) — newest OpenAI + Anthropic models, chosen 2026-10-11.
+# Requires OPENAI_API_KEY and ANTHROPIC_API_KEY. The earlier GPT-4.1-based pool is kept in
+# hosted.yaml as a separate, already-measured comparison.
+version: latest-2026-10-11
+mode: hosted
+simulated: false
+pricing:
+  version: "2026-10-11"
+  currency: USD
+  sources:
+    openai: "https://developers.openai.com/api/docs/pricing (standard tier, <=272K context, retrieved 2026-10-11). gpt-5.6-sol is on promotional pricing through at least 2026-11-21 (not used here)."
+    anthropic: "Anthropic first-party API pricing (claude-api reference table cached 2026-10-06, prompts <=100K tokens)"
+routing:
+  premium_model: claude-opus-5-5
+  economy_model: gpt-5.6-luna
+models:
+  - id: gpt-5.6-luna
+    provider: litellm
+    upstream: openai/gpt-5.6-luna
+    family: openai
+    tier: 0
+    context_window: 272000
+    max_output_tokens: 32768
+    input_cost_per_mtok: 0.20
+    output_cost_per_mtok: 1.20
+    timeout_s: 45
+    # GPT-5.6 models reason by default; reasoning is turned off so they behave as fast
+    # completion models (and accept temperature=0, which they reject while reasoning).
+    supported_params: [temperature, max_tokens, stop, seed, response_format]
+    provider_params:
+      reasoning_effort: none
+  - id: claude-haiku-5-5
+    provider: litellm
+    upstream: anthropic/claude-haiku-5-5
+    family: anthropic
+    tier: 1
+    context_window: 1000000
+    max_output_tokens: 64000
+    input_cost_per_mtok: 0.10
+    output_cost_per_mtok: 0.50
+    timeout_s: 45
+    supported_params: [max_tokens, stop, response_format]
+    provider_params:
+      thinking: {type: disabled}
+  - id: gpt-5.6-terra
+    provider: litellm
+    upstream: openai/gpt-5.6-terra
+    family: openai
+    tier: 2
+    context_window: 272000
+    max_output_tokens: 65536
+    input_cost_per_mtok: 2.00
+    output_cost_per_mtok: 12.00
+    timeout_s: 60
+    supported_params: [temperature, max_tokens, stop, seed, response_format]
+    provider_params:
+      reasoning_effort: none
+  - id: claude-sonnet-5-5
+    provider: litellm
+    upstream: anthropic/claude-sonnet-5-5
+    family: anthropic
+    tier: 3
+    context_window: 1000000
+    max_output_tokens: 128000
+    input_cost_per_mtok: 2.00
+    output_cost_per_mtok: 10.00
+    timeout_s: 90
+    supported_params: [max_tokens, stop, response_format]
+    provider_params:
+      thinking: {type: between_tools}
+  - id: claude-opus-5-5
+    provider: litellm
+    upstream: anthropic/claude-opus-5-5
+    family: anthropic
+    tier: 4
+    context_window: 1000000
+    max_output_tokens: 128000
+    input_cost_per_mtok: 4.00
+    output_cost_per_mtok: 20.00
+    timeout_s: 120
+    supported_params: [max_tokens, stop, response_format]
+    # Opus 5.5 thinking cannot be disabled (400 on {type: disabled}); lowest effort keeps
+    # it short. Thinking tokens are billed as output and count against max_tokens, hence
+    # the floor below.
+    provider_params:
+      output_config: {effort: low}
+    min_max_tokens: 2048

@@ -68,25 +68,48 @@ async def main_async(args: argparse.Namespace) -> None:
     phases["warm"] = await send(cases)
     await gw.admin("DELETE", "/api/admin/cache")
     rng = random.Random(7)
+    # Mixed workload draws "new" prompts from a larger pool (val+test, non-code) so the
+    # requested repeat rate is actually achieved; the measured rate is reported.
+    pool = [
+        c
+        for c in ds.cases
+        if c.split in ("val", "test") and c.category not in ("code", "summarization")
+    ]
+    rng.shuffle(pool)
     stream: list[Any] = []
     seen: list[Any] = []
-    pool = list(cases)
+    repeats = 0
     for _ in range(args.mixed_requests):
-        if seen and rng.random() < args.repeat_rate:
+        if seen and (rng.random() < args.repeat_rate or not pool):
             stream.append(rng.choice(seen))
+            repeats += 1
         else:
-            c = pool.pop(0) if pool else rng.choice(cases)
+            c = pool.pop()
             seen.append(c)
             stream.append(c)
-    # sequential-in-order so a repeat can only hit after its first occurrence completed
+    effective_repeat_rate = repeats / len(stream)
+    # sequential batches so a repeat can only hit after its first occurrence completed
     mixed: list[Result] = []
     for i in range(0, len(stream), args.concurrency):
         mixed += await send(stream[i : i + args.concurrency])
     phases["mixed"] = mixed
+    metrics_text = (await gw.http.get("/metrics")).text
     await gw.close()
 
+    def metric(name: str) -> float:
+        for line in metrics_text.splitlines():
+            if line.startswith(name + " "):
+                return float(line.split()[-1])
+        return float("nan")
+
+    lookups = metric("routeforge_cache_lookup_seconds_count")
+    server_lookup_ms = (
+        1000 * metric("routeforge_cache_lookup_seconds_sum") / lookups if lookups else None
+    )
+
     summ = {k: phase_summary(v) for k, v in phases.items()}
-    nc, warm, cold = summ["no_cache"], summ["warm"], summ["cold"]
+    summ["mixed"]["effective_repeat_rate"] = effective_repeat_rate
+    nc, warm = summ["no_cache"], summ["warm"]
     headline = [
         {
             "label": "Warm-cache p50 latency",
@@ -98,12 +121,12 @@ async def main_async(args: argparse.Namespace) -> None:
             "value": f"{100 * (1 - warm['p50_ms'] / nc['p50_ms']):.1f}%",
         },
         {
-            "label": "Miss-path overhead (p50)",
-            "value": f"{cold['p50_ms'] - nc['p50_ms']:+.1f} ms",
-            "detail": "cold vs uncached; includes provider variance",
+            "label": "Server-side cache lookup (mean)",
+            "value": f"{server_lookup_ms:.2f} ms" if server_lookup_ms else "n/a",
+            "detail": "Redis GET incl. client overhead (Prometheus); the cost a miss adds",
         },
         {
-            "label": f"Hit rate at {int(100 * args.repeat_rate)}% synthetic repeats",
+            "label": f"Hit rate at {100 * effective_repeat_rate:.0f}% synthetic repeats",
             "value": f"{100 * (summ['mixed']['hit_rate'] or 0):.1f}%",
             "detail": f"{summ['mixed']['backend_invocations']} backend calls for {summ['mixed']['requests']} requests",
         },

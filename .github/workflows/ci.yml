@@ -1,0 +1,119 @@
+name: ci
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+env:
+  PYTHONPATH: backend:.
+  OMP_NUM_THREADS: "1"
+  UV_VERSION: "0.12.19"
+  # No provider API keys are configured anywhere in CI: every job uses mock or replay
+  # providers, so CI can never incur paid model usage.
+
+jobs:
+  lint-typecheck:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+      - uses: astral-sh/setup-uv@v6
+        with: {version: "${{ env.UV_VERSION }}"}
+      - run: uv sync --frozen
+      - run: uv run --no-sync ruff check backend router_training benchmarks
+      - run: uv run --no-sync ruff format --check backend router_training benchmarks
+      - run: uv run --no-sync mypy backend/app
+
+  unit-tests:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+      - uses: astral-sh/setup-uv@v6
+        with: {version: "${{ env.UV_VERSION }}"}
+      - run: uv sync --frozen
+      - name: unit, API and failure-injection tests with coverage
+        run: uv run --no-sync pytest --cov=backend/app --cov-report=term --cov-report=xml
+      - uses: actions/upload-artifact@v4
+        with: {name: coverage, path: coverage.xml}
+
+  integration-tests:
+    runs-on: ubuntu-24.04
+    services:
+      postgres:
+        image: postgres:17-alpine
+        env: {POSTGRES_USER: routeforge_owner, POSTGRES_PASSWORD: ci-only-password, POSTGRES_DB: postgres}
+        ports: ["5432:5432"]
+        options: >-
+          --health-cmd "pg_isready -U routeforge_owner" --health-interval 3s --health-timeout 3s --health-retries 20
+      redis:
+        image: redis:7.4-alpine
+        ports: ["6379:6379"]
+        options: >-
+          --health-cmd "redis-cli ping" --health-interval 3s --health-timeout 3s --health-retries 20
+    env:
+      ROUTEFORGE_IT_PG_ADMIN_URL: postgresql+asyncpg://routeforge_owner:ci-only-password@localhost:5432/postgres
+      ROUTEFORGE_IT_REDIS_URL: redis://localhost:6379/15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: astral-sh/setup-uv@v6
+        with: {version: "${{ env.UV_VERSION }}"}
+      - run: uv sync --frozen
+      - run: uv run --no-sync pytest -m integration -v
+
+  evaluation-regression-gate:
+    # Deterministic: replays recorded real model outputs through the gateway in-process
+    # and checks the quality gate passes an identical re-run and blocks a known regression.
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+      - uses: astral-sh/setup-uv@v6
+        with: {version: "${{ env.UV_VERSION }}"}
+      - run: uv sync --frozen
+      - run: uv run --no-sync python -m benchmarks.evaluation.regression_suite --ci --pool latest --trials 40 --sandbox docker
+
+  frontend:
+    runs-on: ubuntu-24.04
+    defaults:
+      run: {working-directory: frontend}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with: {node-version: "22", cache: npm, cache-dependency-path: frontend/package-lock.json}
+      - run: npm ci --no-audit --no-fund
+      - run: npx tsc -b --noEmit
+      - run: npx vitest run
+      - run: npm run build
+
+  docker-build:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+      - uses: docker/setup-buildx-action@v3
+      - name: build gateway image
+        uses: docker/build-push-action@v6
+        with: {context: ., push: false, tags: "routeforge-backend:ci"}
+      - name: build dashboard image
+        uses: docker/build-push-action@v6
+        with: {context: frontend, push: false, tags: "routeforge-dashboard:ci"}
+
+  dependency-audit:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+      - uses: astral-sh/setup-uv@v6
+        with: {version: "${{ env.UV_VERSION }}"}
+      - run: uv sync --frozen
+      - name: python dependencies (pip-audit)
+        run: |
+          uv export --frozen --no-dev --no-group bench --no-hashes --no-emit-project > /tmp/requirements.txt
+          uv run --no-sync pip-audit --progress-spinner off -r /tmp/requirements.txt
+      - name: npm dependencies (production)
+        working-directory: frontend
+        run: npm ci --no-audit --no-fund && npm audit --omit=dev --audit-level=high

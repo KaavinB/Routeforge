@@ -203,8 +203,8 @@ async def main_async(args: argparse.Namespace) -> None:
             "Costs are list-price estimates from provider-reported tokens.",
         ],
     }
-    write_summary("A_routing_live_hosted", summary)
-    write_csv("A_routing_live_hosted", "per_case.csv", [o.as_dict() for o in outcomes])
+    write_summary(args.name, summary)
+    write_csv(args.name, "per_case.csv", [o.as_dict() for o in outcomes])
     for t, b in policies.items():
         print(
             f"{t:22s} acc {100 * b['acceptable_rate']:.1f}%  $/1k {b['cost_per_1k_requests_usd']:.4f}  p50 {b['latency_p50_ms']:.0f} ms  errors {b['errors']}"
@@ -225,7 +225,8 @@ def main() -> None:
     ap.add_argument("--concurrency", type=int, default=6)
     ap.add_argument("--limit", type=int)
     ap.add_argument("--judge-model", default="openai/gpt-4.1")
-    ap.add_argument("--offline", default="A_routing_offline_hosted")
+    ap.add_argument("--offline", default="A_routing_offline_latest")
+    ap.add_argument("--name", default="A_routing_live_latest", help="results directory name")
     asyncio.run(main_async(ap.parse_args()))
 
 

@@ -24,6 +24,7 @@ from __future__ import annotations
 
 import argparse
 import asyncio
+import random
 import sys
 from typing import Any
 
@@ -38,10 +39,11 @@ from benchmarks.common import experiment_metadata, write_summary
 from router_training.collect import DATASETS
 from router_training.score import JUDGE_CACHE
 
-COLLECTION = (
-    REPO_ROOT / "router_training" / "data" / "collections" / "hosted-2026-10-11" / "outputs.jsonl"
-)
-ARTIFACT = REPO_ROOT / "router_training" / "artifacts" / "router-hosted-2026-10-11"
+POOLS = {
+    # pool -> (collection id, replay registry file)
+    "latest": ("latest-2026-10-11", "replay-latest.yaml"),
+    "hosted": ("hosted-2026-10-11", "replay-hosted.yaml"),
+}
 REFERENCE = ("routeforge-learned", 0.8)
 
 CANDIDATES: list[dict[str, Any]] = [
@@ -63,30 +65,40 @@ CANDIDATES: list[dict[str, Any]] = [
         "name": "economy model only",
         "target": "routeforge-economy",
         "tau": 0.8,
-        "seeded": "regression",
+        "seeded": "expected_regression",
     },
     {
         "name": "learned τ=0.3 (permissive threshold)",
         "target": "routeforge-learned",
         "tau": 0.3,
-        "seeded": "regression",
+        "seeded": "expected_regression",
     },
-    {"name": "learned τ=0.5", "target": "routeforge-learned", "tau": 0.5, "seeded": "regression"},
-    {"name": "random routing", "target": "routeforge-random", "tau": 0.8, "seeded": "regression"},
+    {
+        "name": "learned τ=0.5",
+        "target": "routeforge-learned",
+        "tau": 0.5,
+        "seeded": "expected_regression",
+    },
+    {
+        "name": "random routing",
+        "target": "routeforge-random",
+        "tau": 0.8,
+        "seeded": "expected_regression",
+    },
     {
         "name": "rule-based heuristic",
         "target": "routeforge-heuristic",
         "tau": 0.8,
-        "seeded": "regression",
+        "seeded": "expected_regression",
     },
     {
-        "name": "mid-tier model only (gpt-4.1-mini)",
-        "target": "gpt-4.1-mini",
+        "name": "mid-tier model only",
+        "target": "tier:2",
         "tau": 0.8,
-        "seeded": "regression",
+        "seeded": "expected_regression",
     },
 ]
-CI_CANDIDATES = {"identical re-run", "economy model only"}
+CI_CANDIDATES = {"identical re-run"}
 
 
 async def evaluate(
@@ -102,15 +114,17 @@ async def evaluate(
 
 
 async def main_async(args: argparse.Namespace) -> int:
+    collection, registry_file = POOLS[args.pool]
+    collections_dir = REPO_ROOT / "router_training" / "data" / "collections"
     settings = Settings(
         _env_file=None,
         env="test",
         log_level="WARNING",
         database_url="",
         redis_url="",
-        model_config_path=REPO_ROOT / "config" / "models" / "replay-hosted.yaml",
-        replay_recordings_path=COLLECTION,
-        router_artifact_path=ARTIFACT,
+        model_config_path=REPO_ROOT / "config" / "models" / registry_file,
+        replay_recordings_path=collections_dir / collection / "outputs.jsonl",
+        router_artifact_path=REPO_ROOT / "router_training" / "artifacts" / f"router-{collection}",
         default_strategy="learned",
         cache_enabled=False,
         otel_enabled=False,
@@ -131,6 +145,13 @@ async def main_async(args: argparse.Namespace) -> int:
     for cand in CANDIDATES:
         if args.ci and cand["name"] not in CI_CANDIDATES:
             continue
+        if cand["target"].startswith("tier:"):
+            tier = int(cand["target"].split(":")[1])
+            cand = {
+                **cand,
+                "target": next(m.id for m in state.registry.candidates() if m.tier == tier),
+            }
+            cand["name"] = f"{cand['name']} ({cand['target']})"
         res = await evaluate(client, scorer, cases, cand["target"], cand["tau"])
         report = evaluate_gates(reference, res, GateConfig())
         gates = {g["name"]: g for g in report["gates"]}
@@ -167,21 +188,34 @@ async def main_async(args: argparse.Namespace) -> int:
             flush=True,
         )
 
-    regs = [r for r in rows if r["seeded"] == "regression"]
+    # Part 2: power analysis with synthetic regressions of known size. Each trial flips
+    # exactly k% of the reference's acceptable answers to unacceptable (a regression of
+    # exactly k pp on this test set) and runs the quality gate.
+    power = power_curve(reference, trials=args.trials, seed=7)
+    power_churn = power_curve(reference, trials=args.trials, seed=8, churn=0.04)
+    for row in power + power_churn:
+        print(
+            f"churn {row['churn']:.2f} drop {row['drop_pp']:4.1f} pp: FAIL {100 * row['fail_rate']:5.1f}%  FAIL-or-WARN {100 * row['flag_rate']:5.1f}%",
+            flush=True,
+        )
     neutral = [r for r in rows if r["seeded"] == "neutral"]
-    detected = sum(r["detected"] for r in regs)
-    flagged = sum(r["flagged"] for r in regs)
-    false_alarms = sum(r["detected"] for r in neutral)
-    false_flags = sum(r["flagged"] for r in neutral)
     if args.ci:
-        ok = all(not r["detected"] for r in neutral) and all(r["detected"] for r in regs)
+        drop10 = next(r for r in power if r["drop_pp"] >= 10)
+        ok = (
+            all(not r["detected"] for r in neutral)
+            and drop10["fail_rate"] >= 0.95
+            and power[0]["fail_rate"] <= 0.05
+        )
         print("CI regression gate self-test:", "PASS" if ok else "FAIL")
         return 0 if ok else 1
 
+    at = {r["drop_pp"]: r for r in power}
+    atc = {r["drop_pp"]: r for r in power_churn}
     summary = {
         "metadata": experiment_metadata(
             "G_regression_gate_validation",
-            mode="replay (recorded hosted outputs; judge cache only)",
+            mode=f"replay of {collection} (recorded outputs; judge cache only)",
+            pool=args.pool,
             dataset=ds.name,
             dataset_version=ds.version,
             split="test",
@@ -189,58 +223,97 @@ async def main_async(args: argparse.Namespace) -> int:
             reference=f"{REFERENCE[0]} τ={REFERENCE[1]}",
             reference_acceptable_rate=ref_acc,
             gate_config=GateConfig().__dict__,
+            power_trials_per_size=args.trials,
             router_artifact=state.engine.artifact.version if state.engine.artifact else None,
         ),
         "status": "complete",
         "headline": [
             {
-                "label": "Seeded regressions blocked (gate FAIL)",
-                "value": f"{detected}/{len(regs)}",
-                "detail": "95% CI of quality drop entirely below -2 pp",
+                "label": "Synthetic 5 pp regressions blocked",
+                "value": f"{100 * at[5.0]['fail_rate']:.0f}%",
+                "detail": f"flagged (FAIL or WARN) {100 * at[5.0]['flag_rate']:.0f}%; {args.trials} trials",
             },
             {
-                "label": "Seeded regressions flagged (FAIL or WARN)",
-                "value": f"{flagged}/{len(regs)}",
-                "detail": "WARN = point estimate below -2 pp, CI inconclusive",
+                "label": "Synthetic 10 pp regressions blocked",
+                "value": f"{100 * at[10.0]['fail_rate']:.0f}%",
             },
             {
-                "label": "Quality false alarms on neutral changes",
-                "value": f"{false_alarms}/{len(neutral)} blocked, {false_flags}/{len(neutral)} flagged",
+                "label": "False FAIL rate with no regression",
+                "value": f"{100 * at[0.0]['fail_rate']:.1f}%",
+                "detail": f"false FAIL-or-WARN {100 * at[0.0]['flag_rate']:.1f}%",
             },
             {
-                "label": "Smallest detected drop",
-                "value": f"{min((r['true_quality_delta_pp'] for r in regs if r['detected']), default=float('nan')):+.1f} pp",
+                "label": "With 4% answer churn: 5 pp / 10 pp regressions blocked",
+                "value": f"{100 * atc[5.0]['fail_rate']:.0f}% / {100 * atc[10.0]['fail_rate']:.0f}%",
+                "detail": f"false FAIL at 0 pp {100 * atc[0.0]['fail_rate']:.1f}%; "
+                f"5 pp flagged {100 * atc[5.0]['flag_rate']:.0f}%",
             },
             {
-                "label": "Largest undetected drop",
-                "value": f"{min((r['true_quality_delta_pp'] for r in regs if not r['detected']), default=float('nan')):+.1f} pp",
-                "detail": "below the gate's statistical power at n=161",
+                "label": "Neutral configuration changes blocked",
+                "value": f"{sum(r['detected'] for r in neutral)}/{len(neutral)}",
             },
         ],
-        "totals": {
-            "regressions": len(regs),
-            "blocked": detected,
-            "flagged": flagged,
-            "neutral": len(neutral),
-            "false_blocks": false_alarms,
-            "false_flags": false_flags,
-        },
+        "power_curve": power,
+        "power_curve_with_churn": power_churn,
         "scenarios": rows,
         "limitations": [
-            "Seeded regressions are routing/configuration changes replayed on recorded outputs; prompt or model changes would need fresh generations.",
-            "With 161 test prompts, drops of a few points cannot be distinguished from noise at 95% confidence; the gate is deliberately conservative.",
+            "Synthetic regressions flip outcomes uniformly at random; real regressions may concentrate in categories.",
+            "Configuration scenarios are replayed on recorded outputs; prompt or model changes would need fresh generations.",
+            "With n=161 the gate only blocks when the 95% CI of the paired drop lies below -2 pp: it trades sensitivity for few false alarms.",
         ],
     }
-    write_summary("G_regression_gate_validation", summary)
-    print(
-        f"blocked {detected}/{len(regs)}, flagged {flagged}/{len(regs)} seeded regressions; false alarms {false_alarms}/{len(neutral)} (flags {false_flags})"
-    )
+    write_summary(f"G_regression_gate_validation_{args.pool}", summary)
     return 0
+
+
+def power_curve(
+    reference: list[dict[str, Any]], *, trials: int, seed: int, churn: float = 0.0
+) -> list[dict[str, Any]]:
+    """Gate detection rate vs. regression size. ``churn`` additionally swaps that fraction
+    of cases in *both* directions (good->bad and bad->good) without changing the net
+    effect, mimicking a real change where some answers improve while others regress."""
+    rng = random.Random(seed)
+    n = len(reference)
+    acc_idx = [i for i, r in enumerate(reference) if r["acceptable"]]
+    bad_idx = [i for i, r in enumerate(reference) if not r["acceptable"]]
+    m = min(round(churn * n), len(bad_idx))
+    out = []
+    for drop_pp in (0.0, 1.0, 2.0, 3.0, 4.0, 5.0, 6.0, 8.0, 10.0):
+        k = round(drop_pp / 100 * n)
+        fails = flags = 0
+        for _ in range(trials):
+            to_bad = set(rng.sample(acc_idx, k + m))
+            to_good = set(rng.sample(bad_idx, m))
+            cand = [
+                {**r, "acceptable": False}
+                if i in to_bad
+                else ({**r, "acceptable": True} if i in to_good else r)
+                for i, r in enumerate(reference)
+            ]
+            status = evaluate_gates(reference, cand, GateConfig(resamples=1000))["gates"][0][
+                "status"
+            ]
+            fails += status == "fail"
+            flags += status in ("fail", "warn")
+        out.append(
+            {
+                "drop_pp": drop_pp,
+                "flipped_to_bad": k + m,
+                "flipped_to_good": m,
+                "churn": churn,
+                "trials": trials,
+                "fail_rate": fails / trials,
+                "flag_rate": flags / trials,
+            }
+        )
+    return out
 
 
 def main() -> None:
     ap = argparse.ArgumentParser()
     ap.add_argument("--ci", action="store_true")
+    ap.add_argument("--pool", default="latest", choices=sorted(POOLS))
+    ap.add_argument("--trials", type=int, default=200)
     ap.add_argument("--sandbox", default="docker", choices=["docker", "subprocess"])
     sys.exit(asyncio.run(main_async(ap.parse_args())))
 

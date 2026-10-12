@@ -1,13 +1,14 @@
 import { useState } from "react";
 import { Bar, BarChart, CartesianGrid, Cell, ResponsiveContainer, Tooltip, XAxis, YAxis } from "recharts";
 
-import { Badge, Card, EmptyState, ErrorState, Loading, PageHeader, Select, Td, Th, seriesColor } from "../components/ui";
-import { useApi } from "../hooks/useApi";
+import { Badge, Card, EmptyState, ErrorState, Loading, PageHeader, Select, TRAFFIC_OPTIONS, Td, Th, seriesColor } from "../components/ui";
+import { useApi, useTrafficFilter } from "../hooks/useApi";
 import { fmt, type ModelsResponse } from "../services/api";
 
 export function ModelsPage() {
   const [hours, setHours] = useState("24");
-  const { data, error, loading } = useApi<ModelsResponse>(`/api/analytics/models?hours=${hours}`, 15000);
+  const [traffic, setTraffic] = useTrafficFilter();
+  const { data, error, loading } = useApi<ModelsResponse>(`/api/analytics/models?hours=${hours}&traffic=${traffic}`, 15000);
   const order = data ? Object.entries(data.registry).sort((a, b) => a[1].tier - b[1].tier).map(([k]) => k) : [];
 
   return (
@@ -15,7 +16,12 @@ export function ModelsPage() {
       <PageHeader
         title="Models"
         description="Per-model traffic, reliability, latency, token usage and estimated cost, plus the registry's list prices and circuit-breaker state."
-        actions={<Select label="Window" value={hours} onChange={setHours} options={[{ value: "1", label: "1 h" }, { value: "24", label: "24 h" }, { value: "168", label: "7 d" }]} />}
+        actions={
+          <div className="flex gap-3">
+            <Select label="Traffic" value={traffic} onChange={setTraffic} options={TRAFFIC_OPTIONS} />
+            <Select label="Window" value={hours} onChange={setHours} options={[{ value: "1", label: "1 h" }, { value: "24", label: "24 h" }, { value: "168", label: "7 d" }]} />
+          </div>
+        }
       />
       {error && <ErrorState error={error} />}
       {loading && !data && <Loading />}

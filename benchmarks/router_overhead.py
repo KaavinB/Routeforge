@@ -16,6 +16,7 @@ from __future__ import annotations
 import argparse
 import asyncio
 import time
+from functools import partial
 from pathlib import Path
 from typing import Any
 
@@ -122,20 +123,14 @@ def main() -> None:
             f = extract_features(c.messages, params)
             text = routing_text(c.messages)
             tp = artifact.task_probs(text)
-            stages["features"] += time_it(lambda: extract_features(c.messages, params), 1)
-            stages["task_classifier"] += time_it(lambda: artifact.task_probs(text), 1)
+            stages["features"] += time_it(partial(extract_features, c.messages, params), 1)
+            stages["task_classifier"] += time_it(partial(artifact.task_probs, text), 1)
             stages["quality_models"] += time_it(
-                lambda: artifact.quality_probs(f, tp, artifact.default_variant), 1
+                partial(artifact.quality_probs, f, tp, artifact.default_variant), 1
             )
-            stages["decide_learned"] += time_it(
-                lambda: engine.decide("learned", c.messages, params, quality_threshold=0.8), 1
-            )
-            stages["decide_heuristic"] += time_it(
-                lambda: engine.decide("heuristic", c.messages, params, quality_threshold=0.8), 1
-            )
-            stages["decide_premium"] += time_it(
-                lambda: engine.decide("premium", c.messages, params, quality_threshold=0.8), 1
-            )
+            for strat in ("learned", "heuristic", "premium"):
+                decide = partial(engine.decide, strat, c.messages, params, quality_threshold=0.8)
+                stages[f"decide_{strat}"] += time_it(decide, 1)
     inproc = {k: pct(v) for k, v in stages.items()}
     e2e_res = (
         asyncio.run(e2e(args.base_url, cases, args.explicit_model, 2))

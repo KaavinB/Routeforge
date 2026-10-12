@@ -1,0 +1,2283 @@
+{
+  "metadata": {
+    "benchmark": "A_F_offline_replay_latest",
+    "experiment_id": "A_F_offline_replay_latest-20261012T001541Z-1ccb70",
+    "timestamp": "2026-10-12T00:15:41.736251+00:00",
+    "git_sha": "d7a8030c527a0ccd6d48ac0a5c4c78018dbedca6",
+    "git_dirty": true,
+    "hardware": {
+      "platform": "macOS-26.5.2-arm64-arm-64bit",
+      "machine": "arm64",
+      "python": "3.12.15",
+      "cpu": "Apple M4",
+      "memory_gb": 16.0,
+      "cpu_count": 10
+    },
+    "software": {
+      "fastapi": "0.141.1",
+      "litellm": "1.102.1",
+      "scikit-learn": "1.9.1",
+      "numpy": "2.5.3",
+      "redis": "8.1.0",
+      "sqlalchemy": "2.1.1",
+      "uvicorn": "0.54.0",
+      "locust": "2.46.6"
+    },
+    "collection": "latest-2026-10-11",
+    "mode": "hosted",
+    "dataset": "routeforge-bench-v1",
+    "dataset_version": "1.0.0",
+    "dataset_sha256": "e4536aa2c9aec12a155e45ce9e9d5532ea8f2b7a805cdccf2a4029e2aeccd910",
+    "split": "test",
+    "n_cases": 161,
+    "registry_version": "latest-2026-10-11",
+    "pricing": {
+      "version": "2026-10-11",
+      "currency": "USD",
+      "sources": {
+        "openai": "https://developers.openai.com/api/docs/pricing (standard tier, <=272K context, retrieved 2026-10-11). gpt-5.6-sol is on promotional pricing through at least 2026-11-21 (not used here).",
+        "anthropic": "Anthropic first-party API pricing (claude-api reference table cached 2026-10-06, prompts <=100K tokens)"
+      },
+      "disclaimer": "Costs are estimates computed from token usage and list prices; they are not provider billing data."
+    },
+    "router_artifact": "router-latest-2026-10-11",
+    "router_selected_feature_sets": {
+      "claude-haiku-5-5": "no_task",
+      "claude-opus-5-5": "task_only",
+      "claude-sonnet-5-5": "no_task",
+      "gpt-5.6-luna": "no_task",
+      "gpt-5.6-terra": "full"
+    },
+    "default_threshold": 0.8,
+    "methodology": "Counterfactual replay: each policy picks a model per prompt; outcome = that model's recorded, scored output for that prompt. Latency = recorded provider wall-clock latency of the chosen model (excludes gateway overhead, measured separately). Costs are token usage x list price (estimates)."
+  },
+  "status": "complete",
+  "policies": {
+    "fixed: gpt-5.6-luna (economy)": {
+      "n": 161,
+      "acceptable_rate": 0.8695652173913043,
+      "acceptable_rate_ci95": [
+        0.8088234681350441,
+        0.9130816820212271
+      ],
+      "total_cost_usd": 0.0136172,
+      "cost_per_request_usd": 8.457888198757763e-05,
+      "cost_per_1k_requests_usd": 0.08457888198757763,
+      "cost_per_acceptable_usd": 9.726571428571429e-05,
+      "latency_p50_ms": 1292.5,
+      "latency_p95_ms": 1932.7,
+      "model_distribution": {
+        "gpt-5.6-luna": 1.0
+      },
+      "quality_violation_rate": null,
+      "n_claimed_ok": 0,
+      "decision_us_p50": 0.12500095181167126,
+      "decision_us_p95": 0.2910092007368803,
+      "by_category": {
+        "classification": {
+          "n": 24,
+          "acceptable_rate": 0.8333333333333334,
+          "cost_per_request_usd": 2.2083333333333333e-05,
+          "models": {
+            "gpt-5.6-luna": 24
+          }
+        },
+        "code": {
+          "n": 24,
+          "acceptable_rate": 0.9583333333333334,
+          "cost_per_request_usd": 9.541666666666666e-05,
+          "models": {
+            "gpt-5.6-luna": 24
+          }
+        },
+        "extraction": {
+          "n": 21,
+          "acceptable_rate": 0.8571428571428571,
+          "cost_per_request_usd": 5.326666666666666e-05,
+          "models": {
+            "gpt-5.6-luna": 21
+          }
+        },
+        "factual_qa": {
+          "n": 24,
+          "acceptable_rate": 0.5,
+          "cost_per_request_usd": 1.86e-05,
+          "models": {
+            "gpt-5.6-luna": 24
+          }
+        },
+        "json": {
+          "n": 20,
+          "acceptable_rate": 1.0,
+          "cost_per_request_usd": 8.098e-05,
+          "models": {
+            "gpt-5.6-luna": 20
+          }
+        },
+        "reasoning": {
+          "n": 24,
+          "acceptable_rate": 0.9583333333333334,
+          "cost_per_request_usd": 0.00010092499999999999,
+          "models": {
+            "gpt-5.6-luna": 24
+          }
+        },
+        "summarization": {
+          "n": 24,
+          "acceptable_rate": 1.0,
+          "cost_per_request_usd": 0.00021626666666666667,
+          "models": {
+            "gpt-5.6-luna": 24
+          }
+        }
+      }
+    },
+    "fixed: claude-haiku-5-5": {
+      "n": 161,
+      "acceptable_rate": 0.8571428571428571,
+      "acceptable_rate_ci95": [
+        0.7947556489549223,
+        0.9028837818683648
+      ],
+      "total_cost_usd": 0.0101136,
+      "cost_per_request_usd": 6.281739130434783e-05,
+      "cost_per_1k_requests_usd": 0.06281739130434782,
+      "cost_per_acceptable_usd": 7.328695652173914e-05,
+      "latency_p50_ms": 970.4000000000001,
+      "latency_p95_ms": 1479.9,
+      "model_distribution": {
+        "claude-haiku-5-5": 1.0
+      },
+      "quality_violation_rate": null,
+      "n_claimed_ok": 0,
+      "decision_us_p50": 0.12500095181167126,
+      "decision_us_p95": 0.2079905243590474,
+      "by_category": {
+        "classification": {
+          "n": 24,
+          "acceptable_rate": 0.8333333333333334,
+          "cost_per_request_usd": 1.54e-05,
+          "models": {
+            "claude-haiku-5-5": 24
+          }
+        },
+        "code": {
+          "n": 24,
+          "acceptable_rate": 0.9166666666666666,
+          "cost_per_request_usd": 7.060416666666666e-05,
+          "models": {
+            "claude-haiku-5-5": 24
+          }
+        },
+        "extraction": {
+          "n": 21,
+          "acceptable_rate": 0.8095238095238095,
+          "cost_per_request_usd": 3.8566666666666664e-05,
+          "models": {
+            "claude-haiku-5-5": 21
+          }
+        },
+        "factual_qa": {
+          "n": 24,
+          "acceptable_rate": 0.4583333333333333,
+          "cost_per_request_usd": 1.2058333333333333e-05,
+          "models": {
+            "claude-haiku-5-5": 24
+          }
+        },
+        "json": {
+          "n": 20,
+          "acceptable_rate": 1.0,
+          "cost_per_request_usd": 5.6245e-05,
+          "models": {
+            "claude-haiku-5-5": 20
+          }
+        },
+        "reasoning": {
+          "n": 24,
+          "acceptable_rate": 1.0,
+          "cost_per_request_usd": 6.767499999999999e-05,
+          "models": {
+            "claude-haiku-5-5": 24
+          }
+        },
+        "summarization": {
+          "n": 24,
+          "acceptable_rate": 1.0,
+          "cost_per_request_usd": 0.00017504583333333333,
+          "models": {
+            "claude-haiku-5-5": 24
+          }
+        }
+      }
+    },
+    "fixed: gpt-5.6-terra": {
+      "n": 161,
+      "acceptable_rate": 0.8881987577639752,
+      "acceptable_rate_ci95": [
+        0.8302023723261438,
+        0.9281013568296033
+      ],
+      "total_cost_usd": 0.142808,
+      "cost_per_request_usd": 0.0008870062111801241,
+      "cost_per_1k_requests_usd": 0.8870062111801241,
+      "cost_per_acceptable_usd": 0.0009986573426573426,
+      "latency_p50_ms": 1069.5,
+      "latency_p95_ms": 1771.3000000000002,
+      "model_distribution": {
+        "gpt-5.6-terra": 1.0
+      },
+      "quality_violation_rate": null,
+      "n_claimed_ok": 0,
+      "decision_us_p50": 0.12500095181167126,
+      "decision_us_p95": 0.16701233107596636,
+      "by_category": {
+        "classification": {
+          "n": 24,
+          "acceptable_rate": 0.8333333333333334,
+          "cost_per_request_usd": 0.00022083333333333333,
+          "models": {
+            "gpt-5.6-terra": 24
+          }
+        },
+        "code": {
+          "n": 24,
+          "acceptable_rate": 0.9166666666666666,
+          "cost_per_request_usd": 0.0011056666666666667,
+          "models": {
+            "gpt-5.6-terra": 24
+          }
+        },
+        "extraction": {
+          "n": 21,
+          "acceptable_rate": 0.9523809523809523,
+          "cost_per_request_usd": 0.0005195238095238095,
+          "models": {
+            "gpt-5.6-terra": 21
+          }
+        },
+        "factual_qa": {
+          "n": 24,
+          "acceptable_rate": 0.5416666666666666,
+          "cost_per_request_usd": 0.000173,
+          "models": {
+            "gpt-5.6-terra": 24
+          }
+        },
+        "json": {
+          "n": 20,
+          "acceptable_rate": 1.0,
+          "cost_per_request_usd": 0.0008098,
+          "models": {
+            "gpt-5.6-terra": 20
+          }
+        },
+        "reasoning": {
+          "n": 24,
+          "acceptable_rate": 1.0,
+          "cost_per_request_usd": 0.00116575,
+          "models": {
+            "gpt-5.6-terra": 24
+          }
+        },
+        "summarization": {
+          "n": 24,
+          "acceptable_rate": 1.0,
+          "cost_per_request_usd": 0.0021556666666666664,
+          "models": {
+            "gpt-5.6-terra": 24
+          }
+        }
+      }
+    },
+    "fixed: claude-sonnet-5-5": {
+      "n": 161,
+      "acceptable_rate": 0.8944099378881988,
+      "acceptable_rate_ci95": [
+        0.8374123325572473,
+        0.9330242562649917
+      ],
+      "total_cost_usd": 0.206382,
+      "cost_per_request_usd": 0.0012818757763975155,
+      "cost_per_1k_requests_usd": 1.2818757763975155,
+      "cost_per_acceptable_usd": 0.0014332083333333334,
+      "latency_p50_ms": 1156.8,
+      "latency_p95_ms": 2220.0,
+      "model_distribution": {
+        "claude-sonnet-5-5": 1.0
+      },
+      "quality_violation_rate": null,
+      "n_claimed_ok": 0,
+      "decision_us_p50": 0.12500095181167126,
+      "decision_us_p95": 0.16701233107596636,
+      "by_category": {
+        "classification": {
+          "n": 24,
+          "acceptable_rate": 0.8333333333333334,
+          "cost_per_request_usd": 0.000308,
+          "models": {
+            "claude-sonnet-5-5": 24
+          }
+        },
+        "code": {
+          "n": 24,
+          "acceptable_rate": 0.9166666666666666,
+          "cost_per_request_usd": 0.0015170833333333332,
+          "models": {
+            "claude-sonnet-5-5": 24
+          }
+        },
+        "extraction": {
+          "n": 21,
+          "acceptable_rate": 0.9523809523809523,
+          "cost_per_request_usd": 0.0007441904761904762,
+          "models": {
+            "claude-sonnet-5-5": 21
+          }
+        },
+        "factual_qa": {
+          "n": 24,
+          "acceptable_rate": 0.5833333333333334,
+          "cost_per_request_usd": 0.0003099166666666667,
+          "models": {
+            "claude-sonnet-5-5": 24
+          }
+        },
+        "json": {
+          "n": 20,
+          "acceptable_rate": 1.0,
+          "cost_per_request_usd": 0.0011249,
+          "models": {
+            "claude-sonnet-5-5": 20
+          }
+        },
+        "reasoning": {
+          "n": 24,
+          "acceptable_rate": 1.0,
+          "cost_per_request_usd": 0.0011730833333333333,
+          "models": {
+            "claude-sonnet-5-5": 24
+          }
+        },
+        "summarization": {
+          "n": 24,
+          "acceptable_rate": 1.0,
+          "cost_per_request_usd": 0.0037025833333333333,
+          "models": {
+            "claude-sonnet-5-5": 24
+          }
+        }
+      }
+    },
+    "fixed: claude-opus-5-5 (premium)": {
+      "n": 161,
+      "acceptable_rate": 0.9254658385093167,
+      "acceptable_rate_ci95": [
+        0.8742484769216827,
+        0.956852410233016
+      ],
+      "total_cost_usd": 0.481068,
+      "cost_per_request_usd": 0.0029879999999999998,
+      "cost_per_1k_requests_usd": 2.988,
+      "cost_per_acceptable_usd": 0.0032286442953020134,
+      "latency_p50_ms": 1564.8,
+      "latency_p95_ms": 4150.0,
+      "model_distribution": {
+        "claude-opus-5-5": 1.0
+      },
+      "quality_violation_rate": null,
+      "n_claimed_ok": 0,
+      "decision_us_p50": 0.12500095181167126,
+      "decision_us_p95": 0.20800507627427578,
+      "by_category": {
+        "classification": {
+          "n": 24,
+          "acceptable_rate": 0.875,
+          "cost_per_request_usd": 0.0007058333333333334,
+          "models": {
+            "claude-opus-5-5": 24
+          }
+        },
+        "code": {
+          "n": 24,
+          "acceptable_rate": 1.0,
+          "cost_per_request_usd": 0.0026831666666666666,
+          "models": {
+            "claude-opus-5-5": 24
+          }
+        },
+        "extraction": {
+          "n": 21,
+          "acceptable_rate": 0.9523809523809523,
+          "cost_per_request_usd": 0.0018752380952380952,
+          "models": {
+            "claude-opus-5-5": 21
+          }
+        },
+        "factual_qa": {
+          "n": 24,
+          "acceptable_rate": 0.6666666666666666,
+          "cost_per_request_usd": 0.0016871666666666667,
+          "models": {
+            "claude-opus-5-5": 24
+          }
+        },
+        "json": {
+          "n": 20,
+          "acceptable_rate": 1.0,
+          "cost_per_request_usd": 0.0022788,
+          "models": {
+            "claude-opus-5-5": 20
+          }
+        },
+        "reasoning": {
+          "n": 24,
+          "acceptable_rate": 1.0,
+          "cost_per_request_usd": 0.0029635000000000004,
+          "models": {
+            "claude-opus-5-5": 24
+          }
+        },
+        "summarization": {
+          "n": 24,
+          "acceptable_rate": 1.0,
+          "cost_per_request_usd": 0.008465,
+          "models": {
+            "claude-opus-5-5": 24
+          }
+        }
+      }
+    },
+    "random": {
+      "n": 161,
+      "acceptable_rate": 0.8944099378881988,
+      "acceptable_rate_ci95": [
+        0.8374123325572473,
+        0.9330242562649917
+      ],
+      "total_cost_usd": 0.1728747,
+      "cost_per_request_usd": 0.001073755900621118,
+      "cost_per_1k_requests_usd": 1.073755900621118,
+      "cost_per_acceptable_usd": 0.0012005187499999998,
+      "latency_p50_ms": 1136.5,
+      "latency_p95_ms": 2554.7,
+      "model_distribution": {
+        "claude-haiku-5-5": 0.14906832298136646,
+        "claude-opus-5-5": 0.19254658385093168,
+        "claude-sonnet-5-5": 0.2732919254658385,
+        "gpt-5.6-luna": 0.19254658385093168,
+        "gpt-5.6-terra": 0.19254658385093168
+      },
+      "quality_violation_rate": null,
+      "n_claimed_ok": 0,
+      "decision_us_p50": 753.3340103691444,
+      "decision_us_p95": 2034.7920071799308,
+      "by_category": {
+        "classification": {
+          "n": 24,
+          "acceptable_rate": 0.8333333333333334,
+          "cost_per_request_usd": 0.00024905416666666665,
+          "models": {
+            "claude-sonnet-5-5": 8,
+            "gpt-5.6-luna": 5,
+            "claude-opus-5-5": 4,
+            "gpt-5.6-terra": 5,
+            "claude-haiku-5-5": 2
+          }
+        },
+        "code": {
+          "n": 24,
+          "acceptable_rate": 1.0,
+          "cost_per_request_usd": 0.0013004208333333334,
+          "models": {
+            "claude-haiku-5-5": 4,
+            "claude-opus-5-5": 6,
+            "gpt-5.6-luna": 5,
+            "claude-sonnet-5-5": 6,
+            "gpt-5.6-terra": 3
+          }
+        },
+        "extraction": {
+          "n": 21,
+          "acceptable_rate": 0.9523809523809523,
+          "cost_per_request_usd": 0.0005768095238095238,
+          "models": {
+            "gpt-5.6-luna": 7,
+            "claude-sonnet-5-5": 8,
+            "gpt-5.6-terra": 4,
+            "claude-opus-5-5": 2
+          }
+        },
+        "factual_qa": {
+          "n": 24,
+          "acceptable_rate": 0.5,
+          "cost_per_request_usd": 0.0003193875,
+          "models": {
+            "claude-opus-5-5": 6,
+            "gpt-5.6-terra": 4,
+            "claude-sonnet-5-5": 6,
+            "claude-haiku-5-5": 6,
+            "gpt-5.6-luna": 2
+          }
+        },
+        "json": {
+          "n": 20,
+          "acceptable_rate": 1.0,
+          "cost_per_request_usd": 0.0009064899999999999,
+          "models": {
+            "gpt-5.6-terra": 5,
+            "claude-haiku-5-5": 5,
+            "claude-opus-5-5": 4,
+            "claude-sonnet-5-5": 4,
+            "gpt-5.6-luna": 2
+          }
+        },
+        "reasoning": {
+          "n": 24,
+          "acceptable_rate": 1.0,
+          "cost_per_request_usd": 0.0012504208333333335,
+          "models": {
+            "claude-sonnet-5-5": 6,
+            "claude-haiku-5-5": 3,
+            "gpt-5.6-luna": 5,
+            "claude-opus-5-5": 5,
+            "gpt-5.6-terra": 5
+          }
+        },
+        "summarization": {
+          "n": 24,
+          "acceptable_rate": 1.0,
+          "cost_per_request_usd": 0.0028237125,
+          "models": {
+            "claude-opus-5-5": 4,
+            "claude-haiku-5-5": 4,
+            "gpt-5.6-luna": 5,
+            "claude-sonnet-5-5": 6,
+            "gpt-5.6-terra": 5
+          }
+        }
+      },
+      "over_50_seeds": {
+        "acceptable_rate_mean": 0.8848447204968944,
+        "acceptable_rate_sd": 0.012922240457648058,
+        "cost_per_request_mean": 0.0010487394658385094
+      }
+    },
+    "heuristic": {
+      "n": 161,
+      "acceptable_rate": 0.8695652173913043,
+      "acceptable_rate_ci95": [
+        0.8088234681350441,
+        0.9130816820212271
+      ],
+      "total_cost_usd": 0.2485093,
+      "cost_per_request_usd": 0.0015435360248447203,
+      "cost_per_1k_requests_usd": 1.5435360248447205,
+      "cost_per_acceptable_usd": 0.0017750664285714284,
+      "latency_p50_ms": 1159.1,
+      "latency_p95_ms": 2775.7999999999997,
+      "model_distribution": {
+        "claude-haiku-5-5": 0.2795031055900621,
+        "claude-opus-5-5": 0.2981366459627329,
+        "claude-sonnet-5-5": 0.2732919254658385,
+        "gpt-5.6-luna": 0.14906832298136646
+      },
+      "quality_violation_rate": null,
+      "n_claimed_ok": 0,
+      "decision_us_p50": 724.7089961310849,
+      "decision_us_p95": 2702.792000491172,
+      "by_category": {
+        "classification": {
+          "n": 24,
+          "acceptable_rate": 0.8333333333333334,
+          "cost_per_request_usd": 2.2083333333333333e-05,
+          "models": {
+            "gpt-5.6-luna": 24
+          }
+        },
+        "code": {
+          "n": 24,
+          "acceptable_rate": 1.0,
+          "cost_per_request_usd": 0.0026831666666666666,
+          "models": {
+            "claude-opus-5-5": 24
+          }
+        },
+        "extraction": {
+          "n": 21,
+          "acceptable_rate": 0.8095238095238095,
+          "cost_per_request_usd": 3.8566666666666664e-05,
+          "models": {
+            "claude-haiku-5-5": 21
+          }
+        },
+        "factual_qa": {
+          "n": 24,
+          "acceptable_rate": 0.4583333333333333,
+          "cost_per_request_usd": 1.2058333333333333e-05,
+          "models": {
+            "claude-haiku-5-5": 24
+          }
+        },
+        "json": {
+          "n": 20,
+          "acceptable_rate": 1.0,
+          "cost_per_request_usd": 0.0011249,
+          "models": {
+            "claude-sonnet-5-5": 20
+          }
+        },
+        "reasoning": {
+          "n": 24,
+          "acceptable_rate": 1.0,
+          "cost_per_request_usd": 0.0029635000000000004,
+          "models": {
+            "claude-opus-5-5": 24
+          }
+        },
+        "summarization": {
+          "n": 24,
+          "acceptable_rate": 1.0,
+          "cost_per_request_usd": 0.0037025833333333333,
+          "models": {
+            "claude-sonnet-5-5": 24
+          }
+        }
+      }
+    },
+    "learned (\u03c4=0.8)": {
+      "n": 161,
+      "acceptable_rate": 0.8944099378881988,
+      "acceptable_rate_ci95": [
+        0.8374123325572473,
+        0.9330242562649917
+      ],
+      "total_cost_usd": 0.0464281,
+      "cost_per_request_usd": 0.0002883732919254658,
+      "cost_per_1k_requests_usd": 0.28837329192546585,
+      "cost_per_acceptable_usd": 0.0003224173611111111,
+      "latency_p50_ms": 1039.8,
+      "latency_p95_ms": 1742.8,
+      "model_distribution": {
+        "claude-haiku-5-5": 0.8074534161490683,
+        "claude-opus-5-5": 0.13043478260869565,
+        "claude-sonnet-5-5": 0.024844720496894408,
+        "gpt-5.6-luna": 0.012422360248447204,
+        "gpt-5.6-terra": 0.024844720496894408
+      },
+      "quality_violation_rate": 0.06569343065693431,
+      "n_claimed_ok": 137,
+      "decision_us_p50": 1122.8330113226548,
+      "decision_us_p95": 3330.9580030618235,
+      "by_category": {
+        "classification": {
+          "n": 24,
+          "acceptable_rate": 0.8333333333333334,
+          "cost_per_request_usd": 2.7095833333333336e-05,
+          "models": {
+            "claude-haiku-5-5": 22,
+            "claude-sonnet-5-5": 1,
+            "gpt-5.6-luna": 1
+          }
+        },
+        "code": {
+          "n": 24,
+          "acceptable_rate": 0.9166666666666666,
+          "cost_per_request_usd": 7.060416666666666e-05,
+          "models": {
+            "claude-haiku-5-5": 24
+          }
+        },
+        "extraction": {
+          "n": 21,
+          "acceptable_rate": 0.8571428571428571,
+          "cost_per_request_usd": 0.0001029095238095238,
+          "models": {
+            "gpt-5.6-terra": 4,
+            "claude-haiku-5-5": 16,
+            "gpt-5.6-luna": 1
+          }
+        },
+        "factual_qa": {
+          "n": 24,
+          "acceptable_rate": 0.6666666666666666,
+          "cost_per_request_usd": 0.0014571666666666667,
+          "models": {
+            "claude-opus-5-5": 21,
+            "claude-sonnet-5-5": 3
+          }
+        },
+        "json": {
+          "n": 20,
+          "acceptable_rate": 1.0,
+          "cost_per_request_usd": 5.6245e-05,
+          "models": {
+            "claude-haiku-5-5": 20
+          }
+        },
+        "reasoning": {
+          "n": 24,
+          "acceptable_rate": 1.0,
+          "cost_per_request_usd": 6.767499999999999e-05,
+          "models": {
+            "claude-haiku-5-5": 24
+          }
+        },
+        "summarization": {
+          "n": 24,
+          "acceptable_rate": 1.0,
+          "cost_per_request_usd": 0.00017504583333333333,
+          "models": {
+            "claude-haiku-5-5": 24
+          }
+        }
+      }
+    },
+    "learned-full (\u03c4=0.8)": {
+      "n": 161,
+      "acceptable_rate": 0.8881987577639752,
+      "acceptable_rate_ci95": [
+        0.8302023723261438,
+        0.9281013568296033
+      ],
+      "total_cost_usd": 0.0503162,
+      "cost_per_request_usd": 0.00031252298136645964,
+      "cost_per_1k_requests_usd": 0.3125229813664596,
+      "cost_per_acceptable_usd": 0.00035186153846153846,
+      "latency_p50_ms": 1037.1999999999998,
+      "latency_p95_ms": 1822.8999999999999,
+      "model_distribution": {
+        "claude-haiku-5-5": 0.8509316770186336,
+        "claude-opus-5-5": 0.14906832298136646
+      },
+      "quality_violation_rate": 0.072992700729927,
+      "n_claimed_ok": 137,
+      "decision_us_p50": 830.9169934364036,
+      "decision_us_p95": 2333.084004931152,
+      "by_category": {
+        "classification": {
+          "n": 24,
+          "acceptable_rate": 0.8333333333333334,
+          "cost_per_request_usd": 1.54e-05,
+          "models": {
+            "claude-haiku-5-5": 24
+          }
+        },
+        "code": {
+          "n": 24,
+          "acceptable_rate": 0.9166666666666666,
+          "cost_per_request_usd": 7.060416666666666e-05,
+          "models": {
+            "claude-haiku-5-5": 24
+          }
+        },
+        "extraction": {
+          "n": 21,
+          "acceptable_rate": 0.8095238095238095,
+          "cost_per_request_usd": 3.8566666666666664e-05,
+          "models": {
+            "claude-haiku-5-5": 21
+          }
+        },
+        "factual_qa": {
+          "n": 24,
+          "acceptable_rate": 0.6666666666666666,
+          "cost_per_request_usd": 0.0016871666666666667,
+          "models": {
+            "claude-opus-5-5": 24
+          }
+        },
+        "json": {
+          "n": 20,
+          "acceptable_rate": 1.0,
+          "cost_per_request_usd": 5.6245e-05,
+          "models": {
+            "claude-haiku-5-5": 20
+          }
+        },
+        "reasoning": {
+          "n": 24,
+          "acceptable_rate": 1.0,
+          "cost_per_request_usd": 6.767499999999999e-05,
+          "models": {
+            "claude-haiku-5-5": 24
+          }
+        },
+        "summarization": {
+          "n": 24,
+          "acceptable_rate": 1.0,
+          "cost_per_request_usd": 0.00017504583333333333,
+          "models": {
+            "claude-haiku-5-5": 24
+          }
+        }
+      }
+    },
+    "learned-no-task (\u03c4=0.8)": {
+      "n": 161,
+      "acceptable_rate": 0.8944099378881988,
+      "acceptable_rate_ci95": [
+        0.8374123325572473,
+        0.9330242562649917
+      ],
+      "total_cost_usd": 0.051948100000000004,
+      "cost_per_request_usd": 0.00032265900621118016,
+      "cost_per_1k_requests_usd": 0.32265900621118015,
+      "cost_per_acceptable_usd": 0.00036075069444444445,
+      "latency_p50_ms": 1039.8,
+      "latency_p95_ms": 1822.8999999999999,
+      "model_distribution": {
+        "claude-haiku-5-5": 0.8074534161490683,
+        "claude-opus-5-5": 0.14906832298136646,
+        "claude-sonnet-5-5": 0.006211180124223602,
+        "gpt-5.6-luna": 0.012422360248447204,
+        "gpt-5.6-terra": 0.024844720496894408
+      },
+      "quality_violation_rate": 0.06569343065693431,
+      "n_claimed_ok": 137,
+      "decision_us_p50": 823.0419916799292,
+      "decision_us_p95": 2101.250007399358,
+      "by_category": {
+        "classification": {
+          "n": 24,
+          "acceptable_rate": 0.8333333333333334,
+          "cost_per_request_usd": 2.7095833333333336e-05,
+          "models": {
+            "claude-haiku-5-5": 22,
+            "claude-sonnet-5-5": 1,
+            "gpt-5.6-luna": 1
+          }
+        },
+        "code": {
+          "n": 24,
+          "acceptable_rate": 0.9166666666666666,
+          "cost_per_request_usd": 7.060416666666666e-05,
+          "models": {
+            "claude-haiku-5-5": 24
+          }
+        },
+        "extraction": {
+          "n": 21,
+          "acceptable_rate": 0.8571428571428571,
+          "cost_per_request_usd": 0.0001029095238095238,
+          "models": {
+            "gpt-5.6-terra": 4,
+            "claude-haiku-5-5": 16,
+            "gpt-5.6-luna": 1
+          }
+        },
+        "factual_qa": {
+          "n": 24,
+          "acceptable_rate": 0.6666666666666666,
+          "cost_per_request_usd": 0.0016871666666666667,
+          "models": {
+            "claude-opus-5-5": 24
+          }
+        },
+        "json": {
+          "n": 20,
+          "acceptable_rate": 1.0,
+          "cost_per_request_usd": 5.6245e-05,
+          "models": {
+            "claude-haiku-5-5": 20
+          }
+        },
+        "reasoning": {
+          "n": 24,
+          "acceptable_rate": 1.0,
+          "cost_per_request_usd": 6.767499999999999e-05,
+          "models": {
+            "claude-haiku-5-5": 24
+          }
+        },
+        "summarization": {
+          "n": 24,
+          "acceptable_rate": 1.0,
+          "cost_per_request_usd": 0.00017504583333333333,
+          "models": {
+            "claude-haiku-5-5": 24
+          }
+        }
+      }
+    },
+    "learned-task-only (\u03c4=0.8)": {
+      "n": 161,
+      "acceptable_rate": 0.8881987577639752,
+      "acceptable_rate_ci95": [
+        0.8302023723261438,
+        0.9281013568296033
+      ],
+      "total_cost_usd": 0.0503162,
+      "cost_per_request_usd": 0.00031252298136645964,
+      "cost_per_1k_requests_usd": 0.3125229813664596,
+      "cost_per_acceptable_usd": 0.00035186153846153846,
+      "latency_p50_ms": 1037.1999999999998,
+      "latency_p95_ms": 1822.8999999999999,
+      "model_distribution": {
+        "claude-haiku-5-5": 0.8509316770186336,
+        "claude-opus-5-5": 0.14906832298136646
+      },
+      "quality_violation_rate": 0.072992700729927,
+      "n_claimed_ok": 137,
+      "decision_us_p50": 734.1250020544976,
+      "decision_us_p95": 2018.583007156849,
+      "by_category": {
+        "classification": {
+          "n": 24,
+          "acceptable_rate": 0.8333333333333334,
+          "cost_per_request_usd": 1.54e-05,
+          "models": {
+            "claude-haiku-5-5": 24
+          }
+        },
+        "code": {
+          "n": 24,
+          "acceptable_rate": 0.9166666666666666,
+          "cost_per_request_usd": 7.060416666666666e-05,
+          "models": {
+            "claude-haiku-5-5": 24
+          }
+        },
+        "extraction": {
+          "n": 21,
+          "acceptable_rate": 0.8095238095238095,
+          "cost_per_request_usd": 3.8566666666666664e-05,
+          "models": {
+            "claude-haiku-5-5": 21
+          }
+        },
+        "factual_qa": {
+          "n": 24,
+          "acceptable_rate": 0.6666666666666666,
+          "cost_per_request_usd": 0.0016871666666666667,
+          "models": {
+            "claude-opus-5-5": 24
+          }
+        },
+        "json": {
+          "n": 20,
+          "acceptable_rate": 1.0,
+          "cost_per_request_usd": 5.6245e-05,
+          "models": {
+            "claude-haiku-5-5": 20
+          }
+        },
+        "reasoning": {
+          "n": 24,
+          "acceptable_rate": 1.0,
+          "cost_per_request_usd": 6.767499999999999e-05,
+          "models": {
+            "claude-haiku-5-5": 24
+          }
+        },
+        "summarization": {
+          "n": 24,
+          "acceptable_rate": 1.0,
+          "cost_per_request_usd": 0.00017504583333333333,
+          "models": {
+            "claude-haiku-5-5": 24
+          }
+        }
+      }
+    },
+    "learned-no-cost (\u03c4=0.8)": {
+      "n": 161,
+      "acceptable_rate": 0.9130434782608695,
+      "acceptable_rate_ci95": [
+        0.8593387435201849,
+        0.9474964243015298
+      ],
+      "total_cost_usd": 0.172949,
+      "cost_per_request_usd": 0.0010742173913043478,
+      "cost_per_1k_requests_usd": 1.0742173913043478,
+      "cost_per_acceptable_usd": 0.0011765238095238094,
+      "latency_p50_ms": 1236.2,
+      "latency_p95_ms": 2236.0,
+      "model_distribution": {
+        "claude-haiku-5-5": 0.17391304347826086,
+        "claude-opus-5-5": 0.2484472049689441,
+        "claude-sonnet-5-5": 0.19875776397515527,
+        "gpt-5.6-luna": 0.20496894409937888,
+        "gpt-5.6-terra": 0.17391304347826086
+      },
+      "quality_violation_rate": 0.043795620437956206,
+      "n_claimed_ok": 137,
+      "decision_us_p50": 834.7919938387349,
+      "decision_us_p95": 2196.0419981041923,
+      "by_category": {
+        "classification": {
+          "n": 24,
+          "acceptable_rate": 0.8333333333333334,
+          "cost_per_request_usd": 0.00017156249999999998,
+          "models": {
+            "gpt-5.6-luna": 7,
+            "claude-haiku-5-5": 5,
+            "gpt-5.6-terra": 5,
+            "claude-sonnet-5-5": 5,
+            "claude-opus-5-5": 2
+          }
+        },
+        "code": {
+          "n": 24,
+          "acceptable_rate": 0.9166666666666666,
+          "cost_per_request_usd": 0.0007762083333333333,
+          "models": {
+            "claude-opus-5-5": 4,
+            "gpt-5.6-terra": 6,
+            "claude-haiku-5-5": 5,
+            "gpt-5.6-luna": 6,
+            "claude-sonnet-5-5": 3
+          }
+        },
+        "extraction": {
+          "n": 21,
+          "acceptable_rate": 1.0,
+          "cost_per_request_usd": 0.0004686142857142857,
+          "models": {
+            "claude-opus-5-5": 1,
+            "claude-haiku-5-5": 6,
+            "claude-sonnet-5-5": 6,
+            "gpt-5.6-luna": 4,
+            "gpt-5.6-terra": 4
+          }
+        },
+        "factual_qa": {
+          "n": 24,
+          "acceptable_rate": 0.6666666666666666,
+          "cost_per_request_usd": 0.0014571666666666667,
+          "models": {
+            "claude-opus-5-5": 21,
+            "claude-sonnet-5-5": 3
+          }
+        },
+        "json": {
+          "n": 20,
+          "acceptable_rate": 1.0,
+          "cost_per_request_usd": 0.0010425500000000002,
+          "models": {
+            "claude-sonnet-5-5": 5,
+            "claude-opus-5-5": 5,
+            "gpt-5.6-terra": 4,
+            "gpt-5.6-luna": 4,
+            "claude-haiku-5-5": 2
+          }
+        },
+        "reasoning": {
+          "n": 24,
+          "acceptable_rate": 1.0,
+          "cost_per_request_usd": 0.0008975791666666666,
+          "models": {
+            "gpt-5.6-luna": 6,
+            "claude-opus-5-5": 3,
+            "claude-haiku-5-5": 5,
+            "gpt-5.6-terra": 5,
+            "claude-sonnet-5-5": 5
+          }
+        },
+        "summarization": {
+          "n": 24,
+          "acceptable_rate": 1.0,
+          "cost_per_request_usd": 0.0026248625,
+          "models": {
+            "gpt-5.6-terra": 4,
+            "claude-opus-5-5": 4,
+            "claude-haiku-5-5": 5,
+            "gpt-5.6-luna": 6,
+            "claude-sonnet-5-5": 5
+          }
+        }
+      }
+    },
+    "oracle (upper bound)": {
+      "n": 161,
+      "acceptable_rate": 0.9503105590062112,
+      "acceptable_rate_ci95": [
+        0.905022568831836,
+        0.9746097569888307
+      ],
+      "total_cost_usd": 0.018487,
+      "cost_per_request_usd": 0.00011482608695652174,
+      "cost_per_1k_requests_usd": 0.11482608695652173,
+      "cost_per_acceptable_usd": 0.00012083006535947713,
+      "latency_p50_ms": 1025.4,
+      "latency_p95_ms": 1619.0,
+      "model_distribution": {
+        "claude-haiku-5-5": 0.8757763975155279,
+        "claude-opus-5-5": 0.012422360248447204,
+        "claude-sonnet-5-5": 0.018633540372670808,
+        "gpt-5.6-luna": 0.07453416149068323,
+        "gpt-5.6-terra": 0.018633540372670808
+      },
+      "quality_violation_rate": null,
+      "n_claimed_ok": 0,
+      "decision_us_p50": 2.8340000426396728,
+      "decision_us_p95": 6.4580090111121535,
+      "by_category": {
+        "classification": {
+          "n": 24,
+          "acceptable_rate": 0.875,
+          "cost_per_request_usd": 1.5695833333333333e-05,
+          "models": {
+            "gpt-5.6-luna": 1,
+            "claude-haiku-5-5": 23
+          }
+        },
+        "code": {
+          "n": 24,
+          "acceptable_rate": 1.0,
+          "cost_per_request_usd": 0.00014874999999999998,
+          "models": {
+            "claude-haiku-5-5": 19,
+            "gpt-5.6-luna": 4,
+            "claude-sonnet-5-5": 1
+          }
+        },
+        "extraction": {
+          "n": 21,
+          "acceptable_rate": 1.0,
+          "cost_per_request_usd": 8.034761904761906e-05,
+          "models": {
+            "claude-haiku-5-5": 17,
+            "gpt-5.6-luna": 2,
+            "gpt-5.6-terra": 2
+          }
+        },
+        "factual_qa": {
+          "n": 24,
+          "acceptable_rate": 0.7916666666666666,
+          "cost_per_request_usd": 0.00024595,
+          "models": {
+            "claude-haiku-5-5": 14,
+            "claude-sonnet-5-5": 2,
+            "gpt-5.6-luna": 5,
+            "claude-opus-5-5": 2,
+            "gpt-5.6-terra": 1
+          }
+        },
+        "json": {
+          "n": 20,
+          "acceptable_rate": 1.0,
+          "cost_per_request_usd": 5.6245e-05,
+          "models": {
+            "claude-haiku-5-5": 20
+          }
+        },
+        "reasoning": {
+          "n": 24,
+          "acceptable_rate": 1.0,
+          "cost_per_request_usd": 6.767499999999999e-05,
+          "models": {
+            "claude-haiku-5-5": 24
+          }
+        },
+        "summarization": {
+          "n": 24,
+          "acceptable_rate": 1.0,
+          "cost_per_request_usd": 0.00017504583333333333,
+          "models": {
+            "claude-haiku-5-5": 24
+          }
+        }
+      }
+    }
+  },
+  "comparisons": {
+    "learned (\u03c4=0.8) vs fixed: claude-opus-5-5 (premium)": {
+      "cost_reduction_pct": {
+        "estimate": 90.34895274680503,
+        "ci_low": 85.02067192190898,
+        "ci_high": 94.20806981516559,
+        "p_value": 0.0,
+        "n": 161
+      },
+      "quality_retention_pct": {
+        "estimate": 96.64429530201343,
+        "ci_low": 93.4640522875817,
+        "ci_high": 99.32885906040268,
+        "p_value": 0.0,
+        "n": 161
+      },
+      "quality_diff_pp": {
+        "estimate": -3.105590062111796,
+        "ci_low": -6.211180124223603,
+        "ci_high": -0.6211180124223614,
+        "p_value": 0.014,
+        "n": 161
+      }
+    },
+    "heuristic vs fixed: claude-opus-5-5 (premium)": {
+      "cost_reduction_pct": {
+        "estimate": 48.34216784321552,
+        "ci_low": 42.5255861532674,
+        "ci_high": 53.965932098782396,
+        "p_value": 0.0,
+        "n": 161
+      },
+      "quality_retention_pct": {
+        "estimate": 93.95973154362417,
+        "ci_low": 89.72481219619974,
+        "ci_high": 97.9591836734694,
+        "p_value": 0.0,
+        "n": 161
+      },
+      "quality_diff_pp": {
+        "estimate": -5.590062111801242,
+        "ci_low": -9.316770186335411,
+        "ci_high": -1.8633540372670843,
+        "p_value": 0.004,
+        "n": 161
+      }
+    },
+    "learned (\u03c4=0.8) vs fixed: gpt-5.6-luna (economy)": {
+      "cost_reduction_pct": {
+        "estimate": -240.9518843815175,
+        "ci_low": -455.49352498629975,
+        "ci_high": -99.27652173829536,
+        "p_value": 0.0,
+        "n": 161
+      },
+      "quality_retention_pct": {
+        "estimate": 102.85714285714286,
+        "ci_low": 97.8723404255319,
+        "ci_high": 108.46276595744682,
+        "p_value": 0.0,
+        "n": 161
+      },
+      "quality_diff_pp": {
+        "estimate": 2.4844720496894457,
+        "ci_low": -1.8633540372670843,
+        "ci_high": 6.8322981366459645,
+        "p_value": 0.333,
+        "n": 161
+      }
+    },
+    "learned (\u03c4=0.8) vs fixed: claude-haiku-5-5": {
+      "cost_reduction_pct": {
+        "estimate": -359.06601012498027,
+        "ci_low": -649.4375831620292,
+        "ci_high": -168.31149657012713,
+        "p_value": 0.0,
+        "n": 161
+      },
+      "quality_retention_pct": {
+        "estimate": 104.34782608695653,
+        "ci_low": 100.70422535211267,
+        "ci_high": 108.95522388059702,
+        "p_value": 0.0,
+        "n": 161
+      },
+      "quality_diff_pp": {
+        "estimate": 3.7267080745341685,
+        "ci_low": 0.6211180124223614,
+        "ci_high": 7.453416149068326,
+        "p_value": 0.0255,
+        "n": 161
+      }
+    },
+    "learned (\u03c4=0.8) vs fixed: gpt-5.6-terra": {
+      "cost_reduction_pct": {
+        "estimate": 67.4891462663156,
+        "ci_low": 46.919735486804356,
+        "ci_high": 80.88435938662403,
+        "p_value": 0.0,
+        "n": 161
+      },
+      "quality_retention_pct": {
+        "estimate": 100.69930069930071,
+        "ci_low": 95.74468085106383,
+        "ci_high": 106.47482014388488,
+        "p_value": 0.0,
+        "n": 161
+      },
+      "quality_diff_pp": {
+        "estimate": 0.6211180124223614,
+        "ci_low": -3.7267080745341685,
+        "ci_high": 5.590062111801242,
+        "p_value": 0.902,
+        "n": 161
+      }
+    },
+    "learned (\u03c4=0.8) vs fixed: claude-sonnet-5-5": {
+      "cost_reduction_pct": {
+        "estimate": 77.50380362628523,
+        "ci_low": 63.103711463923275,
+        "ci_high": 86.82414596195659,
+        "p_value": 0.0,
+        "n": 161
+      },
+      "quality_retention_pct": {
+        "estimate": 100.0,
+        "ci_low": 96.05263157894737,
+        "ci_high": 104.13793103448275,
+        "p_value": 0.0,
+        "n": 161
+      },
+      "quality_diff_pp": {
+        "estimate": 0.0,
+        "ci_low": -3.7267080745341574,
+        "ci_high": 3.7267080745341574,
+        "p_value": 1.0,
+        "n": 161
+      }
+    }
+  },
+  "best_single_model": "fixed: claude-opus-5-5 (premium)",
+  "learned_vs_best_single_at_matched_quality": {
+    "best_single": "fixed: claude-opus-5-5 (premium)",
+    "best_single_acceptable_rate": 0.9254658385093167,
+    "best_single_cost_per_request": 0.0029879999999999998,
+    "cheapest_learned_point_matching_quality": null,
+    "cost_reduction_pct": null
+  },
+  "pareto": {
+    "points": [
+      {
+        "label": "learned \u03c4=0.3",
+        "kind": "learned_sweep",
+        "threshold": 0.3,
+        "acceptable_rate": 0.8571428571428571,
+        "cost_per_request_usd": 6.281739130434783e-05,
+        "latency_p50_ms": 970.4000000000001,
+        "quality_violation_rate": 0.14285714285714285,
+        "model_distribution": {
+          "claude-haiku-5-5": 1.0
+        },
+        "dominated_by": [],
+        "dominated": false
+      },
+      {
+        "label": "learned \u03c4=0.4",
+        "kind": "learned_sweep",
+        "threshold": 0.4,
+        "acceptable_rate": 0.8571428571428571,
+        "cost_per_request_usd": 6.295093167701863e-05,
+        "latency_p50_ms": 978.9,
+        "quality_violation_rate": 0.14285714285714285,
+        "model_distribution": {
+          "claude-haiku-5-5": 0.9875776397515528,
+          "gpt-5.6-luna": 0.012422360248447204
+        },
+        "dominated_by": [
+          "learned \u03c4=0.3",
+          "claude-haiku-5-5"
+        ],
+        "dominated": true
+      },
+      {
+        "label": "learned \u03c4=0.5",
+        "kind": "learned_sweep",
+        "threshold": 0.5,
+        "acceptable_rate": 0.8695652173913043,
+        "cost_per_request_usd": 7.66248447204969e-05,
+        "latency_p50_ms": 1025.4,
+        "quality_violation_rate": 0.13043478260869565,
+        "model_distribution": {
+          "claude-haiku-5-5": 0.8633540372670807,
+          "gpt-5.6-luna": 0.055900621118012424,
+          "gpt-5.6-terra": 0.08074534161490683
+        },
+        "dominated_by": [],
+        "dominated": false
+      },
+      {
+        "label": "learned \u03c4=0.6",
+        "kind": "learned_sweep",
+        "threshold": 0.6,
+        "acceptable_rate": 0.8881987577639752,
+        "cost_per_request_usd": 0.0002664944099378882,
+        "latency_p50_ms": 1037.1999999999998,
+        "quality_violation_rate": 0.1125,
+        "model_distribution": {
+          "claude-haiku-5-5": 0.8509316770186336,
+          "claude-opus-5-5": 0.12422360248447205,
+          "claude-sonnet-5-5": 0.018633540372670808,
+          "gpt-5.6-luna": 0.006211180124223602
+        },
+        "dominated_by": [],
+        "dominated": false
+      },
+      {
+        "label": "learned \u03c4=0.7",
+        "kind": "learned_sweep",
+        "threshold": 0.7,
+        "acceptable_rate": 0.8881987577639752,
+        "cost_per_request_usd": 0.00027823726708074535,
+        "latency_p50_ms": 1037.1999999999998,
+        "quality_violation_rate": 0.072992700729927,
+        "model_distribution": {
+          "claude-haiku-5-5": 0.8509316770186336,
+          "claude-opus-5-5": 0.13043478260869565,
+          "claude-sonnet-5-5": 0.018633540372670808
+        },
+        "dominated_by": [
+          "learned \u03c4=0.6"
+        ],
+        "dominated": true
+      },
+      {
+        "label": "learned \u03c4=0.75",
+        "kind": "learned_sweep",
+        "threshold": 0.75,
+        "acceptable_rate": 0.8881987577639752,
+        "cost_per_request_usd": 0.00027823726708074535,
+        "latency_p50_ms": 1037.1999999999998,
+        "quality_violation_rate": 0.072992700729927,
+        "model_distribution": {
+          "claude-haiku-5-5": 0.8509316770186336,
+          "claude-opus-5-5": 0.13043478260869565,
+          "claude-sonnet-5-5": 0.018633540372670808
+        },
+        "dominated_by": [
+          "learned \u03c4=0.6"
+        ],
+        "dominated": true
+      },
+      {
+        "label": "learned \u03c4=0.8",
+        "kind": "learned_sweep",
+        "threshold": 0.8,
+        "acceptable_rate": 0.8944099378881988,
+        "cost_per_request_usd": 0.0002883732919254658,
+        "latency_p50_ms": 1039.8,
+        "quality_violation_rate": 0.06569343065693431,
+        "model_distribution": {
+          "claude-haiku-5-5": 0.8074534161490683,
+          "claude-opus-5-5": 0.13043478260869565,
+          "claude-sonnet-5-5": 0.024844720496894408,
+          "gpt-5.6-luna": 0.012422360248447204,
+          "gpt-5.6-terra": 0.024844720496894408
+        },
+        "dominated_by": [],
+        "dominated": false
+      },
+      {
+        "label": "learned \u03c4=0.85",
+        "kind": "learned_sweep",
+        "threshold": 0.85,
+        "acceptable_rate": 0.9006211180124224,
+        "cost_per_request_usd": 0.0003827378881987578,
+        "latency_p50_ms": 1066.4,
+        "quality_violation_rate": 0.058394160583941604,
+        "model_distribution": {
+          "claude-haiku-5-5": 0.6273291925465838,
+          "claude-opus-5-5": 0.16149068322981366,
+          "claude-sonnet-5-5": 0.049689440993788817,
+          "gpt-5.6-luna": 0.037267080745341616,
+          "gpt-5.6-terra": 0.12422360248447205
+        },
+        "dominated_by": [],
+        "dominated": false
+      },
+      {
+        "label": "learned \u03c4=0.9",
+        "kind": "learned_sweep",
+        "threshold": 0.9,
+        "acceptable_rate": 0.8881987577639752,
+        "cost_per_request_usd": 0.0005382149068322981,
+        "latency_p50_ms": 1146.3000000000002,
+        "quality_violation_rate": 0.072992700729927,
+        "model_distribution": {
+          "claude-haiku-5-5": 0.5217391304347826,
+          "claude-opus-5-5": 0.3105590062111801,
+          "claude-sonnet-5-5": 0.024844720496894408,
+          "gpt-5.6-luna": 0.06832298136645963,
+          "gpt-5.6-terra": 0.07453416149068323
+        },
+        "dominated_by": [
+          "learned \u03c4=0.6",
+          "learned \u03c4=0.7",
+          "learned \u03c4=0.75",
+          "learned \u03c4=0.8",
+          "learned \u03c4=0.85"
+        ],
+        "dominated": true
+      },
+      {
+        "label": "learned \u03c4=0.925",
+        "kind": "learned_sweep",
+        "threshold": 0.925,
+        "acceptable_rate": 0.906832298136646,
+        "cost_per_request_usd": 0.0006844403726708074,
+        "latency_p50_ms": 1249.4,
+        "quality_violation_rate": 0.045454545454545456,
+        "model_distribution": {
+          "claude-haiku-5-5": 0.37267080745341613,
+          "claude-opus-5-5": 0.38509316770186336,
+          "claude-sonnet-5-5": 0.07453416149068323,
+          "gpt-5.6-luna": 0.09316770186335403,
+          "gpt-5.6-terra": 0.07453416149068323
+        },
+        "dominated_by": [],
+        "dominated": false
+      },
+      {
+        "label": "learned \u03c4=0.95",
+        "kind": "learned_sweep",
+        "threshold": 0.95,
+        "acceptable_rate": 0.9130434782608695,
+        "cost_per_request_usd": 0.0010887062111801242,
+        "latency_p50_ms": 1356.5,
+        "quality_violation_rate": 0.010638297872340425,
+        "model_distribution": {
+          "claude-haiku-5-5": 0.12422360248447205,
+          "claude-opus-5-5": 0.5403726708074534,
+          "claude-sonnet-5-5": 0.037267080745341616,
+          "gpt-5.6-luna": 0.18633540372670807,
+          "gpt-5.6-terra": 0.11180124223602485
+        },
+        "dominated_by": [],
+        "dominated": false
+      },
+      {
+        "label": "learned \u03c4=0.97",
+        "kind": "learned_sweep",
+        "threshold": 0.97,
+        "acceptable_rate": 0.9192546583850931,
+        "cost_per_request_usd": 0.0020410049689440993,
+        "latency_p50_ms": 1462.3999999999999,
+        "quality_violation_rate": 0.0,
+        "model_distribution": {
+          "claude-opus-5-5": 0.8074534161490683,
+          "claude-sonnet-5-5": 0.043478260869565216,
+          "gpt-5.6-luna": 0.018633540372670808,
+          "gpt-5.6-terra": 0.13043478260869565
+        },
+        "dominated_by": [],
+        "dominated": false
+      },
+      {
+        "label": "learned \u03c4=0.99",
+        "kind": "learned_sweep",
+        "threshold": 0.99,
+        "acceptable_rate": 0.9192546583850931,
+        "cost_per_request_usd": 0.0021337875776397514,
+        "latency_p50_ms": 1505.6000000000001,
+        "quality_violation_rate": null,
+        "model_distribution": {
+          "claude-opus-5-5": 0.7888198757763976,
+          "claude-sonnet-5-5": 0.17391304347826086,
+          "gpt-5.6-luna": 0.031055900621118012,
+          "gpt-5.6-terra": 0.006211180124223602
+        },
+        "dominated_by": [
+          "learned \u03c4=0.97"
+        ],
+        "dominated": true
+      },
+      {
+        "label": "gpt-5.6-luna (economy)",
+        "kind": "fixed",
+        "reference_only": false,
+        "acceptable_rate": 0.8695652173913043,
+        "cost_per_request_usd": 8.457888198757763e-05,
+        "latency_p50_ms": 1292.5,
+        "dominated_by": [
+          "learned \u03c4=0.5"
+        ],
+        "dominated": true
+      },
+      {
+        "label": "claude-haiku-5-5",
+        "kind": "fixed",
+        "reference_only": false,
+        "acceptable_rate": 0.8571428571428571,
+        "cost_per_request_usd": 6.281739130434783e-05,
+        "latency_p50_ms": 970.4000000000001,
+        "dominated_by": [],
+        "dominated": false
+      },
+      {
+        "label": "gpt-5.6-terra",
+        "kind": "fixed",
+        "reference_only": false,
+        "acceptable_rate": 0.8881987577639752,
+        "cost_per_request_usd": 0.0008870062111801241,
+        "latency_p50_ms": 1069.5,
+        "dominated_by": [
+          "learned \u03c4=0.6",
+          "learned \u03c4=0.7",
+          "learned \u03c4=0.75",
+          "learned \u03c4=0.8",
+          "learned \u03c4=0.85",
+          "learned \u03c4=0.9",
+          "learned \u03c4=0.925"
+        ],
+        "dominated": true
+      },
+      {
+        "label": "claude-sonnet-5-5",
+        "kind": "fixed",
+        "reference_only": false,
+        "acceptable_rate": 0.8944099378881988,
+        "cost_per_request_usd": 0.0012818757763975155,
+        "latency_p50_ms": 1156.8,
+        "dominated_by": [
+          "learned \u03c4=0.8",
+          "learned \u03c4=0.85",
+          "learned \u03c4=0.925",
+          "learned \u03c4=0.95",
+          "random"
+        ],
+        "dominated": true
+      },
+      {
+        "label": "claude-opus-5-5 (premium)",
+        "kind": "fixed",
+        "reference_only": false,
+        "acceptable_rate": 0.9254658385093167,
+        "cost_per_request_usd": 0.0029879999999999998,
+        "latency_p50_ms": 1564.8,
+        "dominated_by": [],
+        "dominated": false
+      },
+      {
+        "label": "random",
+        "kind": "random",
+        "reference_only": false,
+        "acceptable_rate": 0.8944099378881988,
+        "cost_per_request_usd": 0.001073755900621118,
+        "latency_p50_ms": 1136.5,
+        "dominated_by": [
+          "learned \u03c4=0.8",
+          "learned \u03c4=0.85",
+          "learned \u03c4=0.925"
+        ],
+        "dominated": true
+      },
+      {
+        "label": "heuristic",
+        "kind": "heuristic",
+        "reference_only": false,
+        "acceptable_rate": 0.8695652173913043,
+        "cost_per_request_usd": 0.0015435360248447203,
+        "latency_p50_ms": 1159.1,
+        "dominated_by": [
+          "learned \u03c4=0.5",
+          "learned \u03c4=0.6",
+          "learned \u03c4=0.7",
+          "learned \u03c4=0.75",
+          "learned \u03c4=0.8",
+          "learned \u03c4=0.85",
+          "learned \u03c4=0.9",
+          "learned \u03c4=0.925",
+          "learned \u03c4=0.95",
+          "gpt-5.6-luna (economy)",
+          "gpt-5.6-terra",
+          "claude-sonnet-5-5",
+          "random"
+        ],
+        "dominated": true
+      },
+      {
+        "label": "oracle (upper bound)",
+        "kind": "oracle",
+        "reference_only": true,
+        "acceptable_rate": 0.9503105590062112,
+        "cost_per_request_usd": 0.00011482608695652174,
+        "latency_p50_ms": 1025.4,
+        "dominated_by": [],
+        "dominated": false
+      }
+    ],
+    "thresholds": [
+      0.3,
+      0.4,
+      0.5,
+      0.6,
+      0.7,
+      0.75,
+      0.8,
+      0.85,
+      0.9,
+      0.925,
+      0.95,
+      0.97,
+      0.99
+    ]
+  },
+  "latency_budget_experiment": {
+    "budget_ms": 1500.0,
+    "with_latency_model": {
+      "n": 161,
+      "acceptable_rate": 0.8819875776397516,
+      "acceptable_rate_ci95": [
+        0.8230360655211967,
+        0.9231348039680584
+      ],
+      "total_cost_usd": 0.0185559,
+      "cost_per_request_usd": 0.00011525403726708074,
+      "cost_per_1k_requests_usd": 0.11525403726708075,
+      "cost_per_acceptable_usd": 0.00013067535211267606,
+      "latency_p50_ms": 1038.2,
+      "latency_p95_ms": 1537.1999999999998,
+      "model_distribution": {
+        "claude-haiku-5-5": 0.8074534161490683,
+        "claude-sonnet-5-5": 0.14285714285714285,
+        "gpt-5.6-luna": 0.018633540372670808,
+        "gpt-5.6-terra": 0.031055900621118012
+      },
+      "quality_violation_rate": 0.06569343065693431,
+      "n_claimed_ok": 137,
+      "decision_us_p50": 902.5829931488261,
+      "decision_us_p95": 3891.2919990252703,
+      "by_category": {
+        "classification": {
+          "n": 24,
+          "acceptable_rate": 0.8333333333333334,
+          "cost_per_request_usd": 2.7095833333333336e-05,
+          "models": {
+            "claude-haiku-5-5": 22,
+            "claude-sonnet-5-5": 1,
+            "gpt-5.6-luna": 1
+          }
+        },
+        "code": {
+          "n": 24,
+          "acceptable_rate": 0.9166666666666666,
+          "cost_per_request_usd": 7.060416666666666e-05,
+          "models": {
+            "claude-haiku-5-5": 24
+          }
+        },
+        "extraction": {
+          "n": 21,
+          "acceptable_rate": 0.8571428571428571,
+          "cost_per_request_usd": 0.0001029095238095238,
+          "models": {
+            "gpt-5.6-terra": 4,
+            "claude-haiku-5-5": 16,
+            "gpt-5.6-luna": 1
+          }
+        },
+        "factual_qa": {
+          "n": 24,
+          "acceptable_rate": 0.5833333333333334,
+          "cost_per_request_usd": 0.000295825,
+          "models": {
+            "claude-sonnet-5-5": 22,
+            "gpt-5.6-terra": 1,
+            "gpt-5.6-luna": 1
+          }
+        },
+        "json": {
+          "n": 20,
+          "acceptable_rate": 1.0,
+          "cost_per_request_usd": 5.6245e-05,
+          "models": {
+            "claude-haiku-5-5": 20
+          }
+        },
+        "reasoning": {
+          "n": 24,
+          "acceptable_rate": 1.0,
+          "cost_per_request_usd": 6.767499999999999e-05,
+          "models": {
+            "claude-haiku-5-5": 24
+          }
+        },
+        "summarization": {
+          "n": 24,
+          "acceptable_rate": 1.0,
+          "cost_per_request_usd": 0.00017504583333333333,
+          "models": {
+            "claude-haiku-5-5": 24
+          }
+        }
+      },
+      "over_budget_rate": 0.055900621118012424
+    },
+    "without_latency_model": {
+      "n": 161,
+      "acceptable_rate": 0.8944099378881988,
+      "acceptable_rate_ci95": [
+        0.8374123325572473,
+        0.9330242562649917
+      ],
+      "total_cost_usd": 0.0464281,
+      "cost_per_request_usd": 0.0002883732919254658,
+      "cost_per_1k_requests_usd": 0.28837329192546585,
+      "cost_per_acceptable_usd": 0.0003224173611111111,
+      "latency_p50_ms": 1039.8,
+      "latency_p95_ms": 1742.8,
+      "model_distribution": {
+        "claude-haiku-5-5": 0.8074534161490683,
+        "claude-opus-5-5": 0.13043478260869565,
+        "claude-sonnet-5-5": 0.024844720496894408,
+        "gpt-5.6-luna": 0.012422360248447204,
+        "gpt-5.6-terra": 0.024844720496894408
+      },
+      "quality_violation_rate": 0.06569343065693431,
+      "n_claimed_ok": 137,
+      "decision_us_p50": 1888.5839963331819,
+      "decision_us_p95": 4978.749988367781,
+      "by_category": {
+        "classification": {
+          "n": 24,
+          "acceptable_rate": 0.8333333333333334,
+          "cost_per_request_usd": 2.7095833333333336e-05,
+          "models": {
+            "claude-haiku-5-5": 22,
+            "claude-sonnet-5-5": 1,
+            "gpt-5.6-luna": 1
+          }
+        },
+        "code": {
+          "n": 24,
+          "acceptable_rate": 0.9166666666666666,
+          "cost_per_request_usd": 7.060416666666666e-05,
+          "models": {
+            "claude-haiku-5-5": 24
+          }
+        },
+        "extraction": {
+          "n": 21,
+          "acceptable_rate": 0.8571428571428571,
+          "cost_per_request_usd": 0.0001029095238095238,
+          "models": {
+            "gpt-5.6-terra": 4,
+            "claude-haiku-5-5": 16,
+            "gpt-5.6-luna": 1
+          }
+        },
+        "factual_qa": {
+          "n": 24,
+          "acceptable_rate": 0.6666666666666666,
+          "cost_per_request_usd": 0.0014571666666666667,
+          "models": {
+            "claude-opus-5-5": 21,
+            "claude-sonnet-5-5": 3
+          }
+        },
+        "json": {
+          "n": 20,
+          "acceptable_rate": 1.0,
+          "cost_per_request_usd": 5.6245e-05,
+          "models": {
+            "claude-haiku-5-5": 20
+          }
+        },
+        "reasoning": {
+          "n": 24,
+          "acceptable_rate": 1.0,
+          "cost_per_request_usd": 6.767499999999999e-05,
+          "models": {
+            "claude-haiku-5-5": 24
+          }
+        },
+        "summarization": {
+          "n": 24,
+          "acceptable_rate": 1.0,
+          "cost_per_request_usd": 0.00017504583333333333,
+          "models": {
+            "claude-haiku-5-5": 24
+          }
+        }
+      },
+      "over_budget_rate": 0.10559006211180125
+    }
+  },
+  "calibration": {
+    "claude-haiku-5-5": {
+      "brier": 0.09276699879448794,
+      "ece": 0.02311655007080284,
+      "base_rate": 0.8571428571428571,
+      "mean_pred": 0.8625099188025286,
+      "bins": [
+        {
+          "lo": 0.0,
+          "hi": 0.1,
+          "n": 0,
+          "mean_pred": null,
+          "frac_pos": null
+        },
+        {
+          "lo": 0.1,
+          "hi": 0.2,
+          "n": 0,
+          "mean_pred": null,
+          "frac_pos": null
+        },
+        {
+          "lo": 0.2,
+          "hi": 0.30000000000000004,
+          "n": 0,
+          "mean_pred": null,
+          "frac_pos": null
+        },
+        {
+          "lo": 0.30000000000000004,
+          "hi": 0.4,
+          "n": 0,
+          "mean_pred": null,
+          "frac_pos": null
+        },
+        {
+          "lo": 0.4,
+          "hi": 0.5,
+          "n": 19,
+          "mean_pred": 0.46208290337362057,
+          "frac_pos": 0.5263157894736842
+        },
+        {
+          "lo": 0.5,
+          "hi": 0.6000000000000001,
+          "n": 5,
+          "mean_pred": 0.5306012774340292,
+          "frac_pos": 0.2
+        },
+        {
+          "lo": 0.6000000000000001,
+          "hi": 0.7000000000000001,
+          "n": 0,
+          "mean_pred": null,
+          "frac_pos": null
+        },
+        {
+          "lo": 0.7000000000000001,
+          "hi": 0.8,
+          "n": 1,
+          "mean_pred": 0.791591018805118,
+          "frac_pos": 1.0
+        },
+        {
+          "lo": 0.8,
+          "hi": 0.9,
+          "n": 40,
+          "mean_pred": 0.8544969094039058,
+          "frac_pos": 0.85
+        },
+        {
+          "lo": 0.9,
+          "hi": 1.0,
+          "n": 96,
+          "mean_pred": 0.9631254998018416,
+          "frac_pos": 0.9583333333333334
+        }
+      ]
+    },
+    "claude-opus-5-5": {
+      "brier": 0.05631180912814123,
+      "ece": 0.011863323738078673,
+      "base_rate": 0.9254658385093167,
+      "mean_pred": 0.927835297994572,
+      "bins": [
+        {
+          "lo": 0.0,
+          "hi": 0.1,
+          "n": 0,
+          "mean_pred": null,
+          "frac_pos": null
+        },
+        {
+          "lo": 0.1,
+          "hi": 0.2,
+          "n": 0,
+          "mean_pred": null,
+          "frac_pos": null
+        },
+        {
+          "lo": 0.2,
+          "hi": 0.30000000000000004,
+          "n": 0,
+          "mean_pred": null,
+          "frac_pos": null
+        },
+        {
+          "lo": 0.30000000000000004,
+          "hi": 0.4,
+          "n": 0,
+          "mean_pred": null,
+          "frac_pos": null
+        },
+        {
+          "lo": 0.4,
+          "hi": 0.5,
+          "n": 0,
+          "mean_pred": null,
+          "frac_pos": null
+        },
+        {
+          "lo": 0.5,
+          "hi": 0.6000000000000001,
+          "n": 0,
+          "mean_pred": null,
+          "frac_pos": null
+        },
+        {
+          "lo": 0.6000000000000001,
+          "hi": 0.7000000000000001,
+          "n": 24,
+          "mean_pred": 0.6348226636519879,
+          "frac_pos": 0.6666666666666666
+        },
+        {
+          "lo": 0.7000000000000001,
+          "hi": 0.8,
+          "n": 0,
+          "mean_pred": null,
+          "frac_pos": null
+        },
+        {
+          "lo": 0.8,
+          "hi": 0.9,
+          "n": 0,
+          "mean_pred": null,
+          "frac_pos": null
+        },
+        {
+          "lo": 0.9,
+          "hi": 1.0,
+          "n": 137,
+          "mean_pred": 0.9791659784633459,
+          "frac_pos": 0.9708029197080292
+        }
+      ]
+    },
+    "claude-sonnet-5-5": {
+      "brier": 0.07683532845349109,
+      "ece": 0.01924465676997461,
+      "base_rate": 0.8944099378881988,
+      "mean_pred": 0.8950628452491965,
+      "bins": [
+        {
+          "lo": 0.0,
+          "hi": 0.1,
+          "n": 0,
+          "mean_pred": null,
+          "frac_pos": null
+        },
+        {
+          "lo": 0.1,
+          "hi": 0.2,
+          "n": 0,
+          "mean_pred": null,
+          "frac_pos": null
+        },
+        {
+          "lo": 0.2,
+          "hi": 0.30000000000000004,
+          "n": 0,
+          "mean_pred": null,
+          "frac_pos": null
+        },
+        {
+          "lo": 0.30000000000000004,
+          "hi": 0.4,
+          "n": 0,
+          "mean_pred": null,
+          "frac_pos": null
+        },
+        {
+          "lo": 0.4,
+          "hi": 0.5,
+          "n": 0,
+          "mean_pred": null,
+          "frac_pos": null
+        },
+        {
+          "lo": 0.5,
+          "hi": 0.6000000000000001,
+          "n": 19,
+          "mean_pred": 0.5703979096818061,
+          "frac_pos": 0.5789473684210527
+        },
+        {
+          "lo": 0.6000000000000001,
+          "hi": 0.7000000000000001,
+          "n": 5,
+          "mean_pred": 0.6373600303698429,
+          "frac_pos": 0.6
+        },
+        {
+          "lo": 0.7000000000000001,
+          "hi": 0.8,
+          "n": 0,
+          "mean_pred": null,
+          "frac_pos": null
+        },
+        {
+          "lo": 0.8,
+          "hi": 0.9,
+          "n": 35,
+          "mean_pred": 0.8761658253892298,
+          "frac_pos": 0.9142857142857143
+        },
+        {
+          "lo": 0.9,
+          "hi": 1.0,
+          "n": 102,
+          "mean_pred": 0.9746564094185692,
+          "frac_pos": 0.9607843137254902
+        }
+      ]
+    },
+    "gpt-5.6-luna": {
+      "brier": 0.08976245324731566,
+      "ece": 0.03842732978830652,
+      "base_rate": 0.8695652173913043,
+      "mean_pred": 0.8809155264989954,
+      "bins": [
+        {
+          "lo": 0.0,
+          "hi": 0.1,
+          "n": 0,
+          "mean_pred": null,
+          "frac_pos": null
+        },
+        {
+          "lo": 0.1,
+          "hi": 0.2,
+          "n": 0,
+          "mean_pred": null,
+          "frac_pos": null
+        },
+        {
+          "lo": 0.2,
+          "hi": 0.30000000000000004,
+          "n": 0,
+          "mean_pred": null,
+          "frac_pos": null
+        },
+        {
+          "lo": 0.30000000000000004,
+          "hi": 0.4,
+          "n": 0,
+          "mean_pred": null,
+          "frac_pos": null
+        },
+        {
+          "lo": 0.4,
+          "hi": 0.5,
+          "n": 9,
+          "mean_pred": 0.48201647187674507,
+          "frac_pos": 0.4444444444444444
+        },
+        {
+          "lo": 0.5,
+          "hi": 0.6000000000000001,
+          "n": 12,
+          "mean_pred": 0.5482487984678909,
+          "frac_pos": 0.6666666666666666
+        },
+        {
+          "lo": 0.6000000000000001,
+          "hi": 0.7000000000000001,
+          "n": 3,
+          "mean_pred": 0.6279118677855692,
+          "frac_pos": 0.0
+        },
+        {
+          "lo": 0.7000000000000001,
+          "hi": 0.8,
+          "n": 2,
+          "mean_pred": 0.7664679315228657,
+          "frac_pos": 0.5
+        },
+        {
+          "lo": 0.8,
+          "hi": 0.9,
+          "n": 32,
+          "mean_pred": 0.851291070424867,
+          "frac_pos": 0.875
+        },
+        {
+          "lo": 0.9,
+          "hi": 1.0,
+          "n": 103,
+          "mean_pred": 0.9733231089110159,
+          "frac_pos": 0.9611650485436893
+        }
+      ]
+    },
+    "gpt-5.6-terra": {
+      "brier": 0.07760370196959847,
+      "ece": 0.032106290585130974,
+      "base_rate": 0.8881987577639752,
+      "mean_pred": 0.8954829558158858,
+      "bins": [
+        {
+          "lo": 0.0,
+          "hi": 0.1,
+          "n": 0,
+          "mean_pred": null,
+          "frac_pos": null
+        },
+        {
+          "lo": 0.1,
+          "hi": 0.2,
+          "n": 0,
+          "mean_pred": null,
+          "frac_pos": null
+        },
+        {
+          "lo": 0.2,
+          "hi": 0.30000000000000004,
+          "n": 0,
+          "mean_pred": null,
+          "frac_pos": null
+        },
+        {
+          "lo": 0.30000000000000004,
+          "hi": 0.4,
+          "n": 0,
+          "mean_pred": null,
+          "frac_pos": null
+        },
+        {
+          "lo": 0.4,
+          "hi": 0.5,
+          "n": 0,
+          "mean_pred": null,
+          "frac_pos": null
+        },
+        {
+          "lo": 0.5,
+          "hi": 0.6000000000000001,
+          "n": 21,
+          "mean_pred": 0.5596821794436918,
+          "frac_pos": 0.5238095238095238
+        },
+        {
+          "lo": 0.6000000000000001,
+          "hi": 0.7000000000000001,
+          "n": 3,
+          "mean_pred": 0.6090082202345047,
+          "frac_pos": 0.6666666666666666
+        },
+        {
+          "lo": 0.7000000000000001,
+          "hi": 0.8,
+          "n": 0,
+          "mean_pred": null,
+          "frac_pos": null
+        },
+        {
+          "lo": 0.8,
+          "hi": 0.9,
+          "n": 14,
+          "mean_pred": 0.8696283493123032,
+          "frac_pos": 1.0
+        },
+        {
+          "lo": 0.9,
+          "hi": 1.0,
+          "n": 123,
+          "mean_pred": 0.9627447850972709,
+          "frac_pos": 0.943089430894309
+        }
+      ]
+    }
+  },
+  "limitations": [
+    "Single dataset version (840 prompts, 161 held-out test prompts); category priors dominate the routing signal.",
+    "Task categories are trivially identifiable from their fixed instructions; real traffic is more heterogeneous.",
+    "Summaries graded by an LLM judge (gpt-4.1); judge is not ground truth (see docs/EVALUATION.md).",
+    "Costs are list-price estimates, not billing data. Latencies reflect one region/time window."
+  ],
+  "charts": [
+    "pareto.png",
+    "policy_quality.png",
+    "model_mix.png",
+    "calibration.png"
+  ]
+}

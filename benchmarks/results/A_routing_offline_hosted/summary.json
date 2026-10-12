@@ -1,9 +1,9 @@
 {
   "metadata": {
     "benchmark": "A_F_offline_replay_hosted",
-    "experiment_id": "A_F_offline_replay_hosted-20261011T230650Z-ae6d3d",
-    "timestamp": "2026-10-11T23:06:50.301890+00:00",
-    "git_sha": null,
+    "experiment_id": "A_F_offline_replay_hosted-20261012T001622Z-a1229f",
+    "timestamp": "2026-10-12T00:16:22.867139+00:00",
+    "git_sha": "d7a8030c527a0ccd6d48ac0a5c4c78018dbedca6",
     "git_dirty": true,
     "hardware": {
       "platform": "macOS-26.5.2-arm64-arm-64bit",
@@ -70,8 +70,8 @@
       },
       "quality_violation_rate": null,
       "n_claimed_ok": 0,
-      "decision_us_p50": 0.33299147617071867,
-      "decision_us_p95": 0.6250047590583563,
+      "decision_us_p50": 0.166997779160738,
+      "decision_us_p95": 0.2500019036233425,
       "by_category": {
         "classification": {
           "n": 24,
@@ -149,8 +149,8 @@
       },
       "quality_violation_rate": null,
       "n_claimed_ok": 0,
-      "decision_us_p50": 0.29199873097240925,
-      "decision_us_p95": 0.37500285543501377,
+      "decision_us_p50": 0.166997779160738,
+      "decision_us_p95": 0.2500019036233425,
       "by_category": {
         "classification": {
           "n": 24,
@@ -228,8 +228,8 @@
       },
       "quality_violation_rate": null,
       "n_claimed_ok": 0,
-      "decision_us_p50": 0.29199873097240925,
-      "decision_us_p95": 0.4579924279823899,
+      "decision_us_p50": 0.166997779160738,
+      "decision_us_p95": 0.20800507627427578,
       "by_category": {
         "classification": {
           "n": 24,
@@ -307,8 +307,8 @@
       },
       "quality_violation_rate": null,
       "n_claimed_ok": 0,
-      "decision_us_p50": 0.29199873097240925,
-      "decision_us_p95": 0.4159956006333232,
+      "decision_us_p50": 0.166997779160738,
+      "decision_us_p95": 0.20800507627427578,
       "by_category": {
         "classification": {
           "n": 24,
@@ -389,8 +389,8 @@
       },
       "quality_violation_rate": null,
       "n_claimed_ok": 0,
-      "decision_us_p50": 3095.0000073062256,
-      "decision_us_p95": 10150.12500283774,
+      "decision_us_p50": 914.6249940386042,
+      "decision_us_p95": 2490.70800782647,
       "by_category": {
         "classification": {
           "n": 24,
@@ -496,8 +496,8 @@
       },
       "quality_violation_rate": null,
       "n_claimed_ok": 0,
-      "decision_us_p50": 2643.2090089656413,
-      "decision_us_p95": 8465.749997412786,
+      "decision_us_p50": 859.3329985160381,
+      "decision_us_p95": 2116.125004249625,
       "by_category": {
         "classification": {
           "n": 24,
@@ -578,8 +578,8 @@
       },
       "quality_violation_rate": 0.06569343065693431,
       "n_claimed_ok": 137,
-      "decision_us_p50": 14288.250007666647,
-      "decision_us_p95": 45230.124989757314,
+      "decision_us_p50": 2258.166001411155,
+      "decision_us_p95": 3330.875013489276,
       "by_category": {
         "classification": {
           "n": 24,
@@ -664,8 +664,8 @@
       },
       "quality_violation_rate": 0.072992700729927,
       "n_claimed_ok": 137,
-      "decision_us_p50": 9173.08300267905,
-      "decision_us_p95": 40252.87499825936,
+      "decision_us_p50": 752.4160027969629,
+      "decision_us_p95": 2015.1250064373016,
       "by_category": {
         "classification": {
           "n": 24,
@@ -747,8 +747,8 @@
       },
       "quality_violation_rate": 0.06569343065693431,
       "n_claimed_ok": 137,
-      "decision_us_p50": 16468.792004161514,
-      "decision_us_p95": 76822.41700240411,
+      "decision_us_p50": 1974.1249998332933,
+      "decision_us_p95": 3425.749993766658,
       "by_category": {
         "classification": {
           "n": 24,
@@ -833,8 +833,8 @@
       },
       "quality_violation_rate": 0.10948905109489052,
       "n_claimed_ok": 137,
-      "decision_us_p50": 5357.792004360817,
-      "decision_us_p95": 65216.45800967235,
+      "decision_us_p50": 754.0829974459484,
+      "decision_us_p95": 2477.5000056251884,
       "by_category": {
         "classification": {
           "n": 24,
@@ -916,8 +916,8 @@
       },
       "quality_violation_rate": 0.06569343065693431,
       "n_claimed_ok": 137,
-      "decision_us_p50": 11740.500005544163,
-      "decision_us_p95": 50591.37499483768,
+      "decision_us_p50": 2653.042000019923,
+      "decision_us_p95": 7875.416995375417,
       "by_category": {
         "classification": {
           "n": 24,
@@ -1016,8 +1016,8 @@
       },
       "quality_violation_rate": null,
       "n_claimed_ok": 0,
-      "decision_us_p50": 5.49999822396785,
-      "decision_us_p95": 11.209005606360734,
+      "decision_us_p50": 2.1669984562322497,
+      "decision_us_p95": 3.6249984987080097,
       "by_category": {
         "classification": {
           "n": 24,
@@ -1593,8 +1593,8 @@
       },
       "quality_violation_rate": 0.06569343065693431,
       "n_claimed_ok": 137,
-      "decision_us_p50": 10668.207993148826,
-      "decision_us_p95": 56156.833001296036,
+      "decision_us_p50": 2344.708002055995,
+      "decision_us_p95": 5582.707992289215,
       "by_category": {
         "classification": {
           "n": 24,
@@ -1681,8 +1681,8 @@
       },
       "quality_violation_rate": 0.06569343065693431,
       "n_claimed_ok": 137,
-      "decision_us_p50": 9453.082995605655,
-      "decision_us_p95": 26049.791995319538,
+      "decision_us_p50": 2014.8339972365648,
+      "decision_us_p95": 3763.375003472902,
       "by_category": {
         "classification": {
           "n": 24,

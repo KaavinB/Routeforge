@@ -1,0 +1,1102 @@
+{
+  "metadata": {
+    "benchmark": "A_routing_live",
+    "experiment_id": "A_routing_live-20261012T002035Z-d15051",
+    "timestamp": "2026-10-12T00:20:35.422545+00:00",
+    "git_sha": "d7a8030c527a0ccd6d48ac0a5c4c78018dbedca6",
+    "git_dirty": true,
+    "hardware": {
+      "platform": "macOS-26.5.2-arm64-arm-64bit",
+      "machine": "arm64",
+      "python": "3.12.15",
+      "cpu": "Apple M4",
+      "memory_gb": 16.0,
+      "cpu_count": 10
+    },
+    "software": {
+      "fastapi": "0.141.1",
+      "litellm": "1.102.1",
+      "scikit-learn": "1.9.1",
+      "numpy": "2.5.3",
+      "redis": "8.1.0",
+      "sqlalchemy": "2.1.1",
+      "uvicorn": "0.54.0",
+      "locust": "2.46.6"
+    },
+    "mode": "5 enabled (hosted)",
+    "base_url": "http://localhost:8000",
+    "dataset": "routeforge-bench-v1",
+    "dataset_version": "1.0.0",
+    "split": "test",
+    "n_cases": 161,
+    "policies": [
+      "routeforge-premium",
+      "routeforge-economy",
+      "routeforge-random",
+      "routeforge-heuristic",
+      "routeforge-learned"
+    ],
+    "quality_threshold": 0.8,
+    "judge_model": "openai/gpt-4.1",
+    "router_artifact": "router-latest-2026-10-11",
+    "gateway_estimated_cost_usd": 0.9662223,
+    "cache": "bypassed",
+    "methodology": "Live end-to-end: each policy answers every test prompt through the gateway; scored with the same scorers and LLM judge; latency is client-observed."
+  },
+  "status": "complete",
+  "headline": [
+    {
+      "label": "Cost reduction vs premium (learned)",
+      "value": "89.1%",
+      "detail": "95% CI [82.1, 93.9]"
+    },
+    {
+      "label": "Quality retention vs premium",
+      "value": "98.6%",
+      "detail": "\u0394 -1.2 pp [-4.3, +1.9]"
+    },
+    {
+      "label": "Learned acceptable rate",
+      "value": "89.4%",
+      "detail": "premium 90.7%"
+    },
+    {
+      "label": "Learned p50 latency (end-to-end)",
+      "value": "1096 ms",
+      "detail": "premium 1532 ms"
+    }
+  ],
+  "policies": {
+    "routeforge-premium": {
+      "n": 161,
+      "acceptable": 146,
+      "acceptable_rate": 0.906832298136646,
+      "acceptable_rate_ci95": [
+        0.8519765391699785,
+        0.9427257689852446
+      ],
+      "mean_score": 0.8995859213250518,
+      "errors": 0,
+      "total_cost_usd": 0.480608,
+      "cost_per_request_usd": 0.002985142857142857,
+      "cost_per_acceptable_usd": 0.003291835616438356,
+      "latency_p50_ms": 1532.1290830033831,
+      "latency_p95_ms": 3762.906291987747,
+      "fallbacks": 0,
+      "model_distribution": {
+        "claude-opus-5-5": 1.0
+      },
+      "simulated": false,
+      "cost_per_1k_requests_usd": 2.9851428571428573
+    },
+    "routeforge-economy": {
+      "n": 161,
+      "acceptable": 138,
+      "acceptable_rate": 0.8571428571428571,
+      "acceptable_rate_ci95": [
+        0.7947556489549223,
+        0.9028837818683648
+      ],
+      "mean_score": 0.8556873078612209,
+      "errors": 0,
+      "total_cost_usd": 0.0136436,
+      "cost_per_request_usd": 8.474285714285715e-05,
+      "cost_per_acceptable_usd": 9.886666666666667e-05,
+      "latency_p50_ms": 1173.2130419986788,
+      "latency_p95_ms": 2009.9576249922393,
+      "fallbacks": 0,
+      "model_distribution": {
+        "gpt-5.6-luna": 1.0
+      },
+      "simulated": false,
+      "cost_per_1k_requests_usd": 0.08474285714285715
+    },
+    "routeforge-random": {
+      "n": 161,
+      "acceptable": 145,
+      "acceptable_rate": 0.9006211180124224,
+      "acceptable_rate_ci95": [
+        0.8446691587015289,
+        0.9379002897872022
+      ],
+      "mean_score": 0.8937000887311447,
+      "errors": 0,
+      "total_cost_usd": 0.1756788,
+      "cost_per_request_usd": 0.0010911726708074535,
+      "cost_per_acceptable_usd": 0.0012115779310344827,
+      "latency_p50_ms": 1155.2533750073053,
+      "latency_p95_ms": 2256.2580420053564,
+      "fallbacks": 0,
+      "model_distribution": {
+        "claude-sonnet-5-5": 0.2732919254658385,
+        "gpt-5.6-luna": 0.19254658385093168,
+        "claude-opus-5-5": 0.19254658385093168,
+        "gpt-5.6-terra": 0.19254658385093168,
+        "claude-haiku-5-5": 0.14906832298136646
+      },
+      "simulated": false,
+      "cost_per_1k_requests_usd": 1.0911726708074534
+    },
+    "routeforge-heuristic": {
+      "n": 161,
+      "acceptable": 141,
+      "acceptable_rate": 0.8757763975155279,
+      "acceptable_rate_ci95": [
+        0.8159105937380987,
+        0.9181274160846645
+      ],
+      "mean_score": 0.8705314009661836,
+      "errors": 0,
+      "total_cost_usd": 0.2440483,
+      "cost_per_request_usd": 0.001515827950310559,
+      "cost_per_acceptable_usd": 0.0017308390070921986,
+      "latency_p50_ms": 1119.7729999985313,
+      "latency_p95_ms": 2386.536584002897,
+      "fallbacks": 0,
+      "model_distribution": {
+        "gpt-5.6-luna": 0.14906832298136646,
+        "claude-opus-5-5": 0.2981366459627329,
+        "claude-haiku-5-5": 0.2795031055900621,
+        "claude-sonnet-5-5": 0.2732919254658385
+      },
+      "simulated": false,
+      "cost_per_1k_requests_usd": 1.515827950310559
+    },
+    "routeforge-learned": {
+      "n": 161,
+      "acceptable": 144,
+      "acceptable_rate": 0.8944099378881988,
+      "acceptable_rate_ci95": [
+        0.8374123325572473,
+        0.9330242562649917
+      ],
+      "mean_score": 0.8856452726017944,
+      "errors": 0,
+      "total_cost_usd": 0.0522436,
+      "cost_per_request_usd": 0.0003244944099378882,
+      "cost_per_acceptable_usd": 0.0003628027777777778,
+      "latency_p50_ms": 1095.901375010726,
+      "latency_p95_ms": 1874.350375001086,
+      "fallbacks": 0,
+      "model_distribution": {
+        "claude-haiku-5-5": 0.8074534161490683,
+        "claude-sonnet-5-5": 0.024844720496894408,
+        "gpt-5.6-luna": 0.012422360248447204,
+        "gpt-5.6-terra": 0.024844720496894408,
+        "claude-opus-5-5": 0.13043478260869565
+      },
+      "simulated": false,
+      "cost_per_1k_requests_usd": 0.3244944099378882
+    }
+  },
+  "by_category": {
+    "routeforge-premium": {
+      "classification": {
+        "n": 24,
+        "acceptable": 21,
+        "acceptable_rate": 0.875,
+        "acceptable_rate_ci95": [
+          0.6899571185214243,
+          0.9565574496068442
+        ],
+        "mean_score": 0.875,
+        "errors": 0,
+        "total_cost_usd": 0.01738,
+        "cost_per_request_usd": 0.0007241666666666667,
+        "cost_per_acceptable_usd": 0.0008276190476190476,
+        "latency_p50_ms": 1019.4514999966486,
+        "latency_p95_ms": 4452.65820269778,
+        "fallbacks": 0,
+        "model_distribution": {
+          "claude-opus-5-5": 24
+        },
+        "simulated": false
+      },
+      "code": {
+        "n": 24,
+        "acceptable": 24,
+        "acceptable_rate": 1.0,
+        "acceptable_rate_ci95": [
+          0.8620194241710247,
+          1.0
+        ],
+        "mean_score": 1.0,
+        "errors": 0,
+        "total_cost_usd": 0.062495999999999996,
+        "cost_per_request_usd": 0.002604,
+        "cost_per_acceptable_usd": 0.002604,
+        "latency_p50_ms": 1755.7567085095798,
+        "latency_p95_ms": 2847.787939194677,
+        "fallbacks": 0,
+        "model_distribution": {
+          "claude-opus-5-5": 24
+        },
+        "simulated": false
+      },
+      "extraction": {
+        "n": 21,
+        "acceptable": 20,
+        "acceptable_rate": 0.9523809523809523,
+        "acceptable_rate_ci95": [
+          0.7733018341376452,
+          0.9915442305280766
+        ],
+        "mean_score": 0.9206349206349206,
+        "errors": 0,
+        "total_cost_usd": 0.03758,
+        "cost_per_request_usd": 0.0017895238095238096,
+        "cost_per_acceptable_usd": 0.001879,
+        "latency_p50_ms": 1453.9415409963112,
+        "latency_p95_ms": 2835.7684169895947,
+        "fallbacks": 0,
+        "model_distribution": {
+          "claude-opus-5-5": 21
+        },
+        "simulated": false
+      },
+      "factual_qa": {
+        "n": 24,
+        "acceptable": 13,
+        "acceptable_rate": 0.5416666666666666,
+        "acceptable_rate_ci95": [
+          0.35074553553106635,
+          0.7210894164831857
+        ],
+        "mean_score": 0.5416666666666666,
+        "errors": 0,
+        "total_cost_usd": 0.040412000000000003,
+        "cost_per_request_usd": 0.0016838333333333334,
+        "cost_per_acceptable_usd": 0.003108615384615385,
+        "latency_p50_ms": 1466.488207996008,
+        "latency_p95_ms": 3066.015393857377,
+        "fallbacks": 0,
+        "model_distribution": {
+          "claude-opus-5-5": 24
+        },
+        "simulated": false
+      },
+      "json": {
+        "n": 20,
+        "acceptable": 20,
+        "acceptable_rate": 1.0,
+        "acceptable_rate_ci95": [
+          0.8388698745050667,
+          1.0
+        ],
+        "mean_score": 1.0,
+        "errors": 0,
+        "total_cost_usd": 0.045376,
+        "cost_per_request_usd": 0.0022688,
+        "cost_per_acceptable_usd": 0.0022688,
+        "latency_p50_ms": 1272.4420835074852,
+        "latency_p95_ms": 1615.037089605904,
+        "fallbacks": 0,
+        "model_distribution": {
+          "claude-opus-5-5": 20
+        },
+        "simulated": false
+      },
+      "reasoning": {
+        "n": 24,
+        "acceptable": 24,
+        "acceptable_rate": 1.0,
+        "acceptable_rate_ci95": [
+          0.8620194241710247,
+          1.0
+        ],
+        "mean_score": 1.0,
+        "errors": 0,
+        "total_cost_usd": 0.069984,
+        "cost_per_request_usd": 0.002916,
+        "cost_per_acceptable_usd": 0.002916,
+        "latency_p50_ms": 1973.5133335052524,
+        "latency_p95_ms": 2768.280254396086,
+        "fallbacks": 0,
+        "model_distribution": {
+          "claude-opus-5-5": 24
+        },
+        "simulated": false
+      },
+      "summarization": {
+        "n": 24,
+        "acceptable": 24,
+        "acceptable_rate": 1.0,
+        "acceptable_rate_ci95": [
+          0.8620194241710247,
+          1.0
+        ],
+        "mean_score": 0.9791666666666666,
+        "errors": 0,
+        "total_cost_usd": 0.20738,
+        "cost_per_request_usd": 0.008640833333333334,
+        "cost_per_acceptable_usd": 0.008640833333333334,
+        "latency_p50_ms": 3142.085874998884,
+        "latency_p95_ms": 4011.2658606441983,
+        "fallbacks": 0,
+        "model_distribution": {
+          "claude-opus-5-5": 24
+        },
+        "simulated": false
+      }
+    },
+    "routeforge-economy": {
+      "classification": {
+        "n": 24,
+        "acceptable": 20,
+        "acceptable_rate": 0.8333333333333334,
+        "acceptable_rate_ci95": [
+          0.6414652961213058,
+          0.9332143199927109
+        ],
+        "mean_score": 0.8333333333333334,
+        "errors": 0,
+        "total_cost_usd": 0.00053,
+        "cost_per_request_usd": 2.2083333333333333e-05,
+        "cost_per_acceptable_usd": 2.65e-05,
+        "latency_p50_ms": 922.581042003003,
+        "latency_p95_ms": 1992.232950049218,
+        "fallbacks": 0,
+        "model_distribution": {
+          "gpt-5.6-luna": 24
+        },
+        "simulated": false
+      },
+      "code": {
+        "n": 24,
+        "acceptable": 21,
+        "acceptable_rate": 0.875,
+        "acceptable_rate_ci95": [
+          0.6899571185214243,
+          0.9565574496068442
+        ],
+        "mean_score": 0.875,
+        "errors": 0,
+        "total_cost_usd": 0.0023512,
+        "cost_per_request_usd": 9.796666666666666e-05,
+        "cost_per_acceptable_usd": 0.00011196190476190475,
+        "latency_p50_ms": 1346.2655205003102,
+        "latency_p95_ms": 2136.4029732976624,
+        "fallbacks": 0,
+        "model_distribution": {
+          "gpt-5.6-luna": 24
+        },
+        "simulated": false
+      },
+      "extraction": {
+        "n": 21,
+        "acceptable": 18,
+        "acceptable_rate": 0.8571428571428571,
+        "acceptable_rate_ci95": [
+          0.6536350585077049,
+          0.950190782017865
+        ],
+        "mean_score": 0.8983645983645984,
+        "errors": 0,
+        "total_cost_usd": 0.0011186,
+        "cost_per_request_usd": 5.326666666666666e-05,
+        "cost_per_acceptable_usd": 6.214444444444444e-05,
+        "latency_p50_ms": 865.8285830024397,
+        "latency_p95_ms": 1300.2913749951404,
+        "fallbacks": 0,
+        "model_distribution": {
+          "gpt-5.6-luna": 21
+        },
+        "simulated": false
+      },
+      "factual_qa": {
+        "n": 24,
+        "acceptable": 12,
+        "acceptable_rate": 0.5,
+        "acceptable_rate_ci95": [
+          0.31427131627763083,
+          0.6857286837223692
+        ],
+        "mean_score": 0.5,
+        "errors": 0,
+        "total_cost_usd": 0.0004404,
+        "cost_per_request_usd": 1.8350000000000002e-05,
+        "cost_per_acceptable_usd": 3.6700000000000004e-05,
+        "latency_p50_ms": 942.5486870022723,
+        "latency_p95_ms": 1318.6783544508212,
+        "fallbacks": 0,
+        "model_distribution": {
+          "gpt-5.6-luna": 24
+        },
+        "simulated": false
+      },
+      "json": {
+        "n": 20,
+        "acceptable": 20,
+        "acceptable_rate": 1.0,
+        "acceptable_rate_ci95": [
+          0.8388698745050667,
+          1.0
+        ],
+        "mean_score": 1.0,
+        "errors": 0,
+        "total_cost_usd": 0.0016196,
+        "cost_per_request_usd": 8.098e-05,
+        "cost_per_acceptable_usd": 8.098e-05,
+        "latency_p50_ms": 1133.85927049967,
+        "latency_p95_ms": 1407.0330315997126,
+        "fallbacks": 0,
+        "model_distribution": {
+          "gpt-5.6-luna": 20
+        },
+        "simulated": false
+      },
+      "reasoning": {
+        "n": 24,
+        "acceptable": 23,
+        "acceptable_rate": 0.9583333333333334,
+        "acceptable_rate_ci95": [
+          0.7975777375115778,
+          0.992606734645195
+        ],
+        "mean_score": 0.9583333333333334,
+        "errors": 0,
+        "total_cost_usd": 0.002415,
+        "cost_per_request_usd": 0.000100625,
+        "cost_per_acceptable_usd": 0.000105,
+        "latency_p50_ms": 1386.065229497035,
+        "latency_p95_ms": 1881.4793312492836,
+        "fallbacks": 0,
+        "model_distribution": {
+          "gpt-5.6-luna": 24
+        },
+        "simulated": false
+      },
+      "summarization": {
+        "n": 24,
+        "acceptable": 24,
+        "acceptable_rate": 1.0,
+        "acceptable_rate_ci95": [
+          0.8620194241710247,
+          1.0
+        ],
+        "mean_score": 0.9541666666666666,
+        "errors": 0,
+        "total_cost_usd": 0.0051688,
+        "cost_per_request_usd": 0.00021536666666666668,
+        "cost_per_acceptable_usd": 0.00021536666666666668,
+        "latency_p50_ms": 1713.9973330049543,
+        "latency_p95_ms": 2069.005212398042,
+        "fallbacks": 0,
+        "model_distribution": {
+          "gpt-5.6-luna": 24
+        },
+        "simulated": false
+      }
+    },
+    "routeforge-random": {
+      "classification": {
+        "n": 24,
+        "acceptable": 20,
+        "acceptable_rate": 0.8333333333333334,
+        "acceptable_rate_ci95": [
+          0.6414652961213058,
+          0.9332143199927109
+        ],
+        "mean_score": 0.8333333333333334,
+        "errors": 0,
+        "total_cost_usd": 0.0059773,
+        "cost_per_request_usd": 0.00024905416666666665,
+        "cost_per_acceptable_usd": 0.000298865,
+        "latency_p50_ms": 1024.7940624976764,
+        "latency_p95_ms": 1234.8646731981714,
+        "fallbacks": 0,
+        "model_distribution": {
+          "claude-sonnet-5-5": 8,
+          "gpt-5.6-luna": 5,
+          "claude-opus-5-5": 4,
+          "gpt-5.6-terra": 5,
+          "claude-haiku-5-5": 2
+        },
+        "simulated": false
+      },
+      "code": {
+        "n": 24,
+        "acceptable": 24,
+        "acceptable_rate": 1.0,
+        "acceptable_rate_ci95": [
+          0.8620194241710247,
+          1.0
+        ],
+        "mean_score": 1.0,
+        "errors": 0,
+        "total_cost_usd": 0.0315907,
+        "cost_per_request_usd": 0.0013162791666666666,
+        "cost_per_acceptable_usd": 0.0013162791666666666,
+        "latency_p50_ms": 1320.824062495376,
+        "latency_p95_ms": 2254.9309732545225,
+        "fallbacks": 0,
+        "model_distribution": {
+          "claude-haiku-5-5": 4,
+          "claude-opus-5-5": 6,
+          "gpt-5.6-luna": 5,
+          "claude-sonnet-5-5": 6,
+          "gpt-5.6-terra": 3
+        },
+        "simulated": false
+      },
+      "extraction": {
+        "n": 21,
+        "acceptable": 20,
+        "acceptable_rate": 0.9523809523809523,
+        "acceptable_rate_ci95": [
+          0.7733018341376452,
+          0.9915442305280766
+        ],
+        "mean_score": 0.9564625850340136,
+        "errors": 0,
+        "total_cost_usd": 0.012053,
+        "cost_per_request_usd": 0.0005739523809523809,
+        "cost_per_acceptable_usd": 0.0006026499999999999,
+        "latency_p50_ms": 1011.721499991836,
+        "latency_p95_ms": 1158.2274590036832,
+        "fallbacks": 0,
+        "model_distribution": {
+          "gpt-5.6-luna": 7,
+          "claude-sonnet-5-5": 8,
+          "gpt-5.6-terra": 4,
+          "claude-opus-5-5": 2
+        },
+        "simulated": false
+      },
+      "factual_qa": {
+        "n": 24,
+        "acceptable": 13,
+        "acceptable_rate": 0.5416666666666666,
+        "acceptable_rate_ci95": [
+          0.35074553553106635,
+          0.7210894164831857
+        ],
+        "mean_score": 0.5416666666666666,
+        "errors": 0,
+        "total_cost_usd": 0.0088123,
+        "cost_per_request_usd": 0.00036717916666666666,
+        "cost_per_acceptable_usd": 0.0006778692307692308,
+        "latency_p50_ms": 1054.162937500223,
+        "latency_p95_ms": 1677.3253330517036,
+        "fallbacks": 0,
+        "model_distribution": {
+          "claude-opus-5-5": 6,
+          "gpt-5.6-terra": 4,
+          "claude-sonnet-5-5": 6,
+          "claude-haiku-5-5": 6,
+          "gpt-5.6-luna": 2
+        },
+        "simulated": false
+      },
+      "json": {
+        "n": 20,
+        "acceptable": 20,
+        "acceptable_rate": 1.0,
+        "acceptable_rate_ci95": [
+          0.8388698745050667,
+          1.0
+        ],
+        "mean_score": 1.0,
+        "errors": 0,
+        "total_cost_usd": 0.0181788,
+        "cost_per_request_usd": 0.0009089399999999999,
+        "cost_per_acceptable_usd": 0.0009089399999999999,
+        "latency_p50_ms": 1106.1647500100662,
+        "latency_p95_ms": 1245.2456829996663,
+        "fallbacks": 0,
+        "model_distribution": {
+          "gpt-5.6-terra": 5,
+          "claude-haiku-5-5": 5,
+          "claude-opus-5-5": 4,
+          "claude-sonnet-5-5": 4,
+          "gpt-5.6-luna": 2
+        },
+        "simulated": false
+      },
+      "reasoning": {
+        "n": 24,
+        "acceptable": 24,
+        "acceptable_rate": 1.0,
+        "acceptable_rate_ci95": [
+          0.8620194241710247,
+          1.0
+        ],
+        "mean_score": 1.0,
+        "errors": 0,
+        "total_cost_usd": 0.0305876,
+        "cost_per_request_usd": 0.0012744833333333332,
+        "cost_per_acceptable_usd": 0.0012744833333333332,
+        "latency_p50_ms": 1333.0235205066856,
+        "latency_p95_ms": 2298.893943700386,
+        "fallbacks": 0,
+        "model_distribution": {
+          "claude-sonnet-5-5": 6,
+          "claude-haiku-5-5": 3,
+          "gpt-5.6-luna": 5,
+          "claude-opus-5-5": 5,
+          "gpt-5.6-terra": 5
+        },
+        "simulated": false
+      },
+      "summarization": {
+        "n": 24,
+        "acceptable": 24,
+        "acceptable_rate": 1.0,
+        "acceptable_rate_ci95": [
+          0.8620194241710247,
+          1.0
+        ],
+        "mean_score": 0.9499999999999998,
+        "errors": 0,
+        "total_cost_usd": 0.0684791,
+        "cost_per_request_usd": 0.0028532958333333334,
+        "cost_per_acceptable_usd": 0.0028532958333333334,
+        "latency_p50_ms": 1679.8882085058722,
+        "latency_p95_ms": 3426.7273705001558,
+        "fallbacks": 0,
+        "model_distribution": {
+          "claude-opus-5-5": 4,
+          "claude-haiku-5-5": 4,
+          "gpt-5.6-luna": 5,
+          "claude-sonnet-5-5": 6,
+          "gpt-5.6-terra": 5
+        },
+        "simulated": false
+      }
+    },
+    "routeforge-heuristic": {
+      "classification": {
+        "n": 24,
+        "acceptable": 20,
+        "acceptable_rate": 0.8333333333333334,
+        "acceptable_rate_ci95": [
+          0.6414652961213058,
+          0.9332143199927109
+        ],
+        "mean_score": 0.8333333333333334,
+        "errors": 0,
+        "total_cost_usd": 0.00053,
+        "cost_per_request_usd": 2.2083333333333333e-05,
+        "cost_per_acceptable_usd": 2.65e-05,
+        "latency_p50_ms": 728.1694585035439,
+        "latency_p95_ms": 882.6915687073779,
+        "fallbacks": 0,
+        "model_distribution": {
+          "gpt-5.6-luna": 24
+        },
+        "simulated": false
+      },
+      "code": {
+        "n": 24,
+        "acceptable": 24,
+        "acceptable_rate": 1.0,
+        "acceptable_rate_ci95": [
+          0.8620194241710247,
+          1.0
+        ],
+        "mean_score": 1.0,
+        "errors": 0,
+        "total_cost_usd": 0.062356,
+        "cost_per_request_usd": 0.0025981666666666666,
+        "cost_per_acceptable_usd": 0.0025981666666666666,
+        "latency_p50_ms": 1651.561499995296,
+        "latency_p95_ms": 2797.7048294029364,
+        "fallbacks": 0,
+        "model_distribution": {
+          "claude-opus-5-5": 24
+        },
+        "simulated": false
+      },
+      "extraction": {
+        "n": 21,
+        "acceptable": 19,
+        "acceptable_rate": 0.9047619047619048,
+        "acceptable_rate_ci95": [
+          0.7108541613925933,
+          0.9734817912030528
+        ],
+        "mean_score": 0.9074074074074074,
+        "errors": 0,
+        "total_cost_usd": 0.0008074,
+        "cost_per_request_usd": 3.844761904761905e-05,
+        "cost_per_acceptable_usd": 4.2494736842105265e-05,
+        "latency_p50_ms": 882.8432090085698,
+        "latency_p95_ms": 1018.2293749967357,
+        "fallbacks": 0,
+        "model_distribution": {
+          "claude-haiku-5-5": 21
+        },
+        "simulated": false
+      },
+      "factual_qa": {
+        "n": 24,
+        "acceptable": 10,
+        "acceptable_rate": 0.4166666666666667,
+        "acceptable_rate_ci95": [
+          0.24467347246538232,
+          0.6116566235061137
+        ],
+        "mean_score": 0.4166666666666667,
+        "errors": 0,
+        "total_cost_usd": 0.0003309,
+        "cost_per_request_usd": 1.3787500000000001e-05,
+        "cost_per_acceptable_usd": 3.309e-05,
+        "latency_p50_ms": 892.0896454947069,
+        "latency_p95_ms": 1069.471384902863,
+        "fallbacks": 0,
+        "model_distribution": {
+          "claude-haiku-5-5": 24
+        },
+        "simulated": false
+      },
+      "json": {
+        "n": 20,
+        "acceptable": 20,
+        "acceptable_rate": 1.0,
+        "acceptable_rate_ci95": [
+          0.8388698745050667,
+          1.0
+        ],
+        "mean_score": 1.0,
+        "errors": 0,
+        "total_cost_usd": 0.022498,
+        "cost_per_request_usd": 0.0011249,
+        "cost_per_acceptable_usd": 0.0011249,
+        "latency_p50_ms": 1111.0227710014442,
+        "latency_p95_ms": 1208.711889598635,
+        "fallbacks": 0,
+        "model_distribution": {
+          "claude-sonnet-5-5": 20
+        },
+        "simulated": false
+      },
+      "reasoning": {
+        "n": 24,
+        "acceptable": 24,
+        "acceptable_rate": 1.0,
+        "acceptable_rate_ci95": [
+          0.8620194241710247,
+          1.0
+        ],
+        "mean_score": 1.0,
+        "errors": 0,
+        "total_cost_usd": 0.070244,
+        "cost_per_request_usd": 0.0029268333333333334,
+        "cost_per_acceptable_usd": 0.0029268333333333334,
+        "latency_p50_ms": 1670.114291999198,
+        "latency_p95_ms": 2580.228579349932,
+        "fallbacks": 0,
+        "model_distribution": {
+          "claude-opus-5-5": 24
+        },
+        "simulated": false
+      },
+      "summarization": {
+        "n": 24,
+        "acceptable": 24,
+        "acceptable_rate": 1.0,
+        "acceptable_rate_ci95": [
+          0.8620194241710247,
+          1.0
+        ],
+        "mean_score": 0.9625,
+        "errors": 0,
+        "total_cost_usd": 0.087282,
+        "cost_per_request_usd": 0.00363675,
+        "cost_per_acceptable_usd": 0.00363675,
+        "latency_p50_ms": 2146.200333008892,
+        "latency_p95_ms": 2447.205524949095,
+        "fallbacks": 0,
+        "model_distribution": {
+          "claude-sonnet-5-5": 24
+        },
+        "simulated": false
+      }
+    },
+    "routeforge-learned": {
+      "classification": {
+        "n": 24,
+        "acceptable": 20,
+        "acceptable_rate": 0.8333333333333334,
+        "acceptable_rate_ci95": [
+          0.6414652961213058,
+          0.9332143199927109
+        ],
+        "mean_score": 0.8333333333333334,
+        "errors": 0,
+        "total_cost_usd": 0.0006503,
+        "cost_per_request_usd": 2.7095833333333336e-05,
+        "cost_per_acceptable_usd": 3.2515e-05,
+        "latency_p50_ms": 907.1265835009399,
+        "latency_p95_ms": 1050.040643740067,
+        "fallbacks": 0,
+        "model_distribution": {
+          "claude-haiku-5-5": 22,
+          "claude-sonnet-5-5": 1,
+          "gpt-5.6-luna": 1
+        },
+        "simulated": false
+      },
+      "code": {
+        "n": 24,
+        "acceptable": 22,
+        "acceptable_rate": 0.9166666666666666,
+        "acceptable_rate_ci95": [
+          0.741507847985494,
+          0.9768416721570266
+        ],
+        "mean_score": 0.9166666666666666,
+        "errors": 0,
+        "total_cost_usd": 0.0016445,
+        "cost_per_request_usd": 6.852083333333333e-05,
+        "cost_per_acceptable_usd": 7.475e-05,
+        "latency_p50_ms": 1061.3981045025866,
+        "latency_p95_ms": 1393.6716125463133,
+        "fallbacks": 0,
+        "model_distribution": {
+          "claude-haiku-5-5": 24
+        },
+        "simulated": false
+      },
+      "extraction": {
+        "n": 21,
+        "acceptable": 19,
+        "acceptable_rate": 0.9047619047619048,
+        "acceptable_rate_ci95": [
+          0.7108541613925933,
+          0.9734817912030528
+        ],
+        "mean_score": 0.8994708994708995,
+        "errors": 0,
+        "total_cost_usd": 0.0021536,
+        "cost_per_request_usd": 0.00010255238095238094,
+        "cost_per_acceptable_usd": 0.00011334736842105263,
+        "latency_p50_ms": 945.3498340008082,
+        "latency_p95_ms": 1105.9761670039734,
+        "fallbacks": 0,
+        "model_distribution": {
+          "gpt-5.6-terra": 4,
+          "claude-haiku-5-5": 16,
+          "gpt-5.6-luna": 1
+        },
+        "simulated": false
+      },
+      "factual_qa": {
+        "n": 24,
+        "acceptable": 15,
+        "acceptable_rate": 0.625,
+        "acceptable_rate_ci95": [
+          0.42709619037907065,
+          0.7884086656636855
+        ],
+        "mean_score": 0.625,
+        "errors": 0,
+        "total_cost_usd": 0.040782,
+        "cost_per_request_usd": 0.00169925,
+        "cost_per_acceptable_usd": 0.0027188,
+        "latency_p50_ms": 1535.1684580018627,
+        "latency_p95_ms": 2447.8794625552837,
+        "fallbacks": 0,
+        "model_distribution": {
+          "claude-opus-5-5": 21,
+          "claude-sonnet-5-5": 3
+        },
+        "simulated": false
+      },
+      "json": {
+        "n": 20,
+        "acceptable": 20,
+        "acceptable_rate": 1.0,
+        "acceptable_rate_ci95": [
+          0.8388698745050667,
+          1.0
+        ],
+        "mean_score": 1.0,
+        "errors": 0,
+        "total_cost_usd": 0.0011249,
+        "cost_per_request_usd": 5.6245e-05,
+        "cost_per_acceptable_usd": 5.6245e-05,
+        "latency_p50_ms": 986.7117704998236,
+        "latency_p95_ms": 1161.5128857491072,
+        "fallbacks": 0,
+        "model_distribution": {
+          "claude-haiku-5-5": 20
+        },
+        "simulated": false
+      },
+      "reasoning": {
+        "n": 24,
+        "acceptable": 24,
+        "acceptable_rate": 1.0,
+        "acceptable_rate_ci95": [
+          0.8620194241710247,
+          1.0
+        ],
+        "mean_score": 1.0,
+        "errors": 0,
+        "total_cost_usd": 0.0015952,
+        "cost_per_request_usd": 6.646666666666667e-05,
+        "cost_per_acceptable_usd": 6.646666666666667e-05,
+        "latency_p50_ms": 1211.2389579997398,
+        "latency_p95_ms": 1337.1587981011544,
+        "fallbacks": 0,
+        "model_distribution": {
+          "claude-haiku-5-5": 24
+        },
+        "simulated": false
+      },
+      "summarization": {
+        "n": 24,
+        "acceptable": 24,
+        "acceptable_rate": 1.0,
+        "acceptable_rate_ci95": [
+          0.8620194241710247,
+          1.0
+        ],
+        "mean_score": 0.9458333333333333,
+        "errors": 0,
+        "total_cost_usd": 0.0042931,
+        "cost_per_request_usd": 0.00017887916666666667,
+        "cost_per_acceptable_usd": 0.00017887916666666667,
+        "latency_p50_ms": 1440.3602080055862,
+        "latency_p95_ms": 1677.9420543512967,
+        "fallbacks": 0,
+        "model_distribution": {
+          "claude-haiku-5-5": 24
+        },
+        "simulated": false
+      }
+    }
+  },
+  "comparisons": {
+    "routeforge-economy vs routeforge-premium": {
+      "cost_reduction_pct": {
+        "estimate": 97.16117917304749,
+        "ci_low": 96.97406125381409,
+        "ci_high": 97.33933728469395,
+        "p_value": 0.0,
+        "n": 161
+      },
+      "quality_retention_pct": {
+        "estimate": 94.52054794520546,
+        "ci_low": 89.5104895104895,
+        "ci_high": 99.30555555555554,
+        "p_value": 0.0,
+        "n": 161
+      },
+      "quality_diff_pp": {
+        "estimate": -4.968944099378891,
+        "ci_low": -9.316770186335411,
+        "ci_high": -0.6211180124223614,
+        "p_value": 0.033,
+        "n": 161
+      }
+    },
+    "routeforge-random vs routeforge-premium": {
+      "cost_reduction_pct": {
+        "estimate": 63.44655103535522,
+        "ci_low": 55.96790179470015,
+        "ci_high": 70.68016244732522,
+        "p_value": 0.0,
+        "n": 161
+      },
+      "quality_retention_pct": {
+        "estimate": 99.31506849315068,
+        "ci_low": 95.27027027027027,
+        "ci_high": 103.44827586206897,
+        "p_value": 0.0,
+        "n": 161
+      },
+      "quality_diff_pp": {
+        "estimate": -0.6211180124223614,
+        "ci_low": -4.347826086956519,
+        "ci_high": 3.105590062111796,
+        "p_value": 0.8585,
+        "n": 161
+      }
+    },
+    "routeforge-heuristic vs routeforge-premium": {
+      "cost_reduction_pct": {
+        "estimate": 49.220924329183035,
+        "ci_low": 42.972094512174834,
+        "ci_high": 54.58430310373803,
+        "p_value": 0.0,
+        "n": 161
+      },
+      "quality_retention_pct": {
+        "estimate": 96.57534246575342,
+        "ci_low": 92.10526315789474,
+        "ci_high": 100.71441418293936,
+        "p_value": 0.0,
+        "n": 161
+      },
+      "quality_diff_pp": {
+        "estimate": -3.105590062111807,
+        "ci_low": -7.453416149068315,
+        "ci_high": 0.6211180124223614,
+        "p_value": 0.1625,
+        "n": 161
+      }
+    },
+    "routeforge-learned vs routeforge-premium": {
+      "cost_reduction_pct": {
+        "estimate": 89.12968573140688,
+        "ci_low": 82.12391384730687,
+        "ci_high": 93.92755630181465,
+        "p_value": 0.0,
+        "n": 161
+      },
+      "quality_retention_pct": {
+        "estimate": 98.63013698630137,
+        "ci_low": 95.27027027027027,
+        "ci_high": 102.06896551724137,
+        "p_value": 0.0,
+        "n": 161
+      },
+      "quality_diff_pp": {
+        "estimate": -1.2422360248447228,
+        "ci_low": -4.347826086956519,
+        "ci_high": 1.8633540372670843,
+        "p_value": 0.5485,
+        "n": 161
+      }
+    }
+  },
+  "offline_live_agreement": {
+    "routeforge-premium": {
+      "offline_acceptable_rate": 0.9254658385093167,
+      "live_acceptable_rate": 0.906832298136646,
+      "offline_cost_per_request": 0.0029879999999999998,
+      "live_cost_per_request": 0.002985142857142857
+    },
+    "routeforge-economy": {
+      "offline_acceptable_rate": 0.8695652173913043,
+      "live_acceptable_rate": 0.8571428571428571,
+      "offline_cost_per_request": 8.457888198757763e-05,
+      "live_cost_per_request": 8.474285714285715e-05
+    },
+    "routeforge-random": {
+      "offline_acceptable_rate": 0.8944099378881988,
+      "live_acceptable_rate": 0.9006211180124224,
+      "offline_cost_per_request": 0.001073755900621118,
+      "live_cost_per_request": 0.0010911726708074535
+    },
+    "routeforge-heuristic": {
+      "offline_acceptable_rate": 0.8695652173913043,
+      "live_acceptable_rate": 0.8757763975155279,
+      "offline_cost_per_request": 0.0015435360248447203,
+      "live_cost_per_request": 0.001515827950310559
+    },
+    "routeforge-learned": {
+      "offline_acceptable_rate": 0.8944099378881988,
+      "live_acceptable_rate": 0.8944099378881988,
+      "offline_cost_per_request": 0.0002883732919254658,
+      "live_cost_per_request": 0.0003244944099378882
+    }
+  },
+  "limitations": [
+    "161 held-out prompts from one benchmark; single run (provider sampling is not fully deterministic).",
+    "Judge-scored summaries; NQ-open answer keys are noisy (see docs/EVALUATION.md).",
+    "Costs are list-price estimates from provider-reported tokens."
+  ]
+}

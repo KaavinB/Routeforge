@@ -264,7 +264,7 @@ def charts(name: str, summary: dict[str, Any], models: list[str]) -> list[str]:
         zorder=3,
     )
     for p in sweep:
-        if p["threshold"] in (0.5, 0.8, 0.9, 0.95, 0.99):
+        if p["threshold"] in (0.8, 0.95, 0.99):
             ax.annotate(
                 f"τ={p['threshold']}",
                 (1000 * p["cost_per_request_usd"], 100 * p["acceptable_rate"]),
@@ -290,7 +290,7 @@ def charts(name: str, summary: dict[str, Any], models: list[str]) -> list[str]:
                 zorder=4,
                 **style,
             )
-            offset = {"random": (-12, -16), "fixed": (7, -12)}.get(p["kind"], (7, 4))
+            offset = {"random": (-8, 8), "fixed": (7, -12)}.get(p["kind"], (7, 4))
             ax.annotate(
                 p["label"],
                 (1000 * p["cost_per_request_usd"], 100 * p["acceptable_rate"]),
@@ -428,7 +428,7 @@ def main() -> None:
     models = [m.id for m in registry.candidates()]
     cases = [c for c in ds.select(args.split) if all((c.id, m) in outcomes for m in models)]
     engine = RoutingEngine(registry, artifact=artifact, seed=1234)
-    name_suffix = registry.mode
+    name_suffix = args.collection.split("-")[0]  # hosted | latest | local
 
     policies: dict[str, list[dict[str, Any]]] = {}
     for m in models:

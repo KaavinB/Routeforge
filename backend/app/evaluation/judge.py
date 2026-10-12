@@ -22,6 +22,7 @@ from typing import Any
 import litellm
 
 from app.evaluation.budget import SpendLedger
+from app.evaluation.scorers import extract_json
 
 logger = logging.getLogger(__name__)
 
@@ -30,6 +31,7 @@ RUBRIC_VERSION = "summary-rubric-v1"
 # USD per 1M tokens (input, output). Sources as in config/models/hosted.yaml (2026-10-11).
 JUDGE_PRICING: dict[str, tuple[float, float]] = {
     "openai/gpt-4.1": (2.00, 8.00),
+    "anthropic/claude-fable-5-1": (10.00, 50.00),
     "openai/gpt-4.1-mini": (0.40, 1.60),
     "anthropic/claude-sonnet-5-5": (2.00, 10.00),
 }
@@ -78,11 +80,21 @@ class SummaryJudge:
         ledger: SpendLedger | None = None,
         concurrency: int = 4,
         cache_only: bool = False,
+        request_overrides: dict[str, Any] | None = None,
     ) -> None:
         """``cache_only``: never call the judge model; raise ``JudgeCacheMiss`` instead
         (used by CI, which replays recorded outputs whose verdicts are already cached)."""
         self.model = model
         self.cache_only = cache_only
+        # Defaults suit OpenAI judges (JSON mode, temperature 0). Reasoning judges such as
+        # Claude Fable 5.1 reject temperature/JSON mode and need room for thinking tokens.
+        self.request_params: dict[str, Any] = {
+            "temperature": 0,
+            "max_tokens": 200,
+            "response_format": {"type": "json_object"},
+        }
+        if request_overrides is not None:
+            self.request_params = request_overrides
         self.cache_path = cache_path
         self.ledger = ledger
         self._sem = None if concurrency <= 0 else concurrency
@@ -114,13 +126,7 @@ class SummaryJudge:
             ) / 1e6
             self.ledger.check(est)
         resp = await litellm.acompletion(
-            model=self.model,
-            messages=messages,
-            temperature=0,
-            max_tokens=200,
-            response_format={"type": "json_object"},
-            num_retries=2,
-            timeout=60,
+            model=self.model, messages=messages, num_retries=2, timeout=180, **self.request_params
         )
         usage = resp.usage
         cost = (usage.prompt_tokens * in_price + usage.completion_tokens * out_price) / 1e6
@@ -133,7 +139,7 @@ class SummaryJudge:
                 output_tokens=usage.completion_tokens,
             )
         try:
-            scores = json.loads(resp.choices[0].message.content)
+            scores = extract_json(resp.choices[0].message.content or "")
             result = {
                 "faithfulness": int(scores["faithfulness"]),
                 "coverage": int(scores["coverage"]),

@@ -66,6 +66,10 @@ class ModelSpec(BaseModel):
     )
     # Extra provider-specific parameters always sent upstream (e.g. thinking config).
     provider_params: dict[str, Any] = Field(default_factory=dict)
+    # Lower bound applied to max_tokens for models whose internal reasoning cannot be
+    # disabled (reasoning tokens count against max_tokens and would otherwise starve the
+    # visible answer). Reasoning tokens are billed as output and included in costs.
+    min_max_tokens: int = Field(default=0, ge=0)
     mock: MockProfile | None = None
     notes: str | None = None
 

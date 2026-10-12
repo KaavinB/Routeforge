@@ -63,6 +63,9 @@ def hardware() -> dict[str, Any]:
         ).stdout.strip()
         info["memory_gb"] = round(int(mem) / 2**30, 1) if mem else None
         info["cpu_count"] = os.cpu_count()
+        # Recorded so readers can judge contention: the dev laptop also ran local LLM
+        # inference and other apps during some benchmarks.
+        info["load_average_1m_5m_15m"] = [round(x, 2) for x in os.getloadavg()]
     except (OSError, subprocess.SubprocessError, ValueError):
         info["cpu_count"] = os.cpu_count()
     return info

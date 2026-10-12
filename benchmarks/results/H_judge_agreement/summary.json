@@ -1,0 +1,99 @@
+{
+  "metadata": {
+    "benchmark": "H_judge_agreement",
+    "experiment_id": "H_judge_agreement-20261012T000957Z-1f0cf8",
+    "timestamp": "2026-10-12T00:09:57.804296+00:00",
+    "git_sha": "d7a8030c527a0ccd6d48ac0a5c4c78018dbedca6",
+    "git_dirty": true,
+    "hardware": {
+      "platform": "macOS-26.5.2-arm64-arm-64bit",
+      "machine": "arm64",
+      "python": "3.12.15",
+      "cpu": "Apple M4",
+      "memory_gb": 16.0,
+      "cpu_count": 10
+    },
+    "software": {
+      "fastapi": "0.141.1",
+      "litellm": "1.102.1",
+      "scikit-learn": "1.9.1",
+      "numpy": "2.5.3",
+      "redis": "8.1.0",
+      "sqlalchemy": "2.1.1",
+      "uvicorn": "0.54.0",
+      "locust": "2.46.6"
+    },
+    "mode": "hosted",
+    "collection": "hosted-2026-10-11",
+    "primary_judge": "openai/gpt-4.1",
+    "second_judge": "anthropic/claude-fable-5-1",
+    "second_judge_params": {
+      "max_tokens": 4096,
+      "output_config": {
+        "effort": "low"
+      }
+    },
+    "rubric": "summary-rubric-v1",
+    "sample_size": 48,
+    "sampling": "all primary-rejected + seeded random accepted, stratified by model",
+    "acceptability_rule": "faithfulness >= 4 and coverage >= 3"
+  },
+  "status": "complete",
+  "headline": [
+    {
+      "label": "Inter-judge agreement (acceptable label)",
+      "value": "91.7%",
+      "detail": "n=48"
+    },
+    {
+      "label": "Cohen's kappa",
+      "value": "0.31"
+    },
+    {
+      "label": "Spearman (faithfulness / coverage)",
+      "value": "0.19 / 0.72"
+    },
+    {
+      "label": "Human agreement",
+      "value": "not measured",
+      "detail": "fill in the calibration CSV to measure"
+    }
+  ],
+  "inter_judge": {
+    "n": 48,
+    "raw_agreement": 0.9166666666666666,
+    "cohens_kappa": 0.3093525179856115,
+    "primary_accept_rate": 0.9791666666666666,
+    "other_accept_rate": 0.8958333333333334,
+    "agreement_on_primary_rejects": 1.0,
+    "agreement_on_primary_accepts": 0.9148936170212766
+  },
+  "score_correlation": {
+    "faithfulness": {
+      "spearman": 0.18759415350942862,
+      "mean_abs_diff": 0.3541666666666667,
+      "primary_mean": 4.875,
+      "other_mean": 4.645833333333333
+    },
+    "coverage": {
+      "spearman": 0.7177262841279051,
+      "mean_abs_diff": 0.625,
+      "primary_mean": 4.604166666666667,
+      "other_mean": 3.9791666666666665
+    },
+    "conciseness": {
+      "spearman": 0.0,
+      "mean_abs_diff": 0.5,
+      "primary_mean": 4.916666666666667,
+      "other_mean": 4.5
+    }
+  },
+  "human_calibration": {
+    "status": "not measured",
+    "kit": "router_training/data/collections/hosted-2026-10-11/judge_calibration_sample.csv"
+  },
+  "limitations": [
+    "Agreement between two LLM judges is not accuracy; both can share biases.",
+    "The sample over-represents primary-judge rejections; kappa is sensitive to class balance."
+  ]
+}

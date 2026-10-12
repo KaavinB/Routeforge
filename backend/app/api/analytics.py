@@ -16,16 +16,17 @@ router = APIRouter(
 )
 
 Hours = Query(24.0, gt=0, le=24 * 90)
+TrafficQ = Query("all", pattern="^(all|real|simulated)$")
 
 
 @router.get("/summary")
 async def summary(
     hours: float = Hours,
-    include_simulated: bool | None = None,
+    traffic: str = TrafficQ,
     session: AsyncSession = Depends(get_session),
     state: AppState = Depends(get_state),
 ) -> dict[str, Any]:
-    data = await queries.summary(session, hours, include_simulated)
+    data = await queries.summary(session, hours, traffic)
     data["mode"] = state.registry.mode
     data["simulated_mode"] = state.registry.simulated
     data["pricing"] = state.registry.data.pricing.model_dump()
@@ -38,11 +39,11 @@ async def summary(
 @router.get("/models")
 async def models(
     hours: float = Hours,
-    include_simulated: bool | None = None,
+    traffic: str = TrafficQ,
     session: AsyncSession = Depends(get_session),
     state: AppState = Depends(get_state),
 ) -> dict[str, Any]:
-    rows = await queries.models(session, hours, include_simulated)
+    rows = await queries.models(session, hours, traffic)
     registry = {
         m.id: {
             "family": m.family,
@@ -95,9 +96,10 @@ async def request_detail(
 async def timeseries(
     hours: float = Hours,
     buckets: int = Query(48, ge=4, le=500),
+    traffic: str = TrafficQ,
     session: AsyncSession = Depends(get_session),
 ) -> dict[str, Any]:
-    return {"buckets": await queries.timeseries(session, hours, buckets)}
+    return {"buckets": await queries.timeseries(session, hours, buckets, traffic)}
 
 
 @router.get("/routing/preview")

@@ -1,0 +1,123 @@
+{
+  "metadata": {
+    "benchmark": "B_cache",
+    "experiment_id": "B_cache-20261012T003404Z-139fdb",
+    "timestamp": "2026-10-12T00:34:04.824652+00:00",
+    "git_sha": "d7a8030c527a0ccd6d48ac0a5c4c78018dbedca6",
+    "git_dirty": true,
+    "hardware": {
+      "platform": "macOS-26.5.2-arm64-arm-64bit",
+      "machine": "arm64",
+      "python": "3.12.15",
+      "cpu": "Apple M4",
+      "memory_gb": 16.0,
+      "cpu_count": 10
+    },
+    "software": {
+      "fastapi": "0.141.1",
+      "litellm": "1.102.1",
+      "scikit-learn": "1.9.1",
+      "numpy": "2.5.3",
+      "redis": "8.1.0",
+      "sqlalchemy": "2.1.1",
+      "uvicorn": "0.54.0",
+      "locust": "2.46.6"
+    },
+    "mode": "5 enabled (hosted)",
+    "base_url": "http://localhost:8000",
+    "model": "gpt-5.6-luna",
+    "n_unique_prompts": 80,
+    "concurrency": 8,
+    "repeat_rate": 0.3,
+    "dataset": "routeforge-bench-v1",
+    "dataset_version": "1.0.0",
+    "generation": {
+      "temperature": 0,
+      "max_tokens": "min(case,128)"
+    },
+    "simulated": false
+  },
+  "simulated": false,
+  "status": "complete",
+  "headline": [
+    {
+      "label": "Warm-cache p50 latency",
+      "value": "76.2 ms",
+      "detail": "vs 862 ms uncached"
+    },
+    {
+      "label": "Latency reduction on hits (p50)",
+      "value": "91.2%"
+    },
+    {
+      "label": "Server-side cache lookup (mean)",
+      "value": "4.50 ms",
+      "detail": "Redis GET incl. client overhead (Prometheus); the cost a miss adds"
+    },
+    {
+      "label": "Hit rate at 26% synthetic repeats",
+      "value": "24.0%",
+      "detail": "152 backend calls for 200 requests"
+    }
+  ],
+  "cache_modes": {
+    "no_cache": {
+      "requests": 80,
+      "success_rate": 1.0,
+      "cache_hits": 0,
+      "eligible_lookups": 0,
+      "hit_rate": null,
+      "backend_invocations": 80,
+      "estimated_cost_usd": 0.0029692,
+      "p50_ms": 862.487021004199,
+      "p95_ms": 1111.196077396744,
+      "p99_ms": null,
+      "mean_ms": 909.1512078006417
+    },
+    "cold": {
+      "requests": 80,
+      "success_rate": 1.0,
+      "cache_hits": 0,
+      "eligible_lookups": 80,
+      "hit_rate": 0.0,
+      "backend_invocations": 80,
+      "estimated_cost_usd": 0.002962,
+      "p50_ms": 913.2707704993663,
+      "p95_ms": 1206.4079878553457,
+      "p99_ms": null,
+      "mean_ms": 928.5969682367067
+    },
+    "warm": {
+      "requests": 80,
+      "success_rate": 1.0,
+      "cache_hits": 80,
+      "eligible_lookups": 80,
+      "hit_rate": 1.0,
+      "backend_invocations": 0,
+      "estimated_cost_usd": 0.0,
+      "p50_ms": 76.18060400272952,
+      "p95_ms": 305.6072339481033,
+      "p99_ms": null,
+      "mean_ms": 100.23940991195559
+    },
+    "mixed": {
+      "requests": 200,
+      "success_rate": 1.0,
+      "cache_hits": 48,
+      "eligible_lookups": 200,
+      "hit_rate": 0.24,
+      "backend_invocations": 152,
+      "estimated_cost_usd": 0.0085954,
+      "p50_ms": 913.224062496738,
+      "p95_ms": 1556.371941998077,
+      "p99_ms": 1718.2084615764322,
+      "mean_ms": 830.5456385600701,
+      "effective_repeat_rate": 0.26
+    }
+  },
+  "limitations": [
+    "Exact-match cache: only byte-identical (tenant, model, messages, params) requests hit.",
+    "The mixed workload's repetition rate is an assumption; real hit rates depend entirely on traffic.",
+    "Warm-phase latency measures the cache path, not model quality; cost avoided is list-price estimated."
+  ]
+}

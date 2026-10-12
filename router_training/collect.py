@@ -43,7 +43,11 @@ FAMILY_CONCURRENCY = {"openai": 8, "anthropic": 6, "ollama": 1, "mock": 16}
 
 
 def estimate_cost(spec: ModelSpec, case: EvalCase) -> float:
-    return spec.cost_usd(int(estimate_message_tokens(case.messages) * 1.3), case.max_tokens)
+    """Pessimistic: every request generates its full (adapted) max_tokens budget."""
+    params, _ = adapt_params(spec, case.request_params(), cap=4096)
+    return spec.cost_usd(
+        int(estimate_message_tokens(case.messages) * 1.3), int(params["max_tokens"])
+    )
 
 
 def load_done(path: Path) -> set[tuple[str, str]]:

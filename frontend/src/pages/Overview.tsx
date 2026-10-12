@@ -1,8 +1,8 @@
 import { useState } from "react";
 import { Area, AreaChart, Bar, BarChart, CartesianGrid, ResponsiveContainer, Tooltip, XAxis, YAxis } from "recharts";
 
-import { Card, EmptyState, ErrorState, Loading, PageHeader, Select, SimulatedBanner, StatTile } from "../components/ui";
-import { useApi } from "../hooks/useApi";
+import { Card, EmptyState, ErrorState, Loading, PageHeader, Select, SimulatedBanner, StatTile, TRAFFIC_OPTIONS } from "../components/ui";
+import { useApi, useTrafficFilter } from "../hooks/useApi";
 import { fmt, type Summary, type TimeBucket } from "../services/api";
 
 const WINDOWS = [
@@ -13,8 +13,9 @@ const WINDOWS = [
 
 export function OverviewPage() {
   const [hours, setHours] = useState("24");
-  const summary = useApi<Summary>(`/api/analytics/summary?hours=${hours}`, 10000);
-  const series = useApi<{ buckets: TimeBucket[] }>(`/api/analytics/timeseries?hours=${hours}&buckets=48`, 10000);
+  const [traffic, setTraffic] = useTrafficFilter();
+  const summary = useApi<Summary>(`/api/analytics/summary?hours=${hours}&traffic=${traffic}`, 10000);
+  const series = useApi<{ buckets: TimeBucket[] }>(`/api/analytics/timeseries?hours=${hours}&buckets=48&traffic=${traffic}`, 10000);
   const s = summary.data;
 
   return (
@@ -22,7 +23,12 @@ export function OverviewPage() {
       <PageHeader
         title="Overview"
         description="Live operational metrics from the gateway's request log. Costs are estimated from provider-reported token usage and list prices."
-        actions={<Select label="Window" value={hours} onChange={setHours} options={WINDOWS} />}
+        actions={
+          <div className="flex gap-3">
+            <Select label="Traffic" value={traffic} onChange={setTraffic} options={TRAFFIC_OPTIONS} />
+            <Select label="Window" value={hours} onChange={setHours} options={WINDOWS} />
+          </div>
+        }
       />
       {summary.error && <ErrorState error={summary.error} />}
       {summary.loading && !s && <Loading />}

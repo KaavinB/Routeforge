@@ -55,3 +55,13 @@ export function useApi<T>(path: string | null, intervalMs?: number): ApiState<T>
   const reload = useCallback(() => setTick((t) => t + 1), []);
   return { data, error, loading, reload };
 }
+
+/** Default traffic filter: real traffic unless the gateway itself runs in mock mode.
+ *  Simulated requests carry simulated latency/cost and must not be mixed silently with
+ *  real measurements. */
+export function useTrafficFilter(): [string, (v: string) => void] {
+  const ready = useApi<{ simulated: boolean }>("/ready");
+  const [choice, setChoice] = useState<string | null>(null);
+  const fallback = ready.data ? (ready.data.simulated ? "all" : "real") : "real";
+  return [choice ?? fallback, setChoice];
+}

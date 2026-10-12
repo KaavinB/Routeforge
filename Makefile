@@ -3,11 +3,11 @@ SHELL := /bin/bash
 export PYTHONPATH := backend:.
 export OMP_NUM_THREADS := 1
 UV := uv run --no-sync
-COLLECTION ?= hosted-2026-10-11
-REGISTRY ?= config/models/hosted.yaml
+COLLECTION ?= latest-2026-10-11
+REGISTRY ?= config/models/hosted-latest.yaml
 
 .PHONY: help install env up up-obs down logs lint format typecheck test test-integration coverage \
-        audit dataset validate-dataset collect score train replay benchmarks charts frontend clean
+        audit dataset validate-dataset collect score train replay regression-suite live-benchmark load-test fault-test overhead frontend clean
 
 help:  ## list targets
 	@grep -E '^[a-zA-Z_-]+:.*?## ' $(MAKEFILE_LIST) | awk 'BEGIN {FS = ":.*?## "}; {printf "  %-18s %s\n", $$1, $$2}'
@@ -75,8 +75,21 @@ train:  ## train the router artifact for COLLECTION
 replay:  ## Benchmarks A+F: offline policy replay + Pareto frontier
 	$(UV) python -m benchmarks.evaluation.offline_replay --collection $(COLLECTION) --registry $(REGISTRY)
 
-benchmarks:  ## gateway benchmarks B-E against the running stack (mock mode unless configured)
-	$(UV) python -m benchmarks.run_all
+regression-suite:  ## Benchmark G: validate the CI quality gate (replay, zero cost)
+	$(UV) python -m benchmarks.evaluation.regression_suite --pool latest
+
+live-benchmark:  ## Benchmark A (live): policies end-to-end through a running hosted gateway (PAID)
+	$(UV) python -m benchmarks.evaluation.live_policies --base-url http://localhost:8000
+
+load-test:  ## Benchmark C: Locust concurrency sweep against the running gateway
+	$(UV) python -m benchmarks.load_tests.run_load --base-url http://localhost:8000
+
+fault-test:  ## Benchmark D: failure injection (gateway must run with fault injection enabled)
+	$(UV) python -m benchmarks.fault_injection.run_faults --base-url http://localhost:8000
+
+overhead:  ## Benchmark E: routing overhead (in-process; add BASE_URL for the replay e2e part)
+	$(UV) python -m benchmarks.router_overhead --registry config/models/hosted-latest.yaml \
+		--artifact router_training/artifacts/router-latest-2026-10-11 $(if $(BASE_URL),--base-url $(BASE_URL),)
 
 frontend:  ## dashboard dev server (http://localhost:5173, proxies to :8000)
 	cd frontend && npm run dev

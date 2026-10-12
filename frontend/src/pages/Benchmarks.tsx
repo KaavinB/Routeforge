@@ -129,11 +129,22 @@ function PolicyView({ data }: { data: AnyObj }) {
       {points.length > 0 && (
         <Card title="Quality vs. cost (Pareto frontier)" subtitle="Each point is a policy on the same held-out prompts. Up and to the left is better; the blue line sweeps the learned router's quality threshold.">
           <ResponsiveContainer width="100%" height={340}>
-            <ScatterChart margin={{ top: 10, right: 20, bottom: 10, left: 0 }}>
+            <ScatterChart margin={{ top: 10, right: 20, bottom: 20, left: 0 }}>
               <CartesianGrid stroke="#e4e3df" />
-              <XAxis type="number" dataKey="x" scale="log" domain={["auto", "auto"]} name="$ / 1k requests" tickFormatter={(v) => `$${Number(v).toPrecision(2)}`} axisLine={false} tickLine={false} />
+              <XAxis
+                type="number"
+                dataKey="x"
+                scale="log"
+                domain={["auto", "auto"]}
+                ticks={LOG_TICKS}
+                name="$ / 1k requests"
+                tickFormatter={(v) => `$${Number(v)}`}
+                axisLine={false}
+                tickLine={false}
+                label={{ value: "estimated $ per 1,000 requests (log scale)", position: "insideBottom", offset: -4, fontSize: 11, fill: "#52514e" }}
+              />
               <YAxis type="number" dataKey="y" name="acceptable %" unit="%" domain={["auto", "auto"]} axisLine={false} tickLine={false} width={48} />
-              <ZAxis range={[60, 60]} />
+              <ZAxis range={[110, 110]} />
               <Tooltip
                 cursor={{ strokeDasharray: "3 3" }}
                 content={({ payload }) => {
@@ -221,6 +232,8 @@ function PolicyView({ data }: { data: AnyObj }) {
     </>
   );
 }
+
+const LOG_TICKS = [0.01, 0.02, 0.05, 0.1, 0.2, 0.5, 1, 2, 5, 10];
 
 function ci(x: AnyObj | undefined, unit: string) {
   if (!x) return "—";

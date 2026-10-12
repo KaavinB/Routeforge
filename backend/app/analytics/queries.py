@@ -20,11 +20,18 @@ from app.models.db import RequestLog
 MAX_PERCENTILE_ROWS = 200_000
 
 
-def _window_filter(hours: float, include_simulated: bool | None) -> list[Any]:
+Traffic = str  # "all" | "real" | "simulated"
+
+
+def _window_filter(hours: float, traffic: Traffic = "all") -> list[Any]:
     since = datetime.now(UTC) - timedelta(hours=hours)
     conds: list[Any] = [RequestLog.created_at >= since]
-    if include_simulated is False:
+    # Simulated (mock-provider) requests carry simulated latencies and costs; mixing
+    # them with real traffic would make spend and latency figures meaningless.
+    if traffic == "real":
         conds.append(RequestLog.simulated.is_(False))
+    elif traffic == "simulated":
+        conds.append(RequestLog.simulated.is_(True))
     return conds
 
 
@@ -49,9 +56,9 @@ async def _latencies(
 
 
 async def summary(
-    session: AsyncSession, hours: float = 24, include_simulated: bool | None = None
+    session: AsyncSession, hours: float = 24, traffic: Traffic = "all"
 ) -> dict[str, Any]:
-    conds = _window_filter(hours, include_simulated)
+    conds = _window_filter(hours, traffic)
     success = RequestLog.status == "success"
     row = (
         await session.execute(
@@ -115,9 +122,9 @@ async def summary(
 
 
 async def models(
-    session: AsyncSession, hours: float = 24, include_simulated: bool | None = None
+    session: AsyncSession, hours: float = 24, traffic: Traffic = "all"
 ) -> list[dict[str, Any]]:
-    conds = _window_filter(hours, include_simulated)
+    conds = _window_filter(hours, traffic)
     success = RequestLog.status == "success"
     rows = (
         await session.execute(
@@ -167,7 +174,7 @@ def _request_query(
     cache: str | None,
     search: str | None,
 ) -> Select[Any]:
-    conds = _window_filter(hours, None)
+    conds = _window_filter(hours)
     if model:
         conds.append(RequestLog.final_model == model)
     if strategy:
@@ -251,10 +258,10 @@ async def request_detail(session: AsyncSession, request_id: str) -> dict[str, An
 
 
 async def timeseries(
-    session: AsyncSession, hours: float = 24, buckets: int = 48
+    session: AsyncSession, hours: float = 24, buckets: int = 48, traffic: Traffic = "all"
 ) -> list[dict[str, Any]]:
     """Fixed-width buckets computed in Python for portability across databases."""
-    conds = _window_filter(hours, None)
+    conds = _window_filter(hours, traffic)
     rows = (
         await session.execute(
             select(

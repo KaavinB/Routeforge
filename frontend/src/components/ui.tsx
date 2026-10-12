@@ -151,3 +151,9 @@ export function PageHeader({ title, description, actions }: { title: string; des
     </div>
   );
 }
+
+export const TRAFFIC_OPTIONS = [
+  { value: "real", label: "Real providers" },
+  { value: "simulated", label: "Simulated (mock)" },
+  { value: "all", label: "All traffic" },
+];
