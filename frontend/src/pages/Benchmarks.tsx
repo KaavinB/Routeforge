@@ -13,9 +13,13 @@ import {
   ZAxis,
 } from "recharts";
 
-import { Badge, Card, EmptyState, ErrorState, Loading, PageHeader, SERIES, Td, Th } from "../components/ui";
+import { BarChart3, FlaskConical } from "lucide-react";
+
+import { Badge, Card, ChartTooltip, EmptyState, ErrorState, Loading, PageHeader, SERIES, Table, Td, Th, rowClass } from "../components/ui";
 import { useApi } from "../hooks/useApi";
+import { useChartColors } from "../hooks/useTheme";
 import { fmt, type BenchmarkListItem } from "../services/api";
+import { benchmarkTitle } from "../services/labels";
 
 /* eslint-disable @typescript-eslint/no-explicit-any */
 type AnyObj = Record<string, any>;
@@ -24,45 +28,53 @@ export function BenchmarksPage() {
   const list = useApi<{ benchmarks: BenchmarkListItem[] }>("/api/benchmarks");
   const [selected, setSelected] = useState<string | null>(null);
   useEffect(() => {
-    if (!selected && list.data?.benchmarks.length) setSelected(list.data.benchmarks[0].name);
+    const all = list.data?.benchmarks ?? [];
+    // Open on the headline experiment (live routing on the latest model pool) when present.
+    if (!selected && all.length) setSelected((all.find((x) => x.name.includes("routing_live_latest")) ?? all[0]).name);
   }, [list.data, selected]);
   const detail = useApi<AnyObj>(selected ? `/api/benchmarks/${encodeURIComponent(selected)}` : null);
 
   return (
     <>
       <PageHeader
-        title="Benchmark reports"
-        description="Results written by the benchmarks/ suite (machine-readable summary.json per experiment). Every number here comes from a recorded run; open the metadata to see commit, dataset, pricing and environment."
+        title="Benchmarks"
+        description="Recorded experiments behind every claim: does routing save money, does the cache help, does it survive outages? Each result is saved with the exact code version and settings it ran with."
       />
       {list.error && <ErrorState error={list.error} />}
       {list.loading && !list.data && <Loading />}
       {list.data && list.data.benchmarks.length === 0 && (
         <Card>
-          <EmptyState title="No benchmark results found">
+          <EmptyState title="No benchmark results found" icon={BarChart3}>
             Run <code className="font-mono">make replay</code> or <code className="font-mono">make benchmarks</code>; results appear in <code className="font-mono">benchmarks/results/</code>.
           </EmptyState>
         </Card>
       )}
       {list.data && list.data.benchmarks.length > 0 && (
-        <div className="grid gap-4 lg:grid-cols-[16rem_minmax(0,1fr)]">
-          <Card title="Experiments">
-            <ul className="-m-2 space-y-0.5">
-              {list.data.benchmarks.map((b) => (
-                <li key={b.name}>
-                  <button
-                    onClick={() => setSelected(b.name)}
-                    className={`w-full rounded-md px-2 py-1.5 text-left text-xs ${selected === b.name ? "bg-accent-soft text-accent" : "hover:bg-sunken"}`}
-                  >
-                    <div className="font-mono font-medium">{b.name}</div>
-                    <div className="text-ink-3">
-                      {b.timestamp ? fmt.time(b.timestamp) : "—"} · {b.mode ?? "?"} {b.status !== "complete" && <Badge tone="warn">{b.status}</Badge>}
-                    </div>
-                  </button>
-                </li>
-              ))}
-            </ul>
-          </Card>
-          <div className="min-w-0 space-y-4">
+        <div className="grid gap-5 lg:grid-cols-[17rem_minmax(0,1fr)]">
+          <nav aria-label="Experiments" className="space-y-1 lg:sticky lg:top-6 lg:self-start">
+            <div className="mb-2 px-1 text-[11px] font-semibold tracking-wider text-ink-3 uppercase">Experiments</div>
+            {list.data.benchmarks.map((b) => {
+              const t = benchmarkTitle(b.name);
+              const on = selected === b.name;
+              return (
+                <button
+                  key={b.name}
+                  onClick={() => setSelected(b.name)}
+                  aria-current={on ? "true" : undefined}
+                  className={`flex w-full items-start gap-3 rounded-xl border px-3 py-2.5 text-left transition-all ${on ? "border-accent/40 bg-panel shadow-card" : "border-transparent hover:bg-panel/70"}`}
+                >
+                  <span className={`flex h-7 w-7 shrink-0 items-center justify-center rounded-lg font-display text-sm font-bold ${on ? "bg-linear-to-br from-[#ff8a3d] to-accent text-white" : "bg-sunken text-ink-2"}`}>{t.letter}</span>
+                  <span className="min-w-0">
+                    <span className={`block text-[13px] font-medium ${on ? "text-ink" : "text-ink-2"}`}>{t.title}</span>
+                    <span className="block truncate text-[11px] text-ink-3">
+                      {t.detail || b.name} {b.status !== "complete" && <Badge tone="warn">{b.status}</Badge>}
+                    </span>
+                  </span>
+                </button>
+              );
+            })}
+          </nav>
+          <div className="min-w-0 space-y-5">
             {detail.error && <ErrorState error={detail.error} />}
             {detail.loading && !detail.data && <Loading />}
             {detail.data && <BenchmarkView data={detail.data} />}
@@ -78,8 +90,11 @@ function BenchmarkView({ data }: { data: AnyObj }) {
   return (
     <>
       {(meta.mode === "mock" || data.simulated) && (
-        <div className="rounded-lg border border-warn/30 bg-warn-soft px-3 py-2 text-sm text-warn">
+        <div className="flex items-start gap-3 rounded-2xl border border-warn/25 bg-warn-soft px-4 py-3 text-sm text-warn">
+          <FlaskConical className="mt-0.5 h-4 w-4 shrink-0" aria-hidden />
+          <div>
           <strong>Simulated providers.</strong> This benchmark measures the gateway itself (routing, caching, reliability, throughput) against mock models. It says nothing about real model quality or provider latency.
+          </div>
         </div>
       )}
       {data.headline && <Headline items={data.headline} />}
@@ -89,29 +104,36 @@ function BenchmarkView({ data }: { data: AnyObj }) {
       {data.cache_modes && <CacheView modes={data.cache_modes} />}
       {data.overhead && <OverheadView overhead={data.overhead} />}
       {data.limitations && (
-        <Card title="Limitations">
-          <ul className="list-disc space-y-1 pl-5 text-sm text-ink-2">
+        <Card title="Limitations" >
+          <ul className="list-disc space-y-1.5 pl-5 text-[13px] leading-relaxed text-ink-2 marker:text-accent">
             {data.limitations.map((l: string) => (
               <li key={l}>{l}</li>
             ))}
           </ul>
         </Card>
       )}
-      <Card title="Experiment metadata">
-        <pre className="max-h-80 overflow-auto rounded-lg bg-sunken p-3 font-mono text-[11px] leading-relaxed">{JSON.stringify(meta, null, 2)}</pre>
-      </Card>
+      <details className="group rounded-2xl border border-line bg-panel shadow-card">
+        <summary className="cursor-pointer list-none px-5 py-4 text-sm font-medium text-ink-2 select-none hover:text-ink">
+          <span className="mr-1 inline-block transition-transform group-open:rotate-90">›</span> Run details (commit, dataset, pricing, environment)
+        </summary>
+        <pre className="mx-5 mb-5 max-h-80 overflow-auto rounded-xl bg-anvil p-4 font-mono text-[11px] leading-relaxed text-[#f3d9c4]">{JSON.stringify(meta, null, 2)}</pre>
+      </details>
     </>
   );
 }
 
 function Headline({ items }: { items: AnyObj[] }) {
   return (
-    <div className="grid grid-cols-2 gap-3 lg:grid-cols-4">
-      {items.map((h) => (
-        <div key={h.label} className="rounded-xl border border-line bg-panel px-4 py-3">
-          <div className="text-xs font-medium text-ink-2">{h.label}</div>
-          <div className="tabular mt-1 text-xl font-semibold">{h.value}</div>
-          {h.detail && <div className="mt-0.5 text-xs text-ink-3">{h.detail}</div>}
+    <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 xl:grid-cols-4">
+      {items.map((h, i) => (
+        <div
+          key={h.label}
+          className={`animate-rise relative overflow-hidden rounded-2xl border px-4 py-4 shadow-card ${i === 0 ? "border-transparent bg-anvil text-white" : "border-line bg-panel"}`}
+        >
+          {i === 0 && <div className="absolute -top-10 -right-10 h-32 w-32 rounded-full bg-[#ff6a1f]/40 blur-2xl" />}
+          <div className={`relative text-xs font-medium ${i === 0 ? "text-white/60" : "text-ink-2"}`}>{h.label}</div>
+          <div className={`tabular relative mt-1.5 font-display text-[28px] leading-none font-semibold tracking-tight ${i === 0 ? "bg-linear-to-r from-[#ffc46b] to-[#ff7a2e] bg-clip-text text-transparent" : ""}`}>{h.value}</div>
+          {h.detail && <div className={`relative mt-1.5 text-xs ${i === 0 ? "text-white/50" : "text-ink-3"}`}>{h.detail}</div>}
         </div>
       ))}
     </div>
@@ -123,14 +145,15 @@ function PolicyView({ data }: { data: AnyObj }) {
   const names = Object.keys(pol);
   const points: AnyObj[] = data.pareto?.points ?? [];
   const sweep = points.filter((p) => p.kind === "learned_sweep").map((p) => ({ x: 1000 * p.cost_per_request_usd, y: 100 * p.acceptable_rate, label: p.label }));
-  const refKinds: [string, string][] = [["fixed", "#9a9893"], ["heuristic", SERIES[1]], ["random", SERIES[2]], ["oracle", "#52514e"]];
+  const c = useChartColors();
+  const refKinds: [string, string][] = [["fixed", c.neutral], ["heuristic", SERIES[1]], ["random", SERIES[2]], ["oracle", c.ink2]];
   return (
     <>
       {points.length > 0 && (
-        <Card title="Quality vs. cost (Pareto frontier)" subtitle="Each point is a policy on the same held-out prompts. Up and to the left is better; the blue line sweeps the learned router's quality threshold.">
+        <Card title="Quality vs. cost" subtitle="Each dot is a policy on the same prompts. Up and left is better. The blue line is the learned router at different quality bars.">
           <ResponsiveContainer width="100%" height={340}>
             <ScatterChart margin={{ top: 10, right: 20, bottom: 20, left: 0 }}>
-              <CartesianGrid stroke="#e4e3df" />
+              <CartesianGrid stroke={c.grid} strokeDasharray="3 4" />
               <XAxis
                 type="number"
                 dataKey="x"
@@ -141,7 +164,7 @@ function PolicyView({ data }: { data: AnyObj }) {
                 tickFormatter={(v) => `$${Number(v)}`}
                 axisLine={false}
                 tickLine={false}
-                label={{ value: "estimated $ per 1,000 requests (log scale)", position: "insideBottom", offset: -4, fontSize: 11, fill: "#52514e" }}
+                label={{ value: "estimated $ per 1,000 requests (log scale)", position: "insideBottom", offset: -4, fontSize: 11, fill: c.axis }}
               />
               <YAxis type="number" dataKey="y" name="acceptable %" unit="%" domain={["auto", "auto"]} axisLine={false} tickLine={false} width={48} />
               <ZAxis range={[110, 110]} />
@@ -169,11 +192,10 @@ function PolicyView({ data }: { data: AnyObj }) {
         </Card>
       )}
       <Card title="Policy comparison" subtitle={data.metadata?.methodology}>
-        <div className="overflow-x-auto">
-          <table className="w-full">
+        <Table>
             <thead>
-              <tr className="border-b border-line">
-                <Th>Policy</Th><Th right>Acceptable</Th><Th right>95% CI</Th><Th right>$ / 1k req</Th><Th right>$ / acceptable</Th><Th right>p50</Th><Th right>p95</Th><Th right>Violations</Th><Th>Model mix</Th>
+              <tr>
+                <Th>Policy</Th><Th right>Acceptable</Th><Th right>$ / 1k req</Th><Th right>Typical latency</Th><Th>Model mix</Th>
               </tr>
             </thead>
             <tbody>
@@ -181,17 +203,13 @@ function PolicyView({ data }: { data: AnyObj }) {
                 const b = pol[n];
                 const mix = Object.entries(b.model_distribution ?? {}) as [string, number][];
                 return (
-                  <tr key={n} className="border-b border-line/60 last:border-0">
+                  <tr key={n} className={rowClass}>
                     <Td mono>{n}</Td>
-                    <Td right>{fmt.pct(b.acceptable_rate)}</Td>
                     <Td right>
-                      {b.acceptable_rate_ci95 ? `${fmt.pct(b.acceptable_rate_ci95[0])} – ${fmt.pct(b.acceptable_rate_ci95[1])}` : "—"}
+                      <span title={b.acceptable_rate_ci95 ? `95% CI ${fmt.pct(b.acceptable_rate_ci95[0])} – ${fmt.pct(b.acceptable_rate_ci95[1])}` : undefined}>{fmt.pct(b.acceptable_rate)}</span>
                     </Td>
                     <Td right>{fmt.usd(b.cost_per_1k_requests_usd ?? (b.cost_per_request_usd ?? 0) * 1000)}</Td>
-                    <Td right>{fmt.usd(b.cost_per_acceptable_usd)}</Td>
                     <Td right>{fmt.ms(b.latency_p50_ms)}</Td>
-                    <Td right>{fmt.ms(b.latency_p95_ms)}</Td>
-                    <Td right>{b.quality_violation_rate == null ? "—" : fmt.pct(b.quality_violation_rate)}</Td>
                     <Td>
                       <div className="flex h-2 w-32 overflow-hidden rounded bg-sunken" title={mix.map(([m, s]) => `${m} ${(100 * s).toFixed(0)}%`).join(", ")}>
                         {mix.map(([m, s], i) => (
@@ -203,21 +221,19 @@ function PolicyView({ data }: { data: AnyObj }) {
                 );
               })}
             </tbody>
-          </table>
-        </div>
+        </Table>
       </Card>
       {data.comparisons && (
-        <Card title="Paired comparisons" subtitle="Paired bootstrap (resampling prompts) · 95% intervals">
-          <div className="overflow-x-auto">
-            <table className="w-full">
+        <Card title="Head-to-head" subtitle="Paired bootstrap (resampling prompts) · 95% intervals. If an interval crosses zero, the difference isn't conclusive.">
+          <Table>
               <thead>
-                <tr className="border-b border-line">
+                <tr>
                   <Th>Comparison (candidate vs baseline)</Th><Th right>Cost reduction</Th><Th right>Quality Δ (pp)</Th><Th right>Quality retention</Th>
                 </tr>
               </thead>
               <tbody>
                 {Object.entries(data.comparisons as AnyObj).map(([k, c]) => (
-                  <tr key={k} className="border-b border-line/60 last:border-0">
+                  <tr key={k} className={rowClass}>
                     <Td mono>{k}</Td>
                     <Td right>{ci(c.cost_reduction_pct, "%")}</Td>
                     <Td right>{ci(c.quality_diff_pp, "")}</Td>
@@ -225,8 +241,7 @@ function PolicyView({ data }: { data: AnyObj }) {
                   </tr>
                 ))}
               </tbody>
-            </table>
-          </div>
+          </Table>
         </Card>
       )}
     </>
@@ -242,15 +257,16 @@ function ci(x: AnyObj | undefined, unit: string) {
 }
 
 function LoadView({ levels }: { levels: AnyObj[] }) {
+  const c = useChartColors();
   return (
     <div className="grid gap-4 lg:grid-cols-2">
-      <Card title="Throughput by concurrency" subtitle="Successful requests per second">
+      <Card title="Throughput by concurrency" subtitle="Successful requests per second as more clients pile on">
         <ResponsiveContainer width="100%" height={240}>
           <LineChart data={levels}>
-            <CartesianGrid stroke="#e4e3df" vertical={false} />
+            <CartesianGrid stroke={c.grid} strokeDasharray="3 4" vertical={false} />
             <XAxis dataKey="users" axisLine={false} tickLine={false} />
             <YAxis axisLine={false} tickLine={false} width={44} />
-            <Tooltip />
+            <Tooltip content={<ChartTooltip labelFormat={(l) => `${l} clients`} valueFormat={(v) => v.toFixed(0)} />} />
             <Line dataKey="success_rps" name="successful req/s" stroke={SERIES[0]} strokeWidth={2} dot={{ r: 4 }} />
           </LineChart>
         </ResponsiveContainer>
@@ -258,14 +274,14 @@ function LoadView({ levels }: { levels: AnyObj[] }) {
       <Card title="Latency by concurrency" subtitle="Client-observed end-to-end latency">
         <ResponsiveContainer width="100%" height={240}>
           <LineChart data={levels}>
-            <CartesianGrid stroke="#e4e3df" vertical={false} />
+            <CartesianGrid stroke={c.grid} strokeDasharray="3 4" vertical={false} />
             <XAxis dataKey="users" axisLine={false} tickLine={false} />
             <YAxis axisLine={false} tickLine={false} width={52} tickFormatter={(v) => fmt.ms(Number(v))} />
-            <Tooltip formatter={(v) => fmt.ms(Number(v))} />
+            <Tooltip content={<ChartTooltip labelFormat={(l) => `${l} clients`} valueFormat={fmt.ms} />} />
             <Legend />
-            <Line dataKey="p50_ms" name="p50" stroke={SERIES[0]} strokeWidth={2} dot={{ r: 4 }} />
-            <Line dataKey="p95_ms" name="p95" stroke={SERIES[1]} strokeWidth={2} dot={{ r: 4 }} />
-            <Line dataKey="p99_ms" name="p99" stroke={SERIES[2]} strokeWidth={2} dot={{ r: 4 }} />
+            <Line dataKey="p50_ms" name="typical" stroke={SERIES[0]} strokeWidth={2} dot={{ r: 4 }} />
+            <Line dataKey="p95_ms" name="slowest 5%" stroke={SERIES[1]} strokeWidth={2} dot={{ r: 4 }} />
+            <Line dataKey="p99_ms" name="slowest 1%" stroke={SERIES[2]} strokeWidth={2} dot={{ r: 4 }} />
           </LineChart>
         </ResponsiveContainer>
       </Card>
@@ -306,10 +322,9 @@ function GenericTable({ rows }: { rows: AnyObj[] }) {
   const show = (v: unknown) =>
     typeof v === "number" ? (Number.isInteger(v) ? v.toLocaleString() : Math.abs(v) < 1 ? v.toFixed(4) : v.toFixed(2)) : v == null ? "—" : String(v);
   return (
-    <div className="overflow-x-auto">
-      <table className="w-full">
+    <Table>
         <thead>
-          <tr className="border-b border-line">
+          <tr>
             {cols.map((c) => (
               <Th key={c} right={typeof rows[0][c] === "number"}>
                 {c.replaceAll("_", " ")}
@@ -319,7 +334,7 @@ function GenericTable({ rows }: { rows: AnyObj[] }) {
         </thead>
         <tbody>
           {rows.map((r, i) => (
-            <tr key={i} className="border-b border-line/60 last:border-0">
+            <tr key={i} className={rowClass}>
               {cols.map((c) => (
                 <Td key={c} right={typeof r[c] === "number"} mono={typeof r[c] === "string"}>
                   {show(r[c])}
@@ -328,7 +343,6 @@ function GenericTable({ rows }: { rows: AnyObj[] }) {
             </tr>
           ))}
         </tbody>
-      </table>
-    </div>
+    </Table>
   );
 }

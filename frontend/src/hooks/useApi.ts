@@ -65,3 +65,13 @@ export function useTrafficFilter(): [string, (v: string) => void] {
   const fallback = ready.data ? (ready.data.simulated ? "all" : "real") : "real";
   return [choice ?? fallback, setChoice];
 }
+
+/** Registry models ordered by tier (cheap → premium). Used to give each model one stable
+ *  colour on every page. */
+export function useModelOrder(): string[] {
+  const { data } = useApi<{ registry: Record<string, { tier: number }> }>("/api/analytics/models?hours=1&traffic=all");
+  if (!data) return [];
+  return Object.entries(data.registry)
+    .sort((a, b) => a[1].tier - b[1].tier || a[0].localeCompare(b[0]))
+    .map(([k]) => k);
+}
