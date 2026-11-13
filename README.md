@@ -63,59 +63,69 @@ millisecond.
 
 ## See it in action
 
-These are screenshots of the dashboard's **Routing** page, where you type a question and
-see which model RouteForge would pick. It is running the trained router against the real
-GPT-5.6 and Claude 5.5 models (in [replay mode](#modes-which-models-routeforge-uses)).
+These screenshots come from the dashboard's **Routing** page, where you type a question
+and see which model RouteForge would pick. It is running the trained router against the
+real GPT-5.6 and Claude 5.5 models (in [replay mode](#modes-which-models-routeforge-uses)).
 Models are listed cheapest first. The black line is the quality bar, and the first model
 past it gets the request.
 
 ### Different questions go to different models
 
-<table>
-<tr>
-<td width="50%"><img src="docs/screenshots/route-json.jpg" alt="A form-filling question goes to gpt-5.6-luna, the cheapest model that clears the 80% bar" /></td>
-<td width="50%"><img src="docs/screenshots/route-headline.jpg" alt="A headline to classify goes to gpt-5.6-terra because the cheaper models only reach 69%" /></td>
-</tr>
-<tr>
-<td><b>Fill in a form.</b> Even the cheap models are good at this. GPT-5.6 Luna is the cheapest one over the 80% bar, at about $0.06 per 1,000 requests.</td>
-<td><b>Sort a headline.</b> Haiku and Luna are rated at only 69%, so the request moves up to GPT-5.6 Terra.</td>
-</tr>
-<tr>
-<td><img src="docs/screenshots/route-code.jpg" alt="A coding question goes to claude-opus-5-5, the only model rated above the bar" /></td>
-<td><img src="docs/screenshots/route-unusual.jpg" alt="A casual request unlike the training data is flagged as unusual and sent to claude-opus-5-5" /></td>
-</tr>
-<tr>
-<td><b>Write code.</b> Only Claude Opus is likely to get it right (97%). The cheaper models are rated 21–69%, so Opus is worth paying for.</td>
-<td><b>Something unusual.</b> This looks nothing like the questions the router learned from. It's flagged, extra caution is applied, and only Opus clears the bar.</td>
-</tr>
-</table>
+**1. Fill in a form.** *"Extract the requested fields … into a JSON object … Text: Priya
+Raman, 34, moved to Toronto last year."*
+
+<img src="docs/screenshots/route-json.jpg" width="760" alt="The form-filling question goes to gpt-5.6-luna, the cheapest model rated above the 80% bar" />
+
+Even cheap models are good at this. GPT-5.6 Luna is the cheapest one over the bar, at
+about $0.06 per 1,000 requests.
+
+**2. Sort a headline.** *"Classify the news article into exactly one topic: World,
+Sports, Business, or Sci/Tech … Apple shares jumped 4% after the company reported record
+iPhone sales in Asia."*
+
+<img src="docs/screenshots/route-headline.jpg" width="760" alt="The headline goes to gpt-5.6-terra because Haiku and Luna are rated only 69%" />
+
+Haiku and Luna are rated at only 69%, so the request moves up to GPT-5.6 Terra.
+
+**3. Write code.** *"Write a Python function that returns the n-th Fibonacci number
+using memoization."*
+
+<img src="docs/screenshots/route-code.jpg" width="760" alt="The coding question goes to claude-opus-5-5, the only model rated above the bar" />
+
+Only Claude Opus is likely to get this right (97%). The cheaper models are rated 21–69%,
+so here the expensive model is worth paying for.
+
+**4. Something unusual.** *"hey can you help me write a birthday message for my grandma"*
+
+<img src="docs/screenshots/route-unusual.jpg" width="760" alt="The casual request is flagged as an unusual prompt and sent to claude-opus-5-5" />
+
+This looks nothing like the questions the router learned from. It's flagged, extra
+caution is applied, and only Opus clears the bar.
 
 ### The quality bar trades cost against safety
 
-The same headline, with two different bars:
+The same headline as example 2, with the bar lowered to 65%:
 
-<table>
-<tr>
-<td width="50%"><img src="docs/screenshots/route-bar-65.jpg" alt="With the quality bar at 65%, the headline goes to claude-haiku-5-5" /></td>
-<td width="50%"><img src="docs/screenshots/route-bar-90.jpg" alt="With the quality bar at 90%, the headline goes to claude-opus-5-5" /></td>
-</tr>
-<tr>
-<td><b>Bar at 65%:</b> Claude Haiku is good enough, at about $0.008 per 1,000 requests.</td>
-<td><b>Bar at 90%:</b> only Claude Opus is trusted, at about $0.36 per 1,000 requests, roughly 45 times more.</td>
-</tr>
-</table>
+<img src="docs/screenshots/route-bar-65.jpg" width="760" alt="With the bar at 65%, the headline goes to claude-haiku-5-5" />
+
+Claude Haiku is now good enough, at about $0.008 per 1,000 requests. Raise the bar to
+90% and only Opus is trusted, at about $0.36 per 1,000 requests, roughly 45 times more:
+
+<img src="docs/screenshots/route-bar-90.jpg" width="760" alt="With the bar at 90%, the headline goes to claude-opus-5-5" />
 
 ### A latency budget rules out slow models
 
-<img src="docs/screenshots/route-budget.jpg" alt="With a 1,500 ms latency budget, claude-opus-5-5 is marked too slow and the coding question goes to gpt-5.6-terra" />
+The coding question from example 3, with a 1.5-second time limit:
 
-With a 1.5 s time limit, Opus (expected to take about 1.8 s) is marked **too slow**. No
-model is both fast enough and likely enough to clear 80%, so RouteForge picks the most
-reliable model that fits the limit: GPT-5.6 Terra.
+<img src="docs/screenshots/route-budget.jpg" width="760" alt="With a 1,500 ms latency budget, claude-opus-5-5 is marked too slow and the question goes to gpt-5.6-terra" />
+
+Opus, expected to take about 1.8 s, is marked **too slow**. No model is both fast enough
+and likely enough to clear 80%, so RouteForge picks the most reliable model that fits the
+limit: GPT-5.6 Terra.
 
 ### A backup answers when a model fails
 
-<img src="docs/screenshots/route-fallback.jpg" width="560" alt="Request detail: claude-haiku-5-5 failed twice with server errors, then gpt-5.6-luna answered successfully" />
+<img src="docs/screenshots/route-fallback.jpg" width="640" alt="Request detail: claude-haiku-5-5 failed twice with server errors, then gpt-5.6-luna answered successfully" />
 
 For this request the router chose Claude Haiku. We deliberately made Haiku fail, using
 RouteForge's built-in fault-injection tool. RouteForge retried once, then handed the
