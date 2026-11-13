@@ -26,4 +26,5 @@ Clients call `POST /v1/chat/completions` with `model="routeforge-auto"` (or `rou
 ## Optional
 
 - [Makefile](https://github.com/KaavinB/Routeforge/blob/main/Makefile): dataset, collection, scoring, training, benchmark and test targets
+- [License](https://github.com/KaavinB/Routeforge/blob/main/LICENSE): MIT
 - [CI workflow](https://github.com/KaavinB/Routeforge/blob/main/.github/workflows/ci.yml): lint, types, tests, regression gate, image builds, audits

@@ -36,7 +36,8 @@ one machine, so it isn't yet proven at production scale.
 [Troubleshooting](#troubleshooting) ·
 [FAQ](#faq) ·
 [Limitations](#limitations) ·
-[Contributing](#contributing-and-support)
+[Contributing](#contributing-and-support) ·
+[License](#license)
 
 ## TL;DR
 
@@ -754,3 +755,7 @@ Questions and bug reports: [open an issue](https://github.com/KaavinB/Routeforge
 Pull requests are welcome. Before opening one, run `make lint typecheck test` (and
 `cd frontend && npm test` for dashboard changes). If you change routing, include an
 evaluation run showing its effect on cost and quality.
+
+## License
+
+[MIT](LICENSE) © 2026 Kaavin
