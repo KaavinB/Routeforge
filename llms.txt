@@ -1,0 +1,29 @@
+# RouteForge
+
+> RouteForge is a gateway that sits between an app and AI models (OpenAI, Anthropic, or local Ollama models). It accepts requests in OpenAI's Chat Completions API format, so OpenAI client libraries work by changing only the base URL, and sends each request to the cheapest model predicted to clear a configurable quality threshold. It adds retries, fallback models, caching, rate limits, monitoring, an evaluation suite and a dashboard.
+
+Clients call `POST /v1/chat/completions` with `model="routeforge-auto"` (or `routeforge-<strategy>`, or a concrete model id) and pass RouteForge options in `extra_body={"routeforge": {...}}`: `strategy`, `quality_threshold`, `latency_budget_ms`, `cache`, `tags`. Modes: `mock` (default, no keys), `replay-latest` (recorded real outputs, free), `hosted-latest` (paid OpenAI + Anthropic), `hosted`, `local` (Ollama).
+
+## Documentation
+
+- [README](https://github.com/KaavinB/Routeforge/blob/main/README.md): quick start, installation, usage examples with output (Python, streaming, policies, errors, routing preview, API keys), configuration tables, comparison, troubleshooting, FAQ, limitations
+- [Architecture](https://github.com/KaavinB/Routeforge/blob/main/docs/ARCHITECTURE.md): components, request path, failure semantics, built-here vs library
+- [Design decisions](https://github.com/KaavinB/Routeforge/blob/main/docs/DESIGN_DECISIONS.md): rationale for each major choice
+- [Security](https://github.com/KaavinB/Routeforge/blob/main/docs/SECURITY.md): API key hashing, roles, rate limits, sandboxing, data retention
+
+## Evaluation and results
+
+- [Evaluation methodology](https://github.com/KaavinB/Routeforge/blob/main/docs/EVALUATION.md): dataset, scorers, LLM judge, splits, leakage checks, router training
+- [Benchmarks](https://github.com/KaavinB/Routeforge/blob/main/docs/BENCHMARKS.md): routing cost/quality, cache, capacity, fault injection, router overhead, regression gate, judge agreement
+
+## Reference
+
+- [Configuration settings](https://github.com/KaavinB/Routeforge/blob/main/backend/app/core/config.py): every `ROUTEFORGE_*` environment variable with defaults
+- [Environment template](https://github.com/KaavinB/Routeforge/blob/main/.env.example): modes, credentials and optional settings
+- [Request and response schemas](https://github.com/KaavinB/Routeforge/blob/main/backend/app/schemas/openai.py): request and response formats (same as OpenAI's Chat Completions API) plus the `routeforge` options
+- [Model registries](https://github.com/KaavinB/Routeforge/tree/main/config/models): models, tiers and prices for each mode
+
+## Optional
+
+- [Makefile](https://github.com/KaavinB/Routeforge/blob/main/Makefile): dataset, collection, scoring, training, benchmark and test targets
+- [CI workflow](https://github.com/KaavinB/Routeforge/blob/main/.github/workflows/ci.yml): lint, types, tests, regression gate, image builds, audits
